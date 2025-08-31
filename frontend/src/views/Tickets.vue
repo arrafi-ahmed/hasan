@@ -1,0 +1,995 @@
+<script setup>
+import {computed, onMounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import {useDisplay} from 'vuetify'
+import {useStore} from 'vuex'
+import {toast} from 'vue-sonner'
+
+const {xs} = useDisplay()
+const route = useRoute()
+const router = useRouter()
+const store = useStore()
+
+const selectedTickets = ref([])
+const isLoading = ref(true)
+const isProcessingPayment = ref(false)
+const showCartDialog = ref(false)
+
+const formatPrice = (price, currency = 'USD') => {
+  // Convert cents to dollars if price is in cents
+  const amount = price >= 1000 ? price / 100 : price
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
+
+const formatPriceCompact = (price, currency = 'USD') => {
+  // Convert cents to dollars if price is in cents
+  const amount = price >= 1000 ? price / 100 : price
+
+  if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(1)}k`
+  } else if (amount >= 100) {
+    return `$${Math.round(amount)}`
+  } else {
+    return `$${amount.toFixed(2)}`
+  }
+}
+const storedReg = localStorage.getItem('registrationData')
+const storedEventId = storedReg ? JSON.parse(storedReg).eventId : null
+const fetchedEvent = computed(() => store.state.event.event)
+const eventId = computed(() => storedEventId || fetchedEvent.value.id)
+const tickets = computed(() => store.state.ticket.tickets)
+
+const fetchTickets = async () => {
+  try {
+    isLoading.value = true
+
+    const slug = route.params.slug
+
+
+    let event = null
+
+    // Try to fetch by slug first if available
+    if (!storedEventId && slug) {
+      try {
+        await store.dispatch('event/setEventBySlug', {slug})
+      } catch (slugError) {
+        console.warn('Failed to fetch event by slug:', slugError)
+        console.error('Slug error details:', slugError.response?.data || slugError.message)
+      }
+    }
+
+    if (eventId.value) {
+
+      // Fetch tickets for this event using store action
+      try {
+        await store.dispatch('ticket/setTickets', eventId.value)
+      } catch (ticketError) {
+        console.warn('Failed to fetch tickets:', ticketError)
+        console.error('Ticket error details:', ticketError.response?.data || ticketError.message)
+        tickets.value = []
+      }
+    } else {
+      console.warn('No event found, using fallback')
+      tickets.value = []
+    }
+  } catch (error) {
+    console.error('Error fetching event and tickets:', error)
+    console.error('Full error details:', error.response?.data || error.message)
+    // Don't show error toast, just set empty tickets array
+    tickets.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const selectTicket = (ticket, quantity = 1) => {
+  const existingIndex = selectedTickets.value.findIndex((item) => item.ticketId === ticket.id)
+
+  if (existingIndex >= 0) {
+    // Update existing selection
+    const newQuantity = selectedTickets.value[existingIndex].quantity + quantity
+    if (newQuantity <= ticket.currentStock) {
+      selectedTickets.value[existingIndex].quantity = newQuantity
+    } else {
+      return
+    }
+  } else {
+    // Add new selection
+    if (quantity <= ticket.currentStock) {
+      selectedTickets.value.push({
+        ticketId: ticket.id,
+        title: ticket.title,
+        unitPrice: ticket.price,
+        quantity: quantity,
+      })
+    } else {
+      return
+    }
+  }
+}
+
+const removeTicket = (ticketId) => {
+  const index = selectedTickets.value.findIndex((item) => item.ticketId === ticketId)
+  if (index >= 0) {
+    selectedTickets.value.splice(index, 1)
+  }
+}
+
+const updateQuantity = (ticketId, newQuantity) => {
+  const ticket = tickets.value.find((t) => t.id === ticketId)
+  if (!ticket) return
+
+  if (newQuantity <= ticket.currentStock) {
+    const index = selectedTickets.value.findIndex((item) => item.ticketId === ticketId)
+    if (index >= 0) {
+      selectedTickets.value[index].quantity = newQuantity
+    }
+  }
+}
+
+const isTicketInCart = (ticketId) => {
+  return selectedTickets.value.some((item) => item.ticketId === ticketId)
+}
+
+const getButtonText = (ticket) => {
+  if (ticket.currentStock === 0) {
+    return 'Sold Out'
+  } else if (isTicketInCart(ticket.id)) {
+    return 'In Cart'
+  } else {
+    return 'Add to Cart'
+  }
+}
+
+const getTotalAmount = () => {
+  return selectedTickets.value.reduce((total, item) => {
+    return total + item.unitPrice * item.quantity
+  }, 0)
+}
+
+const proceedToForm = async () => {
+  isProcessingPayment.value = true
+
+  try {
+    // Load registration data from localStorage
+    const storedData = localStorage.getItem('registrationData')
+    if (!storedData) {
+      console.error('No registration data found in localStorage')
+      toast.error('Please complete the registration form first')
+      return
+    }
+
+    let registrationData
+    try {
+      registrationData = JSON.parse(storedData)
+
+    } catch (error) {
+      console.error('Failed to parse registration data from localStorage:', error)
+      toast.error('Invalid registration data. Please complete the registration form again.')
+      return
+    }
+
+    // Validate registration data
+    if (!registrationData.eventId) {
+      console.error('Invalid registration data')
+      toast.error('Please complete the registration form first')
+      return
+    }
+
+
+    // Transform selected tickets to the correct format for attendee forms
+    const transformedItems = selectedTickets.value.map((ticket) => {
+
+      return {
+        ticketId: ticket.ticketId,
+        title: ticket.title,
+        unitPrice: Number(ticket.unitPrice || ticket.price || 0),
+        quantity: Number(ticket.quantity || 1),
+      }
+    })
+
+
+    // Store tickets in localStorage for attendee forms
+    localStorage.setItem('selectedTickets', JSON.stringify(transformedItems))
+
+
+    // Redirect to attendee form page - only slug-based routing
+    router.push({
+      name: 'attendee-form-slug',
+      params: {
+        slug: route.params.slug,
+      },
+    })
+  } catch (error) {
+    console.error('Error proceeding to attendee forms:', error)
+    toast.error('Failed to proceed to attendee forms. Please try again.')
+  } finally {
+    isProcessingPayment.value = false
+  }
+}
+
+const goBack = () => {
+  // Only slug-based routing
+  router.push({
+    name: 'event-landing-slug',
+    params: {slug: route.params.slug},
+  })
+}
+
+onMounted(async () => {
+  // Ensure selectedTickets is always an array
+  if (!selectedTickets.value || !Array.isArray(selectedTickets.value)) {
+    selectedTickets.value = []
+  }
+
+  // Fetch event and tickets first
+  await fetchTickets()
+})
+</script>
+
+<template>
+  <!-- Tickets Section -->
+  <section class="section section-fade">
+    <v-container>
+      <v-row>
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <h2 class="text-h4 font-weight-bold mb-4">
+            Available Packages
+          </h2>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="isLoading">
+        <v-col
+          class="text-center"
+          cols="12"
+        >
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            size="64"
+          />
+          <p class="mt-4">
+            Loading tickets...
+          </p>
+        </v-col>
+      </v-row>
+
+      <v-row v-else-if="tickets.length === 0">
+        <v-col
+          class="text-center"
+          cols="12"
+        >
+          <v-card
+            class="mx-auto"
+            elevation="4"
+            max-width="500"
+          >
+            <v-card-text class="pa-6">
+              <v-icon
+                class="mb-4"
+                color="info"
+                size="64"
+              >
+                mdi-ticket-outline
+              </v-icon>
+              <h3 class="text-h5 mb-4">
+                No Tickets Available Yet
+              </h3>
+              <p class="text-body-1 mb-4">
+                Tickets for this event haven't been created yet by the event organizer. Please check
+                back later or contact the event organizer for more information.
+              </p>
+              <v-btn
+                class="mt-4"
+                color="primary"
+                @click="goBack"
+              >
+                Back to Event
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-row v-else>
+        <v-col
+          v-for="ticket in tickets"
+          :key="ticket.id"
+          class="mb-4"
+          cols="12"
+          md="4"
+          sm="6"
+        >
+          <v-card
+            :class="{ 'ticket-selected': isTicketInCart(ticket.id) }"
+            class="ticket-card"
+            elevation="6"
+          >
+            <v-card-title class="text-center py-3 bg-gradient-primary text-white">
+              <div class="w-100">
+                <div class="d-flex justify-space-between align-center mb-2">
+                  <v-icon class="text-white">
+                    mdi-ticket
+                  </v-icon>
+                  <v-chip
+                    v-if="isTicketInCart(ticket.id)"
+                    color="white"
+                    size="small"
+                    text-color="primary"
+                  >
+                    In Cart
+                  </v-chip>
+                </div>
+                <h3 class="text-h5 font-weight-bold">
+                  {{ ticket.title }}
+                </h3>
+                <div class="text-h6 font-weight-bold mt-2 opacity-90">
+                  {{ formatPrice(ticket.price, ticket.currency) }}
+                </div>
+              </div>
+            </v-card-title>
+            <v-card-text class="pa-3">
+              <p class="text-body-2 mb-3 text-grey-darken-1">
+                {{ ticket.description }}
+              </p>
+
+              <div class="ticket-details mb-3">
+                <div class="d-flex justify-space-between align-center">
+                  <span class="text-caption font-weight-medium">Availability:</span>
+                  <v-chip
+                    :color="ticket.currentStock > 0 ? 'success' : 'error'"
+                    size="small"
+                    variant="outlined"
+                  >
+                    <v-icon
+                      class="mr-1"
+                      size="16"
+                    >
+                      {{ ticket.currentStock > 0 ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                    </v-icon>
+                    {{ ticket.currentStock || 0 }} available
+                  </v-chip>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <v-btn
+                  :color="isTicketInCart(ticket.id) ? 'success' : 'primary'"
+                  :disabled="!ticket.currentStock || ticket.currentStock <= 0"
+                  :variant="isTicketInCart(ticket.id) ? 'outlined' : 'elevated'"
+                  class="w-100"
+                  elevation="4"
+                  size="default"
+                  @click="selectTicket(ticket, 1)"
+                >
+                  <v-icon class="mr-2">
+                    {{ isTicketInCart(ticket.id) ? 'mdi-check' : 'mdi-cart-plus' }}
+                  </v-icon>
+                  {{ getButtonText(ticket) }}
+                </v-btn>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </section>
+
+  <!-- Floating Action Button for Cart -->
+  <v-fab-transition>
+    <v-btn
+      v-show="selectedTickets.length > 0"
+      class="cart-fab bg-primary"
+      color="secondary"
+      elevation="12"
+      icon
+      size="large"
+      @click="showCartDialog = true"
+    >
+      <v-icon size="24">
+        mdi-cart
+      </v-icon>
+      <v-badge
+        :content="selectedTickets.length"
+        :model-value="selectedTickets.length > 0"
+        color="error"
+        dot
+        floating
+      />
+    </v-btn>
+  </v-fab-transition>
+
+  <!-- Modern Cart Dialog -->
+  <v-dialog
+    v-model="showCartDialog"
+    max-width="380"
+    persistent
+    transition="dialog-bottom-transition"
+  >
+    <v-card
+      class="modern-cart-dialog"
+      elevation="0"
+    >
+      <!-- Sleek Header -->
+      <div class="cart-header">
+        <div class="d-flex justify-space-between align-center pa-4">
+          <div class="d-flex align-center">
+            <div class="cart-icon-wrapper">
+              <v-icon
+                color="white"
+                size="18"
+              >
+                mdi-shopping
+              </v-icon>
+            </div>
+            <div class="ml-3">
+              <div class="text-h6 font-weight-bold text-white">
+                Cart
+              </div>
+              <div class="text-caption text-white">
+                {{ selectedTickets.length }} item{{ selectedTickets.length !== 1 ? 's' : '' }}
+              </div>
+            </div>
+          </div>
+          <v-btn
+            class="close-btn"
+            color="white"
+            icon
+            size="small"
+            variant="text"
+            @click="showCartDialog = false"
+          >
+            <v-icon size="16">
+              mdi-close
+            </v-icon>
+          </v-btn>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <v-card-text class="pa-0">
+        <div
+          v-if="selectedTickets.length === 0"
+          class="text-center py-12"
+        >
+          <div class="empty-cart-icon">
+            <v-icon
+              color="grey-lighten-2"
+              size="40"
+            >
+              mdi-shopping-outline
+            </v-icon>
+          </div>
+          <h3 class="text-h6 text-grey-darken-1 mb-2 mt-4">
+            Your cart is empty
+          </h3>
+          <p class="text-body-2 text-grey-lighten-1 mb-6">
+            Select tickets to get started
+          </p>
+          <v-btn
+            class="continue-btn"
+            color="primary"
+            size="small"
+            variant="outlined"
+            @click="showCartDialog = false"
+          >
+            Continue Shopping
+          </v-btn>
+        </div>
+
+        <div
+          v-else
+          class="cart-content"
+        >
+          <!-- Items List -->
+          <div class="cart-items-list pa-4">
+            <div
+              v-for="(item, index) in selectedTickets"
+              :key="item.ticketId"
+              class="cart-item-modern"
+            >
+              <div class="cart-item-content">
+                <div class="item-info">
+                  <h6 class="item-title">
+                    {{ item.title }}
+                  </h6>
+                  <div class="item-price">
+                    {{ formatPrice(item.unitPrice, 'USD') }} each
+                  </div>
+                </div>
+
+                <div class="item-controls">
+                  <div class="quantity-controls">
+                    <v-btn
+                      :disabled="item.quantity <= 1"
+                      class="quantity-btn"
+                      color="grey-darken-1"
+                      icon
+                      size="x-small"
+                      variant="text"
+                      @click="updateQuantity(item.ticketId, item.quantity - 1)"
+                    >
+                      <v-icon size="14">
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
+                    <span class="quantity-text">{{ item.quantity }}</span>
+                    <v-btn
+                      class="quantity-btn"
+                      color="grey-darken-1"
+                      icon
+                      size="x-small"
+                      variant="text"
+                      @click="updateQuantity(item.ticketId, item.quantity + 1)"
+                    >
+                      <v-icon size="14">
+                        mdi-plus
+                      </v-icon>
+                    </v-btn>
+                  </div>
+
+                  <div class="item-total">
+                    {{ formatPrice(item.unitPrice * item.quantity, 'USD') }}
+                  </div>
+
+                  <v-btn
+                    class="remove-btn"
+                    color="grey-lighten-1"
+                    icon
+                    size="x-small"
+                    variant="text"
+                    @click="removeTicket(item.ticketId)"
+                  >
+                    <v-icon size="14">
+                      mdi-close
+                    </v-icon>
+                  </v-btn>
+                </div>
+              </div>
+
+              <!-- Subtle divider -->
+              <div
+                v-if="index < selectedTickets.length - 1"
+                class="item-divider"
+              />
+            </div>
+          </div>
+
+          <!-- Summary Section -->
+          <div class="cart-summary">
+            <div class="summary-line">
+              <span class="summary-label">Total</span>
+              <span class="summary-amount">{{ formatPrice(getTotalAmount(), 'USD') }}</span>
+            </div>
+
+            <v-btn
+              :disabled="selectedTickets.length === 0"
+              :loading="isProcessingPayment"
+              block
+              class="checkout-btn"
+              color="primary"
+              elevation="0"
+              height="48"
+              size="large"
+              @click="proceedToForm"
+            >
+              <v-icon
+                class="mr-2"
+                size="18"
+              >
+                mdi-credit-card-outline
+              </v-icon>
+              <span class="font-weight-medium">
+                {{ isProcessingPayment ? 'Processing...' : 'Complete Purchase' }}
+              </span>
+            </v-btn>
+
+            <div class="text-center mt-4">
+              <v-btn
+                class="continue-shopping-btn"
+                color="grey-darken-1"
+                size="small"
+                variant="text"
+                @click="showCartDialog = false"
+              >
+                Continue Shopping
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+</template>
+
+<style scoped>
+.hero-section {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    120deg,
+    rgb(var(--v-theme-primary)) 0%,
+    rgb(var(--v-theme-accent)) 100%
+  );
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 60, 114, 0.35);
+  z-index: 2;
+}
+
+.hero-section .v-container {
+  position: relative;
+  z-index: 3;
+  min-height: 60vh;
+}
+
+/* Modern Cart Styles */
+.cart-fab {
+  position: fixed !important;
+  bottom: 40px;
+  right: 24px;
+  z-index: 1000;
+  border-radius: 50% !important;
+  min-width: 56px !important;
+  height: 56px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  backdrop-filter: blur(10px);
+}
+
+.modern-cart-dialog {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Cart Header */
+.cart-header {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary)) 0%,
+    rgb(var(--v-theme-accent)) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.cart-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.cart-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px);
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Empty Cart */
+.empty-cart-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-surfaceVariant)) 0%,
+    rgb(var(--v-theme-outline)) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.continue-btn {
+  border-radius: 12px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+/* Cart Items */
+.cart-items-list {
+  background: rgb(var(--v-theme-surface));
+}
+
+.cart-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-onSurface));
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.item-price {
+  font-size: 0.75rem;
+  color: rgb(var(--v-theme-onSurfaceVariant));
+  font-weight: 400;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  background: rgb(var(--v-theme-surfaceVariant));
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid rgb(var(--v-theme-outline));
+}
+
+.quantity-btn {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  border-radius: 12px !important;
+}
+
+.quantity-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.quantity-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-onSurface));
+  min-width: 20px;
+  text-align: center;
+}
+
+.item-total {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-onSurface));
+  min-width: 60px;
+  text-align: right;
+}
+
+.remove-btn {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  border-radius: 12px !important;
+  opacity: 0.6;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+  background: rgba(244, 67, 54, 0.1) !important;
+  color: #f44336 !important;
+}
+
+.item-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(var(--v-theme-outline)) 50%,
+    transparent 100%
+  );
+  margin: 0;
+}
+
+/* Cart Summary */
+.cart-summary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-surfaceVariant)) 0%,
+    rgb(var(--v-theme-surface)) 100%
+  );
+  border-top: 1px solid rgb(var(--v-theme-outline));
+  padding: 20px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.summary-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-onSurface));
+}
+
+.summary-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(var(--v-theme-onSurface));
+}
+
+.checkout-btn {
+  border-radius: 12px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+}
+
+.checkout-btn:hover {
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.continue-shopping-btn {
+  text-transform: none !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+}
+
+.continue-shopping-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Ticket Card Styles */
+.ticket-card {
+  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
+  box-shadow 0.3s;
+  border-radius: 12px;
+  min-height: 180px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+}
+
+.ticket-card .v-card-text {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-card .v-card-text .text-center {
+  margin-top: auto;
+}
+
+.ticket-selected {
+  border-color: rgb(var(--v-theme-success));
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-surfaceVariant)) 0%,
+    rgb(var(--v-theme-surface)) 100%
+  );
+}
+
+.ticket-details {
+  background: rgb(var(--v-theme-surfaceVariant));
+  border-radius: 6px;
+  padding: 12px;
+  border: 1px solid rgb(var(--v-theme-outline));
+}
+
+/* Gradient Background */
+.bg-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary)) 0%,
+    rgb(var(--v-theme-accent)) 100%
+  ) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sticky-cart {
+    position: static;
+    margin-top: 20px;
+  }
+
+  .cart-items {
+    max-height: 200px;
+  }
+
+  .ticket-card {
+    min-height: 160px;
+  }
+}
+
+.text-shadow {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.section {
+  padding: 80px 0 60px 0;
+  position: relative;
+}
+
+.cart-card {
+  position: sticky;
+  top: 100px;
+  border-radius: 12px;
+}
+
+.section-fade {
+  animation: fadeIn 1.2s cubic-bezier(0.4, 2, 0.6, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-content-vertical-center {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+</style>
