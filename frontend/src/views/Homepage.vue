@@ -1,249 +1,175 @@
 <script setup>
-import { appInfo, getApiPublicImgUrl, getClientPublicImageUrl } from '@/others/util'
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
-import { useStore } from 'vuex'
-import { useRoute, useRouter } from 'vue-router'
-import { toast } from 'vue-sonner'
-import { Attendee, Registration } from '@/models/index.js'
+import { useRouter } from 'vue-router'
 
-const { xs } = useDisplay()
-const store = useStore()
 const router = useRouter()
-const route = useRoute()
-
-// Hero background style with event banner or fallback
-const heroBackgroundStyle = computed(() => {
-  return {
-    background: `url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat`,
-  }
-})
 </script>
 
 <template>
-  <!-- Hero Section -->
-  <section id="hero" class="hero-section">
-    <div :style="heroBackgroundStyle" class="hero-bg">
-      <div class="hero-overlay" />
-      <v-container
-        class="fluid fill-height d-flex flex-column justify-center align-center text-center"
-      >
-        <div class="hero-content-vertical-center">
-          <!-- <v-img src="/img/logo.webp" alt="Peaceism Logo" max-width="160" class="mb-6 mx-auto"
-              style="z-index:4; position:relative;" /> -->
-          <transition name="fade-slide">
-            <div>
-              <h1 class="display-2 font-weight-bold mb-4 text-white text-shadow">
-                {{ appInfo.name }}
-              </h1>
-              <p class="headline mb-8 text-white text-shadow">
-                Register all the events from {{ appInfo.name }} here.
-              </p>
-            </div>
-          </transition>
+  <div class="homepage">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Welcome to Binatnaa Tours
+        </h1>
+        <p class="hero-subtitle">
+          Discover amazing tours and adventures with us
+        </p>
+        <div class="hero-actions">
+          <v-btn
+            color="primary"
+            size="large"
+            href="https://binatnaa.com/todos-viajes/"
+            class="hero-btn"
+            target="_blank"
+          >
+            View Tours
+          </v-btn>
+          <v-btn
+            variant="outlined"
+            size="large"          
+            href="https://web.whatsapp.com/send?phone=34664219269&text="
+            class="hero-btn"
+            target="_blank"
+          >
+            Contact Us
+          </v-btn>
         </div>
-      </v-container>
-    </div>
-    <div class="hero-divider">
-      <svg
-        height="100"
-        preserveAspectRatio="none"
-        style="transform: scaleY(-1); margin-top: 32px"
-        viewBox="0 0 1440 100"
-        width="100%"
-      >
-        <path d="M0,0 C480,100 960,0 1440,100 L1440,0 L0,0 Z" fill="#D4AF37" />
-      </svg>
-    </div>
-  </section>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+      <div class="container">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">🌍</div>
+            <h3>Amazing Destinations</h3>
+            <p>Explore the world with our curated tours</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">👨‍💼</div>
+            <h3>Expert Guides</h3>
+            <p>Professional and experienced tour leaders</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">✨</div>
+            <h3>Unforgettable Experiences</h3>
+            <p>Create memories that last a lifetime</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-.hero-section {
-  position: relative;
+.homepage {
   min-height: 100vh;
+}
+
+.hero {
+  position: relative;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-}
-
-.hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(30, 60, 114, 0.35);
-  z-index: 2;
-}
-
-.hero-section .v-container {
-  position: relative;
-  z-index: 3;
-  min-height: 80vh;
-}
-
-.text-shadow {
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-.hero-divider {
-  position: relative;
-  z-index: 4;
-  margin-top: 0;
-  bottom: 0;
-  width: 100%;
-  left: 0;
-  right: 0;
-}
-
-.section {
-  padding: 80px 0 60px 0;
-  position: relative;
-}
-
-.section-divider {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.pillar-card {
-  transition:
-    transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
-    box-shadow 0.3s;
-  border-radius: 18px;
-  background: rgb(var(--v-theme-surface));
-}
-
-.pillar-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 8px 32px rgba(30, 60, 114, 0.12);
-}
-
-.highlight-card {
-  border-radius: 16px;
-  min-height: 180px;
-}
-
-.outcome-card {
-  border-radius: 16px;
-}
-
-.section-fade {
-  animation: fadeIn 1.2s cubic-bezier(0.4, 2, 0.6, 1);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.sticky-nav {
-  position: sticky !important;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.98) !important;
-  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.06);
-}
-
-.footer {
-  background: rgb(var(--v-theme-primary)) !important;
-}
-
-.hero-content-vertical-center {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+              url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80') center/cover;
+  color: white;
 }
 
-.ecosystem-card {
-  background: rgb(var(--v-theme-surface));
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.06);
+.hero-content {
+  max-width: 800px;
+  padding: 0 20px;
+  z-index: 2;
 }
 
-.package-card {
-  transition:
-    transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
-    box-shadow 0.3s;
-  border-radius: 8px;
-  min-height: 220px;
-  cursor: pointer;
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
-.package-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
 }
 
-.selected-package {
-  border: 3px solid #d4af37;
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.schedule-popup {
-  border-radius: 20px;
-  overflow: hidden;
+.hero-btn {
+  min-width: 160px;
 }
 
-.schedule-popup .v-card-title {
-  border-radius: 20px 20px 0 0;
+.info-section {
+  padding: 40px 0;
+  background: #f8f9fa;
 }
 
-.schedule-row:hover {
-  background-color: rgba(var(--v-theme-primary), 0.03);
-  transition: background-color 0.2s ease;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.schedule-table {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(var(--v-theme-outline), 0.12);
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
-.schedule-popup .v-table {
-  border-radius: 12px;
-  overflow: hidden;
+.info-item {
+  text-align: center;
+  padding: 2rem;
 }
 
-.schedule-popup .v-table th {
-  background-color: rgba(var(--v-theme-surface), 0.8);
-  font-weight: 600;
-  color: rgb(var(--v-theme-onSurface));
-  border-bottom: 1px solid rgba(var(--v-theme-outline), 0.12);
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
 
-.schedule-popup .v-table td {
-  padding: 16px;
-  vertical-align: middle;
-  border-bottom: 1px solid rgba(var(--v-theme-outline), 0.08);
+.info-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
-.schedule-popup .v-table tr:last-child td {
-  border-bottom: none;
+.info-item p {
+  color: #666;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

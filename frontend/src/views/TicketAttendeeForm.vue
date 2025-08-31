@@ -235,6 +235,7 @@ onMounted(async () => {
                         label="Package Type *"
                         required
                         variant="solo"
+                        hide-details="auto"
                         @update:model-value="handleSelectTicket"
                       />
                     </v-col>
@@ -255,6 +256,7 @@ onMounted(async () => {
                         label="First Name *"
                         required
                         variant="solo"
+                        hide-details="auto"
                       />
                     </v-col>
                     <v-col
@@ -271,6 +273,7 @@ onMounted(async () => {
                         label="Last Name *"
                         required
                         variant="solo"
+                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -291,6 +294,7 @@ onMounted(async () => {
                         required
                         type="email"
                         variant="solo"
+                        hide-details="auto"
                       />
                     </v-col>
                     <v-col
@@ -307,6 +311,7 @@ onMounted(async () => {
                         label="Phone *"
                         required
                         variant="solo"
+                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -346,7 +351,7 @@ onMounted(async () => {
 
 <style scoped>
 .section {
-  padding: 60px 0;
+  padding: 40px 0;
   background: linear-gradient(
     180deg,
     rgb(var(--v-theme-surfaceVariant)) 0%,

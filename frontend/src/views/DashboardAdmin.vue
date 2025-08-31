@@ -127,7 +127,7 @@ onMounted(async () => {
                 size="small"
                 variant="tonal"
               >
-                Tickets
+                Packages
               </v-btn>
             </div>
 

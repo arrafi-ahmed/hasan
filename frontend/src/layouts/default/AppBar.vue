@@ -184,7 +184,8 @@ const goBack = () => {
   <v-app-bar
     class="modern-app-bar"
     elevation="0"
-    height="64"
+    height="72"
+    color="transparent"
   >
     <div class="app-bar-container">
       <!-- Logo Section -->
@@ -336,9 +337,8 @@ const goBack = () => {
 <style scoped>
 /* Modern App Bar */
 .modern-app-bar {
-  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .app-bar-container {
@@ -359,10 +359,11 @@ const goBack = () => {
   border-radius: 8px;
   transition: all 0.2s ease;
   cursor: pointer;
+  background: #ffffff78;
 }
 
 .logo-container:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .app-logo {
@@ -371,7 +372,7 @@ const goBack = () => {
 
 /* Back Button */
 .back-button {
-  color: rgba(0, 0, 0, 0.7) !important;
+  color: rgba(0, 0, 0, 0.9) !important;
   font-weight: 500 !important;
   text-transform: none !important;
   border-radius: 8px !important;
@@ -380,8 +381,8 @@ const goBack = () => {
 }
 
 .back-button:hover {
-  background: rgba(0, 0, 0, 0.04) !important;
-  color: rgba(0, 0, 0, 0.9) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgb(144, 144, 144) !important;
 }
 
 .back-text {
@@ -390,7 +391,8 @@ const goBack = () => {
 
 /* User Menu Button */
 .user-menu-button {
-  color: rgba(0, 0, 0, 0.7) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: #ffffff78;
   font-weight: 500 !important;
   text-transform: none !important;
   border-radius: 8px !important;
@@ -399,8 +401,8 @@ const goBack = () => {
 }
 
 .user-menu-button:hover {
-  background: rgba(0, 0, 0, 0.04) !important;
-  color: rgba(0, 0, 0, 0.9) !important;
+  background: rgba(245, 242, 242, 0.1) !important;
+  color: rgb(110, 107, 107) !important;
 }
 
 .user-avatar {
@@ -460,7 +462,7 @@ const goBack = () => {
 
 /* Drawer Menu */
 .drawer-menu {
-  background: transparent !important;
+
   padding: 16px;
 }
 

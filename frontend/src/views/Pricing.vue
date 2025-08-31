@@ -310,7 +310,7 @@ onMounted(async () => {
 }
 
 .section {
-  padding: 60px 0 40px 0;
+  padding: 40px 0 40px 0;
   position: relative;
 }
 

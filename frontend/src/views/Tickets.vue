@@ -259,7 +259,7 @@ onMounted(async () => {
             size="64"
           />
           <p class="mt-4">
-            Loading tickets...
+            Loading packages...
           </p>
         </v-col>
       </v-row>
@@ -283,10 +283,10 @@ onMounted(async () => {
                 mdi-ticket-outline
               </v-icon>
               <h3 class="text-h5 mb-4">
-                No Tickets Available Yet
+                No Package Available Yet
               </h3>
               <p class="text-body-1 mb-4">
-                Tickets for this event haven't been created yet by the event organizer. Please check
+                Packages for this event haven't been created yet by the event organizer. Please check
                 back later or contact the event organizer for more information.
               </p>
               <v-btn
@@ -294,7 +294,7 @@ onMounted(async () => {
                 color="primary"
                 @click="goBack"
               >
-                Back to Event
+                Back to Tour
               </v-btn>
             </v-card-text>
           </v-card>
@@ -396,7 +396,7 @@ onMounted(async () => {
       size="large"
       @click="showCartDialog = true"
     >
-      <v-icon size="24">
+      <v-icon size="26">
         mdi-cart
       </v-icon>
       <v-badge
@@ -959,7 +959,7 @@ onMounted(async () => {
 }
 
 .section {
-  padding: 80px 0 60px 0;
+  padding: 40px 0 40px 0;
   position: relative;
 }
 

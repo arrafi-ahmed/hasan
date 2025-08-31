@@ -31,13 +31,6 @@ const heroBackgroundStyle = computed(() => {
   }
 })
 
-const scrollTo = (sectionId) => {
-  const element = document.getElementById(sectionId)
-  if (element) {
-    element.scrollIntoView({behavior: 'smooth'})
-  }
-}
-
 const attendeeInit = ref({
   firstName: null,
   lastName: null,
@@ -69,7 +62,6 @@ const submitRegistration = async () => {
     registration.eventId = event.value?.id || 1
     localStorage.setItem('registrationData', JSON.stringify(registration))
     localStorage.setItem('attendeesData', JSON.stringify([attendee]))
-
 
     // Redirect to tickets page using Vue Router
     // Only slug-based routing
@@ -132,177 +124,124 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Hero Section -->
-  <section
-    id="hero"
-    class="hero-section"
-  >
-    <div
-      :style="heroBackgroundStyle"
-      class="hero-bg"
-    >
-      <div class="hero-overlay" />
-      <v-container class="fill-height d-flex flex-column justify-center align-center text-center">
-        <div class="hero-content-vertical-center">
-          <!-- <v-img src="/img/logo.webp" alt="Peaceism Logo" max-width="160" class="mb-6 mx-auto"
-              style="z-index:4; position:relative;" /> -->
-          <transition name="fade-slide">
-            <div>
-              <h1 class="display-2 font-weight-bold mb-4 text-white text-shadow">
-                {{
-                  event?.name
-                }}
-              </h1>
-              <v-btn
-                class="elevation-10"
-                color="primary"
-                size="x-large"
-                @click="scrollTo('register')"
-              >
-                Register Now
-              </v-btn>
-            </div>
-          </transition>
-        </div>
-      </v-container>
-    </div>
-    <div class="hero-divider">
-      <svg
-        height="100"
-        preserveAspectRatio="none"
-        style="transform: scaleY(-1); margin-top: 32px"
-        viewBox="0 0 1440 100"
-        width="100%"
+  <div class="event-landing">
+    <!-- Compact Hero Section -->
+    <section class="hero-section">
+      <div
+        :style="heroBackgroundStyle"
+        class="hero-bg"
       >
-        <path
-          d="M0,0 C480,100 960,0 1440,100 L1440,0 L0,0 Z"
-          fill="#D4AF37"
-        />
-      </svg>
-    </div>
-  </section>
+        <div class="hero-overlay" />
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">
+              {{ event?.name || 'Event Registration' }}
+            </h1>
+            <p class="hero-subtitle">
+              Join us for an amazing experience
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Registration & CTA Section -->
-  <section
-    id="register"
-    class="section bg-gradient section-fade"
-  >
-    <v-container>
-      <h2 class="display-1 text-center font-weight-bold mb-6 text-white">
-        Register Now
-      </h2>
-      <p class="text-center mb-8 text-white">
-        Fill in your details to proceed to ticket selection and checkout.
-      </p>
-      <v-row justify="center">
-        <v-col
-          cols="12"
-          md="8"
-        >
-          <v-card
-            class="pa-6"
-            elevation="6"
-          >
-            <v-card-title class="text-center py-4 bg-primary text-white font-weight-bold rounded">
-              Registration Form
-            </v-card-title>
-            <v-card-text>
+    <!-- Registration Form Section -->
+    <section class="registration-section">
+      <v-container class="py-8">
+        <div class="form-container">
+          <div class="form-header">
+            <h2 class="form-title">Complete Your Registration</h2>
+            <p class="form-subtitle">
+              Fill in your details to proceed to package selection
+            </p>
+          </div>
+          
+          <v-card class="registration-form" elevation="2">
+            <v-card-text class="pa-6">
               <v-form @submit.prevent="submitRegistration">
-                <div style="margin-top: 24px" />
                 <v-row>
-                  <v-col
-                    cols="12"
-                    md="6"
-                  >
+                  <v-col cols="12" md="6">
                     <v-text-field
                       v-model="attendee.firstName"
                       label="First Name"
                       required
                       variant="solo"
                       hide-details="auto"
+                      class="mb-4"
                     />
                   </v-col>
-                  <v-col
-                    cols="12"
-                    md="6"
-                  >
+                  <v-col cols="12" md="6">
                     <v-text-field
                       v-model="attendee.lastName"
                       label="Last Name"
                       required
                       variant="solo"
+                      hide-details="auto"
+                      class="mb-4"
                     />
                   </v-col>
                 </v-row>
+                
                 <v-text-field
                   v-model="attendee.email"
-                  label="Email"
+                  label="Email Address"
                   required
                   type="email"
                   variant="solo"
+                  hide-details="auto"
+                  class="mb-4"
                 />
+                
                 <v-text-field
                   v-model="attendee.phone"
                   label="Phone Number"
                   required
                   variant="solo"
+                  hide-details="auto"
+                  class="mb-6"
                 />
 
                 <v-alert
                   v-if="isLoading"
-                  class="mt-4"
+                  class="mb-4"
                   type="info"
+                  variant="tonal"
                 >
                   Loading event information...
                 </v-alert>
 
-                <v-row
-                  class="mt-4"
-                  justify="center"
-                >
-                  <v-col cols="auto">
-                    <v-btn
-                      :disabled="isLoading"
-                      :loading="isProcessingPayment"
-                      class="mr-4"
-                      color="secondary"
-                      size="large"
-                      type="submit"
-                    >
-                      {{ isProcessingPayment ? 'Processing...' : 'Continue' }}
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <div class="form-actions">
+                  <v-btn
+                    :disabled="isLoading"
+                    :loading="isProcessingPayment"
+                    color="primary"
+                    size="large"
+                    type="submit"
+                    class="submit-btn"
+                    block
+                  >
+                    {{ isProcessingPayment ? 'Processing...' : 'Continue' }}
+                  </v-btn>
+                </div>
               </v-form>
             </v-card-text>
           </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-    <div class="section-divider">
-      <svg
-        height="100"
-        preserveAspectRatio="none"
-        viewBox="0 0 1440 100"
-        width="100%"
-      >
-        <path
-          d="M0,100 C480,0 960,100 1440,0 L1440,100 L0,100 Z"
-          fill="#D4AF37"
-        />
-      </svg>
-    </div>
-  </section>
-
+        </div>
+      </v-container>
+    </section>
+  </div>
 </template>
 
 <style scoped>
+.event-landing {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* Hero Section - Reduced Height */
 .hero-section {
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -321,165 +260,119 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(30, 60, 114, 0.35);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
   z-index: 2;
 }
 
-.hero-section .v-container {
+.hero-content {
   position: relative;
   z-index: 3;
-  min-height: 80vh;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
 }
 
-.text-shadow {
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+.hero-text {
+  max-width: 800px;
 }
 
-.hero-divider {
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Registration Section */
+.registration-section {
+  background: white;
   position: relative;
   z-index: 4;
-  margin-top: 0;
-  bottom: 0;
-  width: 100%;
-  left: 0;
-  right: 0;
 }
 
-.section {
-  padding: 80px 0 60px 0;
-  position: relative;
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.section-divider {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 2;
-  pointer-events: none;
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-.pillar-card {
-  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
-  box-shadow 0.3s;
-  border-radius: 18px;
-  background: rgb(var(--v-theme-surface));
-}
-
-.pillar-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 8px 32px rgba(30, 60, 114, 0.12);
-}
-
-.highlight-card {
-  border-radius: 16px;
-  min-height: 180px;
-}
-
-.outcome-card {
-  border-radius: 16px;
-}
-
-.section-fade {
-  animation: fadeIn 1.2s cubic-bezier(0.4, 2, 0.6, 1);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.sticky-nav {
-  position: sticky !important;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.98) !important;
-  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.06);
-}
-
-.footer {
-  background: rgb(var(--v-theme-primary)) !important;
-}
-
-.hero-content-vertical-center {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.ecosystem-card {
-  background: rgb(var(--v-theme-surface));
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.06);
-}
-
-.package-card {
-  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
-  box-shadow 0.3s;
-  border-radius: 8px;
-  min-height: 220px;
-  cursor: pointer;
-}
-
-.package-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
-}
-
-.selected-package {
-  border: 3px solid #d4af37;
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
-}
-
-.schedule-popup {
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.schedule-popup .v-card-title {
-  border-radius: 20px 20px 0 0;
-}
-
-.schedule-row:hover {
-  background-color: rgba(var(--v-theme-primary), 0.03);
-  transition: background-color 0.2s ease;
-}
-
-.schedule-table {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(var(--v-theme-outline), 0.12);
-}
-
-.schedule-popup .v-table {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.schedule-popup .v-table th {
-  background-color: rgba(var(--v-theme-surface), 0.8);
+.form-title {
+  font-size: 2rem;
   font-weight: 600;
-  color: rgb(var(--v-theme-onSurface));
-  border-bottom: 1px solid rgba(var(--v-theme-outline), 0.12);
+  color: #2c3e50;
+  margin-bottom: 12px;
 }
 
-.schedule-popup .v-table td {
-  padding: 16px;
-  vertical-align: middle;
-  border-bottom: 1px solid rgba(var(--v-theme-outline), 0.08);
+.form-subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin: 0;
 }
 
-.schedule-popup .v-table tr:last-child td {
-  border-bottom: none;
+.registration-form {
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  background: white;
+}
+
+.submit-btn {
+  height: 48px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    height: 300px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .form-title {
+    font-size: 1.75rem;
+  }
+  
+  .registration-form {
+    margin: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 250px;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+  }
 }
 </style>

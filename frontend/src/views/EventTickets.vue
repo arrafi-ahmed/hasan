@@ -132,7 +132,7 @@ onMounted(() => {
     <v-row class="mb-6">
       <v-col cols="12">
         <PageTitle
-          title="Manage Tickets"
+          title="Manage Packages"
           :subtitle="event?.name"
         >
           <template #actions>
@@ -143,7 +143,7 @@ onMounted(() => {
               variant="elevated"
               @click="openAddDialog"
             >
-              Add Ticket
+              Add Package
             </v-btn>
           </template>
           
@@ -189,19 +189,20 @@ onMounted(() => {
                 </template>
                 <v-list
                   density="compact"
-                  width="200"
+                  width="250"
                 >
                   <v-list-item
                     prepend-icon="mdi-pencil"
-                    title="Edit Ticket"
+                    title="Edit Package"
                     @click="openEditDialog(ticket)"
                   />
+                  <v-divider />
                   <confirmation-dialog @confirm="deleteTicket(ticket.id)">
                     <template #activator="{ onClick }">
                       <v-list-item
                         class="text-error"
                         prepend-icon="mdi-delete"
-                        title="Delete Ticket"
+                        title="Delete Package"
                         @click.stop="onClick"
                       />
                     </template>
@@ -272,11 +273,11 @@ onMounted(() => {
               mdi-ticket
             </v-icon>
             <h3 class="text-h5 mb-3">
-              No Tickets Found
+              No Package Found
             </h3>
             <p class="text-body-1 text-medium-emphasis mb-6">
-              Create tickets for your event to start accepting registrations. You can offer free or
-              paid tickets.
+              Create package for your tour to start accepting registrations. You can offer free or
+              paid package.
             </p>
             <v-btn
               color="primary"
@@ -285,7 +286,7 @@ onMounted(() => {
               variant="elevated"
               @click="openAddDialog"
             >
-              Create Your First Ticket
+              Create Your First Package
             </v-btn>
           </v-card-text>
         </v-card>
@@ -305,13 +306,13 @@ onMounted(() => {
         <v-card-text class="pa-6">
           <div class="text-center mb-6">
             <h2 class="text-h4 font-weight-bold mb-2">
-              {{ isEditing ? 'Edit Ticket' : 'Add New Ticket' }}
+              {{ isEditing ? 'Edit Package' : 'Add New Package' }}
             </h2>
             <p class="text-body-1 text-medium-emphasis">
               {{
                 isEditing
-                  ? 'Update ticket details and pricing'
-                  : 'Create a new ticket for your event'
+                  ? 'Update package details and pricing'
+                  : 'Create a new package for your tour'
               }}
             </p>
           </div>
@@ -327,7 +328,7 @@ onMounted(() => {
               class="mb-4"
               density="comfortable"
               hide-details="auto"
-              label="Ticket Title"
+              label="Package Title"
               prepend-inner-icon="mdi-ticket"
               required
               variant="solo"
@@ -413,7 +414,7 @@ onMounted(() => {
               <template #prepend>
                 <v-icon>mdi-credit-card</v-icon>
               </template>
-              This ticket will be processed through Stripe for payments.
+              This package will be processed through Stripe for payments.
             </v-alert>
             <v-alert
               v-else
@@ -425,7 +426,7 @@ onMounted(() => {
               <template #prepend>
                 <v-icon>mdi-check-circle</v-icon>
               </template>
-              This is a free ticket - no payment required.
+              This is a free package - no payment required.
             </v-alert>
 
             <div class="d-flex align-center mt-6">
@@ -448,7 +449,7 @@ onMounted(() => {
                 variant="elevated"
                 @click="handleSubmitTicket"
               >
-                {{ isEditing ? 'Update Ticket' : 'Create Ticket' }}
+                {{ isEditing ? 'Update Package' : 'Create Package' }}
               </v-btn>
             </div>
           </v-form>
