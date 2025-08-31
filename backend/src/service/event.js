@@ -284,8 +284,8 @@ exports.removeEvent = async ({eventId, clubId}) => {
         WHERE id = $1
           AND club_id = $2 RETURNING *;`;
     const deletedEvent = await query(sql, [eventId, clubId]);
-
-    if (deletedEvent.rows[0].banner) {
+    console.log(0, eventId, clubId, deletedEvent)
+    if (deletedEvent.rows[0]?.banner) {
         await removeImages([deletedEvent.rows[0].banner]);
     }
     return deletedEvent.rows[0];

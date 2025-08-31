@@ -4,6 +4,7 @@ import { useStore } from 'vuex'
 import { formatDate, getEventImageUrl } from '@/others/util'
 import { useRoute, useRouter } from 'vue-router'
 import PageTitle from '@/components/PageTitle.vue'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 
 const store = useStore()
 const route = useRoute()
@@ -13,7 +14,7 @@ const events = computed(() => store.state.event.events)
 const currentUser = computed(() => store.getters['auth/getCurrentUser'])
 
 const deleteEvent = (eventId) => {
-  store.dispatch('event/removeEvent', { eventId })
+  store.dispatch('event/removeEvent', { eventId, clubId: currentUser.value.clubId })
 }
 
 const fetchData = async () => {
@@ -36,7 +37,6 @@ onMounted(async () => {
         >
           <template #actions>
             <v-btn
-              v-if="events.length > 0"
               :to="{ name: 'event-add' }"
               color="secondary"
               prepend-icon="mdi-plus"
@@ -49,7 +49,6 @@ onMounted(async () => {
 
           <template #mobile-actions>
             <v-btn
-              v-if="events.length > 0"
               :to="{ name: 'event-add' }"
               color="secondary"
               icon="mdi-plus"
@@ -219,17 +218,17 @@ onMounted(async () => {
                 <!--                    })-->
                 <!--                  "-->
                 <!--                />-->
-                <!--                <v-divider class="my-2" />-->
-                <!--                <confirmation-dialog @confirm="deleteEvent(item.id)">-->
-                <!--                  <template #activator="{ onClick }">-->
-                <!--                    <v-list-item-->
-                <!--                      class="text-error"-->
-                <!--                      prepend-icon="mdi-delete"-->
-                <!--                      title="Delete Event"-->
-                <!--                      @click.stop="onClick"-->
-                <!--                    />-->
-                <!--                  </template>-->
-                <!--                </confirmation-dialog>-->
+                <v-divider class="my-2" />
+                <confirmation-dialog @confirm="deleteEvent(item.id)">
+                  <template #activator="{ onClick }">
+                    <v-list-item
+                      class="text-error"
+                      prepend-icon="mdi-delete"
+                      title="Delete Tour"
+                      @click.stop="onClick"
+                    />
+                  </template>
+                </confirmation-dialog>
               </v-list>
             </v-menu>
           </v-card-text>
@@ -243,7 +242,7 @@ onMounted(async () => {
         <v-card class="empty-state-card" elevation="2">
           <v-card-text class="text-center pa-8">
             <v-icon class="mb-4" color="grey-lighten-1" size="64">mdi-calendar-plus</v-icon>
-            <h3 class="text-h5 mb-3">No Events Found</h3>
+            <h3 class="text-h5 mb-3">No Tours Found</h3>
             <!--            <p class="text-body-1 text-medium-emphasis mb-6">-->
             <!--              Create your first event to get started! Events help you organize and manage-->
             <!--              registrations for your activities.-->

@@ -155,7 +155,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/removeEvent', {
-          params: {eventId: request.eventId},
+          params: request,
         })
         .then((response) => {
           commit('removeEvent', request)
