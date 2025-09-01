@@ -88,10 +88,7 @@ const handleAddEvent = async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Create New Tour"
-          subtitle="Set up your tour details and configuration"
-        />
+        <PageTitle subtitle="Set up your tour details and configuration" title="Create New Tour" />
       </v-col>
     </v-row>
 
@@ -174,17 +171,17 @@ const handleAddEvent = async () => {
               />
 
               <v-file-upload
-                accept="image/*"
-                class="mb-4"
-                density="compact"
-                title="Event Banner"
                 :rules="[
                   (v) =>
                     (Array.isArray(v) ? v : [v]).every((file) => isValidImage(file)) ||
                     'Only jpg/jpeg/png allowed!',
                 ]"
-                show-size
+                accept="image/*"
+                class="mb-4"
+                density="compact"
                 rounded
+                show-size
+                title="Event Banner"
                 variant="solo"
                 @update:model-value="handleEventBanner"
               />

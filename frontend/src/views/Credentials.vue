@@ -1,8 +1,8 @@
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
-import {useRoute} from 'vue-router'
-import {useStore} from 'vuex'
-import {generatePassword} from '@/others/util'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { generatePassword } from '@/others/util'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
@@ -27,19 +27,19 @@ const userInit = {
   role: null,
   clubId: null,
 }
-const user = reactive({...userInit})
+const user = reactive({ ...userInit })
 
 const openEditDialog = (selectedUser, type) => {
   if (type === 'admin') {
     isEditDialogAdmin.value = true
   }
-  const {name, ...rest} = selectedUser
-  Object.assign(user, {...rest}) // avoid 'name', 'aId' from submitting backend
+  const { name, ...rest } = selectedUser
+  Object.assign(user, { ...rest }) // avoid 'name', 'aId' from submitting backend
   editDialog.value = !editDialog.value
 }
 
 const openAddAdminDialog = async () => {
-  Object.assign(user, {...userInit})
+  Object.assign(user, { ...userInit })
   addAdminDialog.value = !addAdminDialog.value
 }
 
@@ -53,13 +53,13 @@ const handleSubmitCredential = async (type) => {
     user.password = generatePassword()
   }
 
-  await store.dispatch('appUser/saveAppUser', {...user, type}).then(() => {
+  await store.dispatch('appUser/saveAppUser', { ...user, type }).then(() => {
     if (type === 'admin' && user.id) {
       editDialog.value = !editDialog.value
     } else if (type === 'admin' && !user.id) {
       addAdminDialog.value = !addAdminDialog.value
     }
-    Object.assign(user, {...userInit})
+    Object.assign(user, { ...userInit })
   })
 }
 const deleteAppUser = (id, type) => {
@@ -82,10 +82,7 @@ onMounted(() => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Credentials"
-          :subtitle="club?.name"
-        />
+        <PageTitle :subtitle="club?.name" title="Credentials" />
       </v-col>
     </v-row>
 
@@ -96,40 +93,23 @@ onMounted(() => {
             <v-expansion-panel-title>
               <span>Admins</span>
               <v-spacer />
-              <v-btn
-                class="me-5"
-                color="primary"
-                @click.stop="openAddAdminDialog"
-              >
+              <v-btn class="me-5" color="primary" @click.stop="openAddAdminDialog">
                 Generate Credential
               </v-btn>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-table
-                v-if="admins?.length > 0"
-                density="comfortable"
-                hover
-              >
+              <v-table v-if="admins?.length > 0" density="comfortable" hover>
                 <thead>
                   <tr>
-                    <th class="text-start">
-                      Email
-                    </th>
-                    <th class="text-start">
-                      Password
-                    </th>
+                    <th class="text-start">Email</th>
+                    <th class="text-start">Password</th>
                     <th class="text-end" />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(item, index) in admins"
-                    :key="'e-' + index"
-                  >
+                  <tr v-for="(item, index) in admins" :key="'e-' + index">
                     <td>{{ item.email }}</td>
-                    <td class="text-start">
-                      *********
-                    </td>
+                    <td class="text-start">*********</td>
                     <td class="text-start">
                       <v-menu>
                         <template #activator="{ props }">
@@ -166,14 +146,7 @@ onMounted(() => {
                   </tr>
                 </tbody>
               </v-table>
-              <v-alert
-                v-else
-                border="start"
-                closable
-                density="compact"
-              >
-                No Data available!
-              </v-alert>
+              <v-alert v-else border="start" closable density="compact">No Data available!</v-alert>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -181,18 +154,11 @@ onMounted(() => {
     </v-row>
   </v-container>
 
-  <v-dialog
-    v-model="addAdminDialog"
-    width="500"
-  >
+  <v-dialog v-model="addAdminDialog" width="500">
     <v-card>
       <v-card-title>Generate Credential - Admin</v-card-title>
       <v-card-text>
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-        >
+        <v-form ref="form" v-model="isFormValid" fast-fail>
           <v-text-field
             v-model="user.email"
             :rules="[(v) => !!v || 'Email is required!']"
@@ -206,31 +172,19 @@ onMounted(() => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn
-          color="primary"
-          @click="handleSubmitCredential('admin')"
-        >
-          Generate
-        </v-btn>
+        <v-btn color="primary" @click="handleSubmitCredential('admin')">Generate</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog
-    v-model="editDialog"
-    width="500"
-  >
+  <v-dialog v-model="editDialog" width="500">
     <v-card>
       <v-card-title>
         Edit Credential -
         {{ isEditDialogAdmin ? 'Admin' : null }}
       </v-card-title>
       <v-card-text>
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-        >
+        <v-form ref="form" v-model="isFormValid" fast-fail>
           <v-text-field
             v-model="user.email"
             :rules="[(v) => !!v || 'Email is required!']"
@@ -264,10 +218,7 @@ onMounted(() => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn
-          color="primary"
-          @click="handleSubmitCredential(isEditDialogAdmin ? 'Admin' : null)"
-        >
+        <v-btn color="primary" @click="handleSubmitCredential(isEditDialogAdmin ? 'Admin' : null)">
           Save
         </v-btn>
       </v-card-actions>

@@ -1,8 +1,8 @@
 <script setup>
 import NoItemsFound from '@/components/NoItemsFound.vue'
-import {computed, onMounted, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
@@ -70,7 +70,6 @@ const fetchPackages = async () => {
     isLoading.value = true
 
     await store.dispatch('sponsorshipPackage/setPackages', route.params.eventId)
-
   } catch (error) {
     console.error('Error fetching packages:', error)
     console.error('Error details:', error.response?.data || error.message)
@@ -182,26 +181,15 @@ onMounted(() => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Sponsorship Packages"
-          :subtitle="event?.name"
-        >
+        <PageTitle :subtitle="event?.name" title="Sponsorship Packages">
           <template #actions>
-            <v-btn
-              color="primary"
-              prepend-icon="mdi-plus"
-              @click="openAddDialog"
-            >
+            <v-btn color="primary" prepend-icon="mdi-plus" @click="openAddDialog">
               Add Package
             </v-btn>
           </template>
-          
+
           <template #mobile-actions>
-            <v-btn
-              color="primary"
-              icon="mdi-plus"
-              @click="openAddDialog"
-            />
+            <v-btn color="primary" icon="mdi-plus" @click="openAddDialog" />
           </template>
         </PageTitle>
       </v-col>
@@ -209,37 +197,17 @@ onMounted(() => {
 
     <v-row>
       <v-col>
-        <div
-          v-if="isLoading"
-          class="text-center"
-        >
-          <v-progress-circular
-            color="primary"
-            indeterminate
-          />
-          <div class="mt-2">
-            Loading sponsorship packages...
-          </div>
+        <div v-if="isLoading" class="text-center">
+          <v-progress-circular color="primary" indeterminate />
+          <div class="mt-2">Loading sponsorship packages...</div>
         </div>
         <div v-else-if="packages && packages.length > 0">
           <v-row>
-            <v-col
-              v-for="pkg in packages"
-              :key="pkg.id"
-              cols="12"
-              lg="4"
-              md="6"
-            >
-              <v-card
-                class="package-card"
-                elevation="2"
-              >
+            <v-col v-for="pkg in packages" :key="pkg.id" cols="12" lg="4" md="6">
+              <v-card class="package-card" elevation="2">
                 <v-card-title class="d-flex justify-space-between align-center">
                   <span class="text-h6">{{ pkg.name }}</span>
-                  <v-chip
-                    :color="pkg.isActive ? 'success' : 'grey'"
-                    size="small"
-                  >
+                  <v-chip :color="pkg.isActive ? 'success' : 'grey'" size="small">
                     {{ pkg.isActive ? 'Active' : 'Inactive' }}
                   </v-chip>
                 </v-card-title>
@@ -254,27 +222,15 @@ onMounted(() => {
                     </div>
                   </div>
 
-                  <p
-                    v-if="pkg.description"
-                    class="text-body-2 mb-3 text-pre-wrap"
-                  >
+                  <p v-if="pkg.description" class="text-body-2 mb-3 text-pre-wrap">
                     {{ pkg.description }}
                   </p>
 
-                  <div class="text-caption font-weight-medium mb-2">
-                    Features:
-                  </div>
+                  <div class="text-caption font-weight-medium mb-2">Features:</div>
                   <v-list density="compact">
-                    <v-list-item
-                      v-for="(feature, index) in pkg.features"
-                      :key="index"
-                      class="pa-0"
-                    >
+                    <v-list-item v-for="(feature, index) in pkg.features" :key="index" class="pa-0">
                       <template #prepend>
-                        <v-icon
-                          :color="feature.included ? 'success' : 'grey'"
-                          size="small"
-                        >
+                        <v-icon :color="feature.included ? 'success' : 'grey'" size="small">
                           {{ feature.included ? 'mdi-check' : 'mdi-close' }}
                         </v-icon>
                       </template>
@@ -287,22 +243,12 @@ onMounted(() => {
 
                 <v-card-actions>
                   <v-spacer />
-                  <v-btn
-                    color="primary"
-                    size="small"
-                    variant="text"
-                    @click="openEditDialog(pkg)"
-                  >
+                  <v-btn color="primary" size="small" variant="text" @click="openEditDialog(pkg)">
                     Edit
                   </v-btn>
                   <confirmation-dialog @confirm="deletePackage(pkg.id)">
                     <template #activator="{ onClick }">
-                      <v-btn
-                        color="error"
-                        size="small"
-                        variant="text"
-                        @click="onClick"
-                      >
+                      <v-btn color="error" size="small" variant="text" @click="onClick">
                         Delete
                       </v-btn>
                     </template>
@@ -322,21 +268,14 @@ onMounted(() => {
     </v-row>
 
     <!-- Add/Edit Package Dialog -->
-    <v-dialog
-      v-model="showDialog"
-      max-width="800"
-      persistent
-    >
+    <v-dialog v-model="showDialog" max-width="800" persistent>
       <v-card>
         <v-card-title>{{ packageForm.id ? 'Edit' : 'Add' }} Sponsorship Package</v-card-title>
 
         <v-card-text>
           <v-form @submit.prevent="savePackage">
             <v-row>
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="packageForm.name"
                   density="compact"
@@ -346,10 +285,7 @@ onMounted(() => {
                 />
               </v-col>
 
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="packageForm.price"
                   density="compact"
@@ -360,10 +296,7 @@ onMounted(() => {
                 />
               </v-col>
 
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-select
                   v-model="packageForm.currency"
                   :items="['USD', 'EUR', 'GBP']"
@@ -374,10 +307,7 @@ onMounted(() => {
                 />
               </v-col>
 
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="packageForm.availableCount"
                   density="compact"
@@ -400,17 +330,11 @@ onMounted(() => {
               </v-col>
 
               <v-col cols="12">
-                <v-switch
-                  v-model="packageForm.isActive"
-                  color="primary"
-                  label="Active"
-                />
+                <v-switch v-model="packageForm.isActive" color="primary" label="Active" />
               </v-col>
 
               <v-col cols="12">
-                <div class="text-h6 mb-3">
-                  Features
-                </div>
+                <div class="text-h6 mb-3">Features</div>
                 <v-row>
                   <v-col
                     v-for="(feature, index) in packageForm.features"
@@ -425,10 +349,7 @@ onMounted(() => {
                     >
                       <v-card-text class="pa-3">
                         <div class="d-flex align-center">
-                          <v-icon
-                            :color="feature.included ? 'success' : 'grey'"
-                            class="me-2"
-                          >
+                          <v-icon :color="feature.included ? 'success' : 'grey'" class="me-2">
                             {{ feature.included ? 'mdi-check-circle' : 'mdi-circle-outline' }}
                           </v-icon>
                           <span class="text-body-2">{{ feature.text }}</span>
@@ -444,18 +365,8 @@ onMounted(() => {
 
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            class="mr-3"
-            color="grey"
-            variant="text"
-            @click="closeDialog"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="savePackage"
-          >
+          <v-btn class="mr-3" color="grey" variant="text" @click="closeDialog">Cancel</v-btn>
+          <v-btn color="primary" @click="savePackage">
             {{ packageForm.id ? 'Update' : 'Create' }}
           </v-btn>
         </v-card-actions>
@@ -490,6 +401,4 @@ onMounted(() => {
   border-color: #4caf50;
   background-color: #f1f8e9;
 }
-
-
 </style>

@@ -1,9 +1,9 @@
 <script setup>
-import {useDisplay} from 'vuetify'
-import {appInfo} from '@/others/util'
+import { useDisplay } from 'vuetify'
+import { appInfo } from '@/others/util'
 
-const {xs} = useDisplay()
-const {imgSrc, title, imgClass, containerClass, maxWidth, width} = defineProps([
+const { xs } = useDisplay()
+const { imgSrc, title, imgClass, containerClass, maxWidth, width } = defineProps([
   'imgSrc',
   'title',
   'imgClass',
@@ -23,10 +23,7 @@ const {imgSrc, title, imgClass, containerClass, maxWidth, width} = defineProps([
       :width="width"
     />
 
-    <div
-      v-if="title"
-      class="pl-2"
-    >
+    <div v-if="title" class="pl-2">
       <component :is="xs ? 'h3' : 'h2'">
         <span class="logo-text">{{ appInfo.name }}</span>
       </component>

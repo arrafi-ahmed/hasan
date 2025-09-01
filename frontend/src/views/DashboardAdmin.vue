@@ -31,9 +31,9 @@ onMounted(async () => {
     <v-row class="mb-6">
       <v-col cols="12">
         <PageTitle
-          title="Admin Dashboard"
-          subtitle="Manage your tour settings"
           :show-back-button="false"
+          subtitle="Manage your tour settings"
+          title="Admin Dashboard"
         >
           <template #actions>
             <v-btn

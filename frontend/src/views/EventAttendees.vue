@@ -234,7 +234,7 @@ onMounted(() => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle title="Attendee List" :subtitle="event?.name" />
+        <PageTitle :subtitle="event?.name" title="Attendee List" />
       </v-col>
     </v-row>
 

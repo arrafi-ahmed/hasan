@@ -1,17 +1,17 @@
 <script setup>
-import {onMounted, reactive, ref} from 'vue'
-import {useRouter} from 'vue-router'
-import {isValidEmail, isValidPass, showApiQueryMsg} from '@/others/util'
-import {useDisplay} from 'vuetify'
+import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { isValidEmail, isValidPass, showApiQueryMsg } from '@/others/util'
+import { useDisplay } from 'vuetify'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const router = useRouter()
 const userInit = {
   fullName: null,
   email: null,
   password: null,
 }
-const user = reactive({...userInit})
+const user = reactive({ ...userInit })
 const confirmPassword = ref(null)
 const visible = ref(false)
 const form = ref(null)
@@ -33,16 +33,8 @@ onMounted(() => {
 </script>
 <template>
   <v-container class="fill-height">
-    <v-row
-      align="center"
-      justify="center"
-    >
-      <v-col
-        :cols="12"
-        :lg="6"
-        :md="6"
-        :sm="6"
-      >
+    <v-row align="center" justify="center">
+      <v-col :cols="12" :lg="6" :md="6" :sm="6">
         <v-card
           class="mx-auto pa-4 pa-md-8 my-2 my-md-5"
           elevation="0"
@@ -56,12 +48,7 @@ onMounted(() => {
             <!--            <h2 class="font-weight-regular">Hi, Welcome back 👋</h2>-->
           </v-card-subtitle>
           <v-card-text>
-            <v-form
-              ref="form"
-              v-model="isFormValid"
-              fast-fail
-              @submit.prevent="registerUser"
-            >
+            <v-form ref="form" v-model="isFormValid" fast-fail @submit.prevent="registerUser">
               <!-- Full Name -->
               <v-text-field
                 v-model="user.fullName"
@@ -145,10 +132,7 @@ onMounted(() => {
               </v-btn>
 
               <div class="mt-2 mt-md-4 text-center">
-                <span
-                  class="clickable text-secondary"
-                  @click="router.push({ name: 'signin' })"
-                >
+                <span class="clickable text-secondary" @click="router.push({ name: 'signin' })">
                   Already registered?
                 </span>
               </div>

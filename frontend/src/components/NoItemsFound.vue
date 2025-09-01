@@ -12,12 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <v-alert
-    border="start"
-    closable
-    density="compact"
-    type="info"
-  >
+  <v-alert border="start" closable density="compact" type="info">
     <div class="font-weight-medium">
       {{ title }}
     </div>

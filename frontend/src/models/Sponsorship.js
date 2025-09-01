@@ -3,18 +3,18 @@
  */
 export class Sponsorship {
   constructor(data = {}) {
-    this.id = data.id || null;
-    this.sponsorData = data.sponsorData || null;
-    this.packageType = data.packageType || '';
-    this.amount = data.amount || 0;
-    this.currency = data.currency || 'USD';
-    this.paymentStatus = data.paymentStatus || 'pending';
-    this.stripePaymentIntentId = data.stripePaymentIntentId || null;
-    this.eventId = data.eventId || null;
-    this.clubId = data.clubId || null;
-    this.registrationId = data.registrationId || null;
-    this.createdAt = data.createdAt || null;
-    this.updatedAt = data.updatedAt || null;
+    this.id = data.id || null
+    this.sponsorData = data.sponsorData || null
+    this.packageType = data.packageType || ''
+    this.amount = data.amount || 0
+    this.currency = data.currency || 'USD'
+    this.paymentStatus = data.paymentStatus || 'pending'
+    this.stripePaymentIntentId = data.stripePaymentIntentId || null
+    this.eventId = data.eventId || null
+    this.clubId = data.clubId || null
+    this.registrationId = data.registrationId || null
+    this.createdAt = data.createdAt || null
+    this.updatedAt = data.updatedAt || null
   }
 
   /**
@@ -25,8 +25,8 @@ export class Sponsorship {
       PENDING: 'pending',
       PAID: 'paid',
       FAILED: 'failed',
-      REFUNDED: 'refunded'
-    };
+      REFUNDED: 'refunded',
+    }
   }
 
   /**
@@ -39,117 +39,117 @@ export class Sponsorship {
       GBP: 'GBP',
       JPY: 'JPY',
       CAD: 'CAD',
-      AUD: 'AUD'
-    };
+      AUD: 'AUD',
+    }
   }
 
   /**
    * Check if sponsorship is pending
    */
   isPending() {
-    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.PENDING;
+    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.PENDING
   }
 
   /**
    * Check if sponsorship is paid
    */
   isPaid() {
-    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.PAID;
+    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.PAID
   }
 
   /**
    * Check if sponsorship failed
    */
   isFailed() {
-    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.FAILED;
+    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.FAILED
   }
 
   /**
    * Check if sponsorship is refunded
    */
   isRefunded() {
-    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.REFUNDED;
+    return this.paymentStatus === Sponsorship.PAYMENT_STATUSES.REFUNDED
   }
 
   /**
    * Check if sponsorship is completed (paid)
    */
   isCompleted() {
-    return this.isPaid();
+    return this.isPaid()
   }
 
   /**
    * Check if sponsorship has Stripe payment intent
    */
   hasStripePaymentIntent() {
-    return this.stripePaymentIntentId !== null;
+    return this.stripePaymentIntentId !== null
   }
 
   /**
    * Check if sponsorship has sponsor data
    */
   hasSponsorData() {
-    return this.sponsorData && Object.keys(this.sponsorData).length > 0;
+    return this.sponsorData && Object.keys(this.sponsorData).length > 0
   }
 
   /**
    * Get sponsor data field
    */
   getSponsorField(key) {
-    if (!this.hasSponsorData()) return null;
-    return this.sponsorData[key];
+    if (!this.hasSponsorData()) return null
+    return this.sponsorData[key]
   }
 
   /**
    * Get sponsor name
    */
   getSponsorName() {
-    return this.getSponsorField('name') || 'Unknown Sponsor';
+    return this.getSponsorField('name') || 'Unknown Sponsor'
   }
 
   /**
    * Get sponsor email
    */
   getSponsorEmail() {
-    return this.getSponsorField('email') || null;
+    return this.getSponsorField('email') || null
   }
 
   /**
    * Get sponsor organization
    */
   getSponsorOrganization() {
-    return this.getSponsorField('organization') || null;
+    return this.getSponsorField('organization') || null
   }
 
   /**
    * Get amount in cents
    */
   getAmountInCents() {
-    return this.amount;
+    return this.amount
   }
 
   /**
    * Get amount in dollars
    */
   getAmountInDollars() {
-    return this.amount / 100;
+    return this.amount / 100
   }
 
   /**
    * Format amount for display
    */
   formatAmount() {
-    if (this.amount === 0) return 'Free';
+    if (this.amount === 0) return 'Free'
 
     switch (this.currency) {
       case 'USD':
-        return `$${this.getAmountInDollars().toFixed(2)}`;
+        return `$${this.getAmountInDollars().toFixed(2)}`
       case 'EUR':
-        return `€${this.getAmountInDollars().toFixed(2)}`;
+        return `€${this.getAmountInDollars().toFixed(2)}`
       case 'GBP':
-        return `£${this.getAmountInDollars().toFixed(2)}`;
+        return `£${this.getAmountInDollars().toFixed(2)}`
       default:
-        return `${this.getAmountInDollars().toFixed(2)} ${this.currency}`;
+        return `${this.getAmountInDollars().toFixed(2)} ${this.currency}`
     }
   }
 
@@ -157,58 +157,61 @@ export class Sponsorship {
    * Check if sponsorship is free
    */
   isFree() {
-    return this.amount === 0;
+    return this.amount === 0
   }
 
   /**
    * Check if sponsorship is linked to a registration
    */
   hasRegistration() {
-    return this.registrationId !== null;
+    return this.registrationId !== null
   }
 
   /**
    * Validates the sponsorship data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.sponsorData || typeof this.sponsorData !== 'object') {
-      errors.push('Sponsor data is required and must be an object');
+      errors.push('Sponsor data is required and must be an object')
     }
 
     if (!this.packageType || this.packageType.trim().length === 0) {
-      errors.push('Package type is required');
+      errors.push('Package type is required')
     }
 
     if (this.packageType && this.packageType.length > 50) {
-      errors.push('Package type must be 50 characters or less');
+      errors.push('Package type must be 50 characters or less')
     }
 
     if (this.amount < 0) {
-      errors.push('Amount cannot be negative');
+      errors.push('Amount cannot be negative')
     }
 
     if (!this.currency || this.currency.length !== 3) {
-      errors.push('Currency must be a 3-character code');
+      errors.push('Currency must be a 3-character code')
     }
 
-    if (!this.paymentStatus || !Object.values(Sponsorship.PAYMENT_STATUSES).includes(this.paymentStatus)) {
-      errors.push('Invalid payment status');
+    if (
+      !this.paymentStatus ||
+      !Object.values(Sponsorship.PAYMENT_STATUSES).includes(this.paymentStatus)
+    ) {
+      errors.push('Invalid payment status')
     }
 
     if (!this.eventId) {
-      errors.push('Event ID is required');
+      errors.push('Event ID is required')
     }
 
     if (!this.clubId) {
-      errors.push('Club ID is required');
+      errors.push('Club ID is required')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -227,7 +230,7 @@ export class Sponsorship {
       clubId: this.clubId,
       registrationId: this.registrationId,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
-    };
+      updatedAt: this.updatedAt,
+    }
   }
 }

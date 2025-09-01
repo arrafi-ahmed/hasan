@@ -1,12 +1,12 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {useDisplay} from 'vuetify'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import NoItemsFound from '@/components/NoItemsFound.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -86,24 +86,14 @@ const viewSponsorshipDetails = (sponsorship) => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Event Sponsorships"
-          :subtitle="event?.name"
-        />
+        <PageTitle :subtitle="event?.name" title="Event Sponsorships" />
       </v-col>
     </v-row>
 
     <!-- Summary Cards -->
     <v-row class="mb-6">
-      <v-col
-        cols="12"
-        md="4"
-      >
-        <v-card
-          class="text-center"
-          color="primary"
-          dark
-        >
+      <v-col cols="12" md="4">
+        <v-card class="text-center" color="primary" dark>
           <v-card-title>Total Sponsorships</v-card-title>
           <v-card-text>
             <div class="text-h4">
@@ -112,15 +102,8 @@ const viewSponsorshipDetails = (sponsorship) => {
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        <v-card
-          class="text-center"
-          color="success"
-          dark
-        >
+      <v-col cols="12" md="4">
+        <v-card class="text-center" color="success" dark>
           <v-card-title>Total Amount (Paid)</v-card-title>
           <v-card-text>
             <div class="text-h4">
@@ -129,15 +112,8 @@ const viewSponsorshipDetails = (sponsorship) => {
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        <v-card
-          class="text-center"
-          color="warning"
-          dark
-        >
+      <v-col cols="12" md="4">
+        <v-card class="text-center" color="warning" dark>
           <v-card-title>Pending Amount</v-card-title>
           <v-card-text>
             <div class="text-h4">
@@ -249,10 +225,7 @@ const viewSponsorshipDetails = (sponsorship) => {
     </v-row>
 
     <!-- Sponsorship Details Dialog -->
-    <v-dialog
-      v-model="sponsorshipDetailsDialog"
-      max-width="600"
-    >
+    <v-dialog v-model="sponsorshipDetailsDialog" max-width="600">
       <v-card v-if="selectedSponsorship">
         <v-card-title>Sponsorship Details</v-card-title>
         <v-card-text>
@@ -349,12 +322,7 @@ const viewSponsorshipDetails = (sponsorship) => {
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="primary"
-            @click="sponsorshipDetailsDialog = false"
-          >
-            Close
-          </v-btn>
+          <v-btn color="primary" @click="sponsorshipDetailsDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -3,17 +3,17 @@
  */
 export class Order {
   constructor(data = {}) {
-    this.id = data.id || null;
-    this.orderNumber = data.orderNumber || '';
-    this.totalAmount = data.totalAmount || 0;
-    this.currency = data.currency || 'USD';
-    this.paymentStatus = data.paymentStatus || 'pending';
-    this.stripePaymentIntentId = data.stripePaymentIntentId || null;
-    this.items = data.items || [];
-    this.registrationId = data.registrationId || null;
-    this.eventId = data.eventId || null;
-    this.createdAt = data.createdAt || null;
-    this.updatedAt = data.updatedAt || null;
+    this.id = data.id || null
+    this.orderNumber = data.orderNumber || ''
+    this.totalAmount = data.totalAmount || 0
+    this.currency = data.currency || 'USD'
+    this.paymentStatus = data.paymentStatus || 'pending'
+    this.stripePaymentIntentId = data.stripePaymentIntentId || null
+    this.items = data.items || []
+    this.registrationId = data.registrationId || null
+    this.eventId = data.eventId || null
+    this.createdAt = data.createdAt || null
+    this.updatedAt = data.updatedAt || null
   }
 
   /**
@@ -24,8 +24,8 @@ export class Order {
       PENDING: 'pending',
       PAID: 'paid',
       FAILED: 'failed',
-      REFUNDED: 'refunded'
-    };
+      REFUNDED: 'refunded',
+    }
   }
 
   /**
@@ -38,103 +38,103 @@ export class Order {
       GBP: 'GBP',
       JPY: 'JPY',
       CAD: 'CAD',
-      AUD: 'AUD'
-    };
+      AUD: 'AUD',
+    }
   }
 
   /**
    * Check if order is pending
    */
   isPending() {
-    return this.paymentStatus === Order.PAYMENT_STATUSES.PENDING;
+    return this.paymentStatus === Order.PAYMENT_STATUSES.PENDING
   }
 
   /**
    * Check if order is paid
    */
   isPaid() {
-    return this.paymentStatus === Order.PAYMENT_STATUSES.PAID;
+    return this.paymentStatus === Order.PAYMENT_STATUSES.PAID
   }
 
   /**
    * Check if order failed
    */
   isFailed() {
-    return this.paymentStatus === Order.PAYMENT_STATUSES.FAILED;
+    return this.paymentStatus === Order.PAYMENT_STATUSES.FAILED
   }
 
   /**
    * Check if order is refunded
    */
   isRefunded() {
-    return this.paymentStatus === Order.PAYMENT_STATUSES.REFUNDED;
+    return this.paymentStatus === Order.PAYMENT_STATUSES.REFUNDED
   }
 
   /**
    * Check if order is completed (paid)
    */
   isCompleted() {
-    return this.isPaid();
+    return this.isPaid()
   }
 
   /**
    * Check if order has Stripe payment intent
    */
   hasStripePaymentIntent() {
-    return this.stripePaymentIntentId !== null;
+    return this.stripePaymentIntentId !== null
   }
 
   /**
    * Check if order has items
    */
   hasItems() {
-    return this.items && Array.isArray(this.items) && this.items.length > 0;
+    return this.items && Array.isArray(this.items) && this.items.length > 0
   }
 
   /**
    * Get items array
    */
   getItems() {
-    if (!this.hasItems()) return [];
-    return this.items;
+    if (!this.hasItems()) return []
+    return this.items
   }
 
   /**
    * Get item count
    */
   getItemCount() {
-    return this.getItems().length;
+    return this.getItems().length
   }
 
   /**
    * Get total amount in cents
    */
   getTotalAmountInCents() {
-    return this.totalAmount;
+    return this.totalAmount
   }
 
   /**
    * Get total amount in dollars
    */
   getTotalAmountInDollars() {
-    return this.totalAmount / 100;
+    return this.totalAmount / 100
   }
 
   /**
    * Format total amount for display
    */
   formatTotalAmount() {
-    if (this.totalAmount === 0) return 'Free';
+    if (this.totalAmount === 0) return 'Free'
 
     switch (this.currency) {
       case 'USD':
-        return `$${this.getTotalAmountInDollars().toFixed(2)}`;
+        return `$${this.getTotalAmountInDollars().toFixed(2)}`
       case 'EUR':
-        return `€${this.getTotalAmountInDollars().toFixed(2)}`;
+        return `€${this.getTotalAmountInDollars().toFixed(2)}`
       case 'GBP':
-        return `£${this.getTotalAmountInDollars().toFixed(2)}`;
+        return `£${this.getTotalAmountInDollars().toFixed(2)}`
       default:
-        return `${this.getTotalAmountInDollars().toFixed(2)} ${this.currency}`;
+        return `${this.getTotalAmountInDollars().toFixed(2)} ${this.currency}`
     }
   }
 
@@ -142,51 +142,54 @@ export class Order {
    * Check if order is free
    */
   isFree() {
-    return this.totalAmount === 0;
+    return this.totalAmount === 0
   }
 
   /**
    * Validates the order data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.orderNumber || this.orderNumber.trim().length === 0) {
-      errors.push('Order number is required');
+      errors.push('Order number is required')
     }
 
     if (this.orderNumber && this.orderNumber.length > 50) {
-      errors.push('Order number must be 50 characters or less');
+      errors.push('Order number must be 50 characters or less')
     }
 
     if (this.totalAmount < 0) {
-      errors.push('Total amount cannot be negative');
+      errors.push('Total amount cannot be negative')
     }
 
     if (!this.currency || this.currency.length !== 3) {
-      errors.push('Currency must be a 3-character code');
+      errors.push('Currency must be a 3-character code')
     }
 
-    if (!this.paymentStatus || !Object.values(Order.PAYMENT_STATUSES).includes(this.paymentStatus)) {
-      errors.push('Invalid payment status');
+    if (
+      !this.paymentStatus ||
+      !Object.values(Order.PAYMENT_STATUSES).includes(this.paymentStatus)
+    ) {
+      errors.push('Invalid payment status')
     }
 
     if (this.items && !Array.isArray(this.items)) {
-      errors.push('Items must be an array');
+      errors.push('Items must be an array')
     }
 
     if (!this.registrationId) {
-      errors.push('Registration ID is required');
+      errors.push('Registration ID is required')
     }
 
     if (!this.eventId) {
-      errors.push('Event ID is required');
+      errors.push('Event ID is required')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -204,7 +207,7 @@ export class Order {
       registrationId: this.registrationId,
       eventId: this.eventId,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
-    };
+      updatedAt: this.updatedAt,
+    }
   }
 }

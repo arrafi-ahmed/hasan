@@ -24,14 +24,14 @@ export const mutations = {
 }
 
 export const actions = {
-  saveAppUser({commit}, request) {
+  saveAppUser({ commit }, request) {
     const commitName = `${request.id ? 'edit' : 'add'}${request.type === 'admin' ? 'Admin' : ''}`
-    const {type, ...rest} = request
+    const { type, ...rest } = request
     return new Promise((resolve, reject) => {
       $axios
         .post('/appUser/save', rest)
         .then((response) => {
-          const {password, ...rest} = response.data?.payload
+          const { password, ...rest } = response.data?.payload
           commit(commitName, {
             ...rest,
             password: request.password,
@@ -43,11 +43,11 @@ export const actions = {
         })
     })
   },
-  setAdmins({commit}, request) {
+  setAdmins({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/appUser/getAppUsers', {
-          params: {clubId: request},
+          params: { clubId: request },
         })
         .then((response) => {
           commit('setAdmins', response.data?.payload?.appUsers)
@@ -58,11 +58,11 @@ export const actions = {
         })
     })
   },
-  deleteAppUser({commit}, request) {
+  deleteAppUser({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/appUser/deleteAppUser', {
-          params: {id: request},
+          params: { id: request },
         })
         .then((response) => {
           commit('deleteAppUser', request)

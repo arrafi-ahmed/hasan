@@ -1,8 +1,8 @@
 <script setup>
-import {defineEmits, defineProps, ref, watch} from 'vue'
-import {getInputType} from '@/others/util'
+import { defineEmits, defineProps, ref, watch } from 'vue'
+import { getInputType } from '@/others/util'
 
-const {items} = defineProps(['items'])
+const { items } = defineProps(['items'])
 const inputResponses = ref([])
 const emit = defineEmits(['update', 'remove'])
 
@@ -11,13 +11,13 @@ watch(
   (newItems) => {
     inputResponses.value = newItems
   },
-  {immediate: true},
+  { immediate: true },
 )
 
 watch(
   () => inputResponses.value,
   (newVal) => {
-    emit('update', {newVal})
+    emit('update', { newVal })
   },
 )
 
@@ -27,27 +27,15 @@ const removeQuestion = (qId, index) => {
 </script>
 
 <template>
-  <div
-    v-if="items && items.length > 0"
-    class="rounded my-2"
-  >
-    <template
-      v-for="(item, index) in items"
-      :key="index"
-    >
+  <div v-if="items && items.length > 0" class="rounded my-2">
+    <template v-for="(item, index) in items" :key="index">
       <div
         v-if="item.options && item.options.length > 0"
         :class="{ 'mt-5': index > 0 }"
         class="border rounded pa-4"
       >
-        <v-row
-          justify="space-between"
-          no-gutters
-        >
-          <v-col
-            cols="auto"
-            sm="8"
-          >
+        <v-row justify="space-between" no-gutters>
+          <v-col cols="auto" sm="8">
             <v-row align="center">
               <v-col cols="auto">
                 <h3>Question {{ index + 1 }}:</h3>
@@ -86,10 +74,7 @@ const removeQuestion = (qId, index) => {
           label="Question text"
         />
 
-        <div
-          v-if="item.options.length > 0"
-          class="pt-6"
-        >
+        <div v-if="item.options.length > 0" class="pt-6">
           <div class="d-flex justify-space-between">
             <h4>Options:</h4>
             <v-btn
@@ -101,10 +86,7 @@ const removeQuestion = (qId, index) => {
               @click="inputResponses[index].options.push(null)"
             />
           </div>
-          <template
-            v-for="(itemOption, childIndex) in item.options"
-            :key="childIndex"
-          >
+          <template v-for="(itemOption, childIndex) in item.options" :key="childIndex">
             <div class="d-flex align-center">
               <v-text-field
                 v-model="inputResponses[index].options[childIndex]"
@@ -126,19 +108,9 @@ const removeQuestion = (qId, index) => {
           </template>
         </div>
       </div>
-      <div
-        v-else
-        :class="{ 'mt-5': index > 0 }"
-        class="border rounded pa-4"
-      >
-        <v-row
-          justify="space-between"
-          no-gutters
-        >
-          <v-col
-            cols="auto"
-            sm="8"
-          >
+      <div v-else :class="{ 'mt-5': index > 0 }" class="border rounded pa-4">
+        <v-row justify="space-between" no-gutters>
+          <v-col cols="auto" sm="8">
             <v-row align="center">
               <v-col cols="auto">
                 <h3>Question {{ index + 1 }}:</h3>

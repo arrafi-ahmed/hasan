@@ -248,7 +248,7 @@ const routes = [
         },
       },
       {
-        path: '/pricing',
+        path: 'pricing',
         name: 'pricing',
         component: () => import('@/views/Pricing.vue'),
         meta: {
@@ -260,7 +260,7 @@ const routes = [
         name: 'event-landing-slug',
         component: () => import('@/views/EventLanding.vue'),
         meta: {
-          title: 'Event Landing Page',
+          title: 'Event Registration',
         },
       },
     ],

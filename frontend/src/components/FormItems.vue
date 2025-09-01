@@ -1,9 +1,9 @@
 <script setup>
-import {defineEmits, defineProps, ref, watch} from 'vue'
+import { defineEmits, defineProps, ref, watch } from 'vue'
 import Phone from '@/components/Phone.vue'
-import {isValidEmail} from '@/others/util'
+import { isValidEmail } from '@/others/util'
 
-const {items, overAllIndex, quantityIndex, type} = defineProps([
+const { items, overAllIndex, quantityIndex, type } = defineProps([
   'items',
   'overAllIndex',
   'quantityIndex',
@@ -13,7 +13,7 @@ const inputResponses = ref([])
 
 const emit = defineEmits(['update'])
 
-const handleUpdatePhone = ({formattedPhone, index}) => {
+const handleUpdatePhone = ({ formattedPhone, index }) => {
   inputResponses.value[index] = formattedPhone
 }
 
@@ -24,23 +24,17 @@ watch(
       inputResponses.value = newVal.map((item) => (item?.typeId == 3 ? [] : null))
     }
   },
-  {immediate: true},
+  { immediate: true },
 )
 watch(inputResponses.value, (newVal) => {
-  emit('update', {newVal, overAllIndex, quantityIndex})
+  emit('update', { newVal, overAllIndex, quantityIndex })
 })
 </script>
 
 <template>
   <!--  for additional questions-->
-  <div
-    v-if="type === 'question' && items?.length > 0 && items[0]"
-    class="rounded py-2"
-  >
-    <template
-      v-for="(item, index) in items"
-      :key="index"
-    >
+  <div v-if="type === 'question' && items?.length > 0 && items[0]" class="rounded py-2">
+    <template v-for="(item, index) in items" :key="index">
       <div v-if="item.typeId == 0">
         <v-text-field
           v-model="inputResponses[index]"
@@ -60,10 +54,7 @@ watch(inputResponses.value, (newVal) => {
           <template #label>
             <div>
               <span>{{ item.text }}</span>
-              <span
-                v-if="item.required"
-                class="text-error"
-              >*</span>
+              <span v-if="item.required" class="text-error">*</span>
             </div>
           </template>
         </v-text-field>
@@ -84,10 +75,7 @@ watch(inputResponses.value, (newVal) => {
           <template #label>
             <div>
               <span>{{ item.text }}</span>
-              <span
-                v-if="item.required"
-                class="text-error"
-              >*</span>
+              <span v-if="item.required" class="text-error">*</span>
             </div>
           </template>
         </v-textarea>
@@ -111,10 +99,7 @@ watch(inputResponses.value, (newVal) => {
           <template #label>
             <div class="text-wrap">
               <span>{{ item.text }}</span>
-              <span
-                v-if="item.required"
-                class="text-error"
-              >*</span>
+              <span v-if="item.required" class="text-error">*</span>
             </div>
           </template>
           <template v-if="item.options?.length > 0">
@@ -134,10 +119,7 @@ watch(inputResponses.value, (newVal) => {
       >
         <div class="text-wrap">
           <span>{{ item.text }}</span>
-          <span
-            v-if="item.required"
-            class="text-error"
-          >*</span>
+          <span v-if="item.required" class="text-error">*</span>
         </div>
 
         <v-checkbox
@@ -169,21 +151,14 @@ watch(inputResponses.value, (newVal) => {
           <template #label>
             <div>
               <span>{{ item.text }}</span>
-              <span
-                v-if="item.required"
-                class="text-error"
-              >*</span>
+              <span v-if="item.required" class="text-error">*</span>
             </div>
           </template>
         </v-select>
       </div>
 
       <div v-else-if="item.typeId == 5 && item.options?.length > 0">
-        <phone
-          :index="index"
-          :item="item"
-          @update-phone="handleUpdatePhone"
-        />
+        <phone :index="index" :item="item" @update-phone="handleUpdatePhone" />
       </div>
     </template>
   </div>

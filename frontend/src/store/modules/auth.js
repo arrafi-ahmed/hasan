@@ -1,5 +1,5 @@
 import $axios from '@/plugins/axios'
-import {ifAdmin, ifSudo} from '@/others/util'
+import { ifAdmin, ifSudo } from '@/others/util'
 
 export const namespaced = true
 
@@ -14,9 +14,9 @@ export const mutations = {
     state.token = payload
   },
   setCurrentUser(state, payload) {
-    state.currentUser = {...state.currentUser, ...payload}
+    state.currentUser = { ...state.currentUser, ...payload }
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
-    currentUser = {...currentUser, ...payload}
+    currentUser = { ...currentUser, ...payload }
     localStorage.setItem('currentUser', JSON.stringify(currentUser))
   },
   removeToken(state) {
@@ -30,12 +30,11 @@ export const mutations = {
 }
 
 export const actions = {
-  signin({commit}, request) {
+  signin({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/auth/signin', request)
         .then((response) => {
-
           commit('setToken', response.headers?.authorization)
           commit('setCurrentUser', response.data?.payload?.currentUser)
           resolve(response)
@@ -45,14 +44,14 @@ export const actions = {
         })
     })
   },
-  signout({commit}) {
+  signout({ commit }) {
     return new Promise((resolve, reject) => {
       commit('removeToken')
       commit('removeCurrentUser')
       resolve()
     })
   },
-  register({commit}, request) {
+  register({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/auth/register', request)
@@ -72,27 +71,23 @@ export const getters = {
     return state.token
   },
   getCurrentUser(state) {
-
     return state.currentUser
   },
   isSudo(state) {
-
-    return ifSudo({role: state.currentUser.role})
+    return ifSudo({ role: state.currentUser.role })
   },
   isAdmin(state) {
-
-    return ifAdmin({role: state.currentUser.role})
+    return ifAdmin({ role: state.currentUser.role })
   },
   signedin(state) {
-
     return !!state.token
   },
   calcHome(state, getters) {
     // add all the app roles here, and their default home page
     return getters.isAdmin
-      ? {name: 'dashboard-admin'}
+      ? { name: 'dashboard-admin' }
       : getters.isSudo
-        ? {name: 'dashboard-sudo'}
-        : {name: 'signout'}
+        ? { name: 'dashboard-sudo' }
+        : { name: 'signout' }
   },
 }

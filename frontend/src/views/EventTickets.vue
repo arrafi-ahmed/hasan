@@ -1,12 +1,12 @@
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {useDisplay} from 'vuetify'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -33,12 +33,12 @@ const ticketInit = {
   eventId: route.params.eventId,
 }
 
-const ticket = reactive({...ticketInit})
+const ticket = reactive({ ...ticketInit })
 
 const currencies = [
-  {value: 'USD', text: 'USD ($)'},
-  {value: 'EUR', text: 'EUR (€)'},
-  {value: 'GBP', text: 'GBP (£)'},
+  { value: 'USD', text: 'USD ($)' },
+  { value: 'EUR', text: 'EUR (€)' },
+  { value: 'GBP', text: 'GBP (£)' },
 ]
 
 const openAddDialog = () => {
@@ -65,7 +65,7 @@ const openEditDialog = (selectedTicket) => {
 
 const closeDialog = () => {
   ticketDialog.value = false
-  Object.assign(ticket, {...ticketInit})
+  Object.assign(ticket, { ...ticketInit })
 }
 
 const handleSubmitTicket = async () => {
@@ -131,10 +131,7 @@ onMounted(() => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Manage Packages"
-          :subtitle="event?.name"
-        >
+        <PageTitle :subtitle="event?.name" title="Manage Packages">
           <template #actions>
             <v-btn
               color="primary"
@@ -146,7 +143,7 @@ onMounted(() => {
               Add Package
             </v-btn>
           </template>
-          
+
           <template #mobile-actions>
             <v-btn
               color="primary"
@@ -162,17 +159,8 @@ onMounted(() => {
 
     <!-- Tickets Grid -->
     <v-row v-if="tickets.length > 0">
-      <v-col
-        v-for="ticket in tickets"
-        :key="ticket.id"
-        cols="12"
-        lg="4"
-        md="6"
-      >
-        <v-card
-          class="ticket-card"
-          elevation="4"
-        >
+      <v-col v-for="ticket in tickets" :key="ticket.id" cols="12" lg="4" md="6">
+        <v-card class="ticket-card" elevation="4">
           <v-card-text class="pa-6">
             <div class="d-flex justify-space-between align-start mb-4">
               <h3 class="text-h5 font-weight-bold">
@@ -180,17 +168,9 @@ onMounted(() => {
               </h3>
               <v-menu>
                 <template #activator="{ props }">
-                  <v-btn
-                    icon="mdi-dots-vertical"
-                    size="small"
-                    v-bind="props"
-                    variant="text"
-                  />
+                  <v-btn icon="mdi-dots-vertical" size="small" v-bind="props" variant="text" />
                 </template>
-                <v-list
-                  density="compact"
-                  width="250"
-                >
+                <v-list density="compact" width="250">
                   <v-list-item
                     prepend-icon="mdi-pencil"
                     title="Edit Package"
@@ -260,21 +240,10 @@ onMounted(() => {
     <!-- Empty State -->
     <v-row v-else>
       <v-col cols="12">
-        <v-card
-          class="empty-state-card"
-          elevation="2"
-        >
+        <v-card class="empty-state-card" elevation="2">
           <v-card-text class="text-center pa-8">
-            <v-icon
-              class="mb-4"
-              color="grey-lighten-1"
-              size="64"
-            >
-              mdi-ticket
-            </v-icon>
-            <h3 class="text-h5 mb-3">
-              No Package Found
-            </h3>
+            <v-icon class="mb-4" color="grey-lighten-1" size="64">mdi-ticket</v-icon>
+            <h3 class="text-h5 mb-3">No Package Found</h3>
             <p class="text-body-1 text-medium-emphasis mb-6">
               Create package for your tour to start accepting registrations. You can offer free or
               paid package.
@@ -294,15 +263,8 @@ onMounted(() => {
     </v-row>
 
     <!-- Ticket Dialog -->
-    <v-dialog
-      v-model="ticketDialog"
-      max-width="600"
-      persistent
-    >
-      <v-card
-        class="form-card"
-        elevation="4"
-      >
+    <v-dialog v-model="ticketDialog" max-width="600" persistent>
+      <v-card class="form-card" elevation="4">
         <v-card-text class="pa-6">
           <div class="text-center mb-6">
             <h2 class="text-h4 font-weight-bold mb-2">
@@ -317,11 +279,7 @@ onMounted(() => {
             </p>
           </div>
 
-          <v-form
-            ref="form"
-            v-model="isFormValid"
-            fast-fail
-          >
+          <v-form ref="form" v-model="isFormValid" fast-fail>
             <v-text-field
               v-model="ticket.title"
               :rules="[(v) => !!v || 'Title is required!']"
@@ -416,13 +374,7 @@ onMounted(() => {
               </template>
               This package will be processed through Stripe for payments.
             </v-alert>
-            <v-alert
-              v-else
-              class="mb-4"
-              density="comfortable"
-              type="success"
-              variant="tonal"
-            >
+            <v-alert v-else class="mb-4" density="comfortable" type="success" variant="tonal">
               <template #prepend>
                 <v-icon>mdi-check-circle</v-icon>
               </template>
@@ -520,6 +472,4 @@ onMounted(() => {
     gap: 16px !important;
   }
 }
-
-
 </style>

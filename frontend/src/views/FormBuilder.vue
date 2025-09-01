@@ -1,13 +1,13 @@
 <script setup>
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
-import {computed, onMounted, reactive, ref, toRaw} from 'vue'
-import {useDisplay} from 'vuetify'
-import {input_fields} from '@/others/util'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { computed, onMounted, reactive, ref, toRaw } from 'vue'
+import { useDisplay } from 'vuetify'
+import { input_fields } from '@/others/util'
 import FormItemsEditable from '@/components/FormItemsEditable.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
@@ -18,7 +18,7 @@ const formItemTypes = reactive([...input_fields])
 const findFormItemTypeIndex = (id) => formItemTypes.findIndex((item) => item.id == id)
 
 const dialog = ref(false)
-const selectedFormItemType = reactive({id: null, title: null})
+const selectedFormItemType = reactive({ id: null, title: null })
 
 const questionInit = {
   id: null,
@@ -27,12 +27,12 @@ const questionInit = {
   required: true,
   options: [],
 }
-const question = reactive({...questionInit})
+const question = reactive({ ...questionInit })
 const isQuestionOptionsRequired = computed(() => {
   return selectedFormItemType.id != 0 && selectedFormItemType.id != 1
 })
 const openDialog = (itemTypeId) => {
-  Object.assign(question, {...questionInit, options: []})
+  Object.assign(question, { ...questionInit, options: [] })
   dialog.value = !dialog.value
   const foundIndex = findFormItemTypeIndex(itemTypeId)
   Object.assign(selectedFormItemType, formItemTypes[foundIndex])
@@ -53,7 +53,7 @@ const addFormItem = async (selectedFormItemType) => {
     delete question.options
   }
 
-  newFormQuestions.value.push({...question})
+  newFormQuestions.value.push({ ...question })
   // newFormWQuestion.questions = newFormWQuestion.questions.concat(formItems);
   dialog.value = !dialog.value
 }
@@ -83,7 +83,7 @@ const handleSubmitPublishForm = async () => {
 }
 
 const additionalAnswers = ref([])
-const handleUpdateAdditionalAnswers = ({newVal}) => {
+const handleUpdateAdditionalAnswers = ({ newVal }) => {
   additionalAnswers.value = newVal
 }
 
@@ -104,7 +104,7 @@ onMounted(() => {
       eventId: route.params.eventId,
     })
     .then((result) => {
-      Object.assign(newFormQuestions.value, {...result})
+      Object.assign(newFormQuestions.value, { ...result })
       if (newFormQuestions.value[0] === null) newFormQuestions.value = []
     })
 })
@@ -117,22 +117,14 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Form Builder"
-          :subtitle="event?.name"
-        />
+        <PageTitle :subtitle="event?.name" title="Form Builder" />
       </v-col>
     </v-row>
 
     <div class="d-flex justify-end">
       <v-menu>
         <template #activator="{ props }">
-          <v-btn
-            icon="mdi-plus"
-            rounded
-            v-bind="props"
-            variant="tonal"
-          />
+          <v-btn icon="mdi-plus" rounded v-bind="props" variant="tonal" />
         </template>
         <v-list density="compact">
           <v-list-item
@@ -164,16 +156,9 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
             />
           </div>
           <div>
-            <v-row
-              class="mt-2 mt-md-4"
-              justify="end"
-            >
+            <v-row class="mt-2 mt-md-4" justify="end">
               <v-col cols="auto">
-                <v-btn
-                  :density="xs ? 'comfortable' : 'default'"
-                  color="primary"
-                  type="submit"
-                >
+                <v-btn :density="xs ? 'comfortable' : 'default'" color="primary" type="submit">
                   Save
                 </v-btn>
               </v-col>
@@ -184,10 +169,7 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
     </v-row>
   </v-container>
 
-  <v-dialog
-    v-model="dialog"
-    width="500"
-  >
+  <v-dialog v-model="dialog" width="500">
     <v-card density="compact">
       <v-card-title>
         <div class="d-flex align-center justify-lg-space-between">
@@ -218,10 +200,7 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
           />
 
           <template v-if="isQuestionOptionsRequired">
-            <v-row
-              align="center"
-              class="mt-2 mt-md-4"
-            >
+            <v-row align="center" class="mt-2 mt-md-4">
               <v-col cols="auto">
                 <h4>Answer Options:</h4>
               </v-col>
@@ -235,11 +214,7 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
               </v-col>
             </v-row>
             <div class="mt-2 mt-md-4">
-              <div
-                v-for="(item, index) in question.options"
-                :key="index"
-                class="mt-1"
-              >
+              <div v-for="(item, index) in question.options" :key="index" class="mt-1">
                 <v-text-field
                   v-model="question.options[index]"
                   :label="`Option ${index + 1}`"
@@ -254,11 +229,7 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
 
           <v-card-actions>
             <v-spacer />
-            <v-btn
-              :density="xs ? 'comfortable' : 'default'"
-              color="primary"
-              type="submit"
-            >
+            <v-btn :density="xs ? 'comfortable' : 'default'" color="primary" type="submit">
               Submit
             </v-btn>
           </v-card-actions>

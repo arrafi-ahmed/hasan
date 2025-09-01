@@ -1,6 +1,6 @@
 import $axios from '@/plugins/axios'
 import fileSaver from 'file-saver'
-import {deepMerge} from '@/others/util'
+import { deepMerge } from '@/others/util'
 
 export const namespaced = true
 
@@ -27,9 +27,7 @@ export const mutations = {
 
     // If not found by registrationId, try to find by attendeeId
     if (foundIndex === -1 && payload.attendeeId) {
-      foundIndex = state.attendees.findIndex(
-        (item) => item.attendeeId == payload.attendeeId,
-      )
+      foundIndex = state.attendees.findIndex((item) => item.attendeeId == payload.attendeeId)
     }
 
     if (foundIndex !== -1) {
@@ -50,7 +48,7 @@ export const mutations = {
 }
 
 export const actions = {
-  bulkImportAttendee({commit}, request) {
+  bulkImportAttendee({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/registration/bulkImportAttendee', request)
@@ -62,7 +60,7 @@ export const actions = {
         })
     })
   },
-  initRegistration({commit}, request) {
+  initRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/registration/initRegistration', request)
@@ -75,7 +73,7 @@ export const actions = {
         })
     })
   },
-  saveRegistration({commit}, request) {
+  saveRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/registration/save', request)
@@ -88,7 +86,7 @@ export const actions = {
         })
     })
   },
-  setRegistration({commit}, request) {
+  setRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/getRegistration', {
@@ -106,7 +104,7 @@ export const actions = {
         })
     })
   },
-  getRegistrationById({commit}, request) {
+  getRegistrationById({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/getRegistrationById', {
@@ -123,7 +121,7 @@ export const actions = {
         })
     })
   },
-  getRegistrationByEmail({commit}, request) {
+  getRegistrationByEmail({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/getRegistrationByEmail', {
@@ -141,7 +139,7 @@ export const actions = {
         })
     })
   },
-  setAttendees({commit}, request) {
+  setAttendees({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/getAttendees', {
@@ -150,7 +148,7 @@ export const actions = {
             searchKeyword: request.searchKeyword,
             sortBy: request?.sortBy,
           },
-          headers: {'X-Suppress-Toast': 'true'}
+          headers: { 'X-Suppress-Toast': 'true' },
         })
         .then((response) => {
           commit('setAttendees', response.data?.payload)
@@ -161,7 +159,7 @@ export const actions = {
         })
     })
   },
-  downloadAttendees({commit}, request) {
+  downloadAttendees({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/downloadAttendees', {
@@ -169,13 +167,14 @@ export const actions = {
             eventId: request.eventId,
           },
           responseType: 'blob',
-          headers: {'X-Suppress-Toast': 'true'}
+          headers: { 'X-Suppress-Toast': 'true' },
         })
         .then((response) => {
-          const filename = `Attendee-report-event-${request.eventId
+          const filename = `Attendee-report-event-${
+            request.eventId
           }-${new Date().toISOString().slice(0, 19)}.xlsx`
 
-          const blob = new Blob([response.data], {type: response.data.type})
+          const blob = new Blob([response.data], { type: response.data.type })
           fileSaver.saveAs(blob, filename)
           resolve(response)
         })
@@ -184,7 +183,7 @@ export const actions = {
         })
     })
   },
-  sendTicket({commit}, request) {
+  sendTicket({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/sendTicket', {
@@ -192,7 +191,7 @@ export const actions = {
             attendeeId: request.attendeeId,
             eventId: request.eventId,
           },
-          headers: {'X-Suppress-Toast': 'true'}
+          headers: { 'X-Suppress-Toast': 'true' },
         })
         .then((response) => {
           resolve(response.data?.payload)
@@ -202,7 +201,7 @@ export const actions = {
         })
     })
   },
-  removeRegistration({commit}, request) {
+  removeRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/registration/removeRegistration', {
@@ -210,7 +209,7 @@ export const actions = {
             registrationId: request.registrationId,
             eventId: request.eventId,
           },
-          headers: {'X-Suppress-Toast': 'true'}
+          headers: { 'X-Suppress-Toast': 'true' },
         })
         .then((response) => {
           commit('removeRegistration', request.registrationId)
@@ -221,7 +220,7 @@ export const actions = {
         })
     })
   },
-  deleteAttendee({commit}, request) {
+  deleteAttendee({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get(`/registration/deleteAttendee`, {
@@ -247,7 +246,7 @@ export const actions = {
     })
   },
 
-  updateStatus({commit}, request) {
+  updateStatus({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/registration/updateStatus', request)
@@ -260,10 +259,10 @@ export const actions = {
     })
   },
 
-  scanByExtrasPurchaseId({commit}, request) {
+  scanByExtrasPurchaseId({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .post('/registration/scanByExtrasPurchaseId', {payload: request})
+        .post('/registration/scanByExtrasPurchaseId', { payload: request })
         .then((response) => {
           // commit("setRegistration", response.data?.payload);
           resolve(response.data?.payload)

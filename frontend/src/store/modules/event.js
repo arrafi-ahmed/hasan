@@ -49,10 +49,10 @@ export const mutations = {
 }
 
 export const actions = {
-  setEvents({commit}, request) {
+  setEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/event/getAllEvents', {params: {clubId: request}})
+        .get('/event/getAllEvents', { params: { clubId: request } })
         .then((response) => {
           commit('setEvents', response.data?.payload)
           resolve(response)
@@ -62,7 +62,7 @@ export const actions = {
         })
     })
   },
-  setActiveEvents({commit}, request) {
+  setActiveEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/getAllActiveEvents', {
@@ -80,11 +80,11 @@ export const actions = {
         })
     })
   },
-  setEvent({commit}, request) {
+  setEvent({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/getEvent', {
-          params: {eventId: request.eventId},
+          params: { eventId: request.eventId },
         })
         .then((response) => {
           commit('setEvent', response.data?.payload)
@@ -95,11 +95,11 @@ export const actions = {
         })
     })
   },
-  setEventBySlug({commit}, request) {
+  setEventBySlug({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/getEventBySlug', {
-          params: {slug: request.slug},
+          params: { slug: request.slug },
         })
         .then((response) => {
           commit('setEvent', response.data?.payload)
@@ -110,7 +110,7 @@ export const actions = {
         })
     })
   },
-  getFirstEvent({commit}) {
+  getFirstEvent({ commit }) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/getFirstEvent')
@@ -123,11 +123,11 @@ export const actions = {
         })
     })
   },
-  setEventByEventIdnClubId({commit}, request) {
+  setEventByEventIdnClubId({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/getEventByEventIdnClubId', {
-          params: {eventId: request.eventId, clubId: request.clubId},
+          params: { eventId: request.eventId, clubId: request.clubId },
         })
         .then((response) => {
           commit('setEvent', response.data?.payload)
@@ -138,7 +138,7 @@ export const actions = {
         })
     })
   },
-  save({commit}, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/event/save', request)
@@ -151,7 +151,7 @@ export const actions = {
         })
     })
   },
-  removeEvent({commit}, request) {
+  removeEvent({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/removeEvent', {
@@ -166,11 +166,11 @@ export const actions = {
         })
     })
   },
-  removeExtras({commit}, request) {
+  removeExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/event/removeExtras', {
-          params: {extrasId: request.extrasId, eventId: request.eventId},
+          params: { extrasId: request.extrasId, eventId: request.eventId },
         })
         .then((response) => {
           commit('removeExtras', request)
@@ -181,7 +181,7 @@ export const actions = {
         })
     })
   },
-  saveExtras({commit}, request) {
+  saveExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/event/saveExtras', request)
@@ -194,10 +194,10 @@ export const actions = {
         })
     })
   },
-  setExtras({commit}, request) {
+  setExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/event/getExtras', {params: {eventId: request}})
+        .get('/event/getExtras', { params: { eventId: request } })
         .then((response) => {
           commit('setExtras', response.data?.payload)
           resolve(response)
@@ -213,6 +213,5 @@ export const getters = {
   getEventById: (state) => (id) => {
     return state.events.find((item) => item.id == id)
   },
-  isEventFree: () => {
-  },
+  isEventFree: () => {},
 }

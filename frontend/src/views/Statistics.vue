@@ -1,8 +1,8 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute} from 'vue-router'
-import {toLocalISOString} from '@/others/util'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { toLocalISOString } from '@/others/util'
 import PageTitle from '@/components/PageTitle.vue'
 
 const store = useStore()
@@ -32,56 +32,32 @@ onMounted(() => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Statistics"
-          :subtitle="event?.name"
-        />
+        <PageTitle :subtitle="event?.name" title="Statistics" />
       </v-col>
     </v-row>
 
-    <v-row
-      align="stretch"
-      justify="center"
-    >
-      <v-col
-        class="flex-grow-1"
-        cols="12"
-        md="6"
-        sm="8"
-      >
+    <v-row align="stretch" justify="center">
+      <v-col class="flex-grow-1" cols="12" md="6" sm="8">
         <v-card class="h-100">
           <v-card-title>Total Counts</v-card-title>
           <v-divider />
           <v-card-text v-if="statistics">
             <div class="text-body-1">
               Total Registration:
-              <v-chip
-                color="primary"
-                rounded="sm"
-                size="x-large"
-              >
+              <v-chip color="primary" rounded="sm" size="x-large">
                 {{ statistics.totalRegistrationCount || 0 }}
               </v-chip>
             </div>
             <div class="text-body-1 pt-2">
               Total Checkin:
-              <v-chip
-                color="primary"
-                rounded="sm"
-                size="x-large"
-              >
+              <v-chip color="primary" rounded="sm" size="x-large">
                 {{ statistics.totalCheckinCount || 0 }}
               </v-chip>
             </div>
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col
-        class="flex-grow-1"
-        cols="12"
-        md="6"
-        sm="8"
-      >
+      <v-col class="flex-grow-1" cols="12" md="6" sm="8">
         <v-card class="h-100">
           <v-card-title>Historical Counts</v-card-title>
           <v-divider />
@@ -99,21 +75,13 @@ onMounted(() => {
           <v-card-text v-if="statistics">
             <div class="text-body-1">
               Registration:
-              <v-chip
-                color="primary"
-                rounded="sm"
-                size="x-large"
-              >
+              <v-chip color="primary" rounded="sm" size="x-large">
                 {{ statistics.historicalRegistrationCount || 0 }}
               </v-chip>
             </div>
             <div class="text-body-1 pt-2">
               Checkin:
-              <v-chip
-                color="primary"
-                rounded="sm"
-                size="x-large"
-              >
+              <v-chip color="primary" rounded="sm" size="x-large">
                 {{ statistics.historicalCheckinCount || 0 }}
               </v-chip>
             </div>

@@ -1,60 +1,62 @@
-const {query} = require("../db");
-const {v4: uuidv4} = require("uuid");
+const { query } = require("../db");
+const { v4: uuidv4 } = require("uuid");
 const CustomError = require("../model/CustomError");
 
-exports.createAttendees = async ({registrationId, attendees}) => {
-    if (!attendees || attendees.length === 0) {
-        return [];
-    }
+exports.createAttendees = async ({ registrationId, attendees }) => {
+  if (!attendees || attendees.length === 0) {
+    return [];
+  }
 
-    // Generate QR UUIDs for all attendees
-    const attendeesWithQr = attendees.map((attendee, index) => ({
-        ...attendee,
-        qrUuid: uuidv4(),
-    }));
+  // Generate QR UUIDs for all attendees
+  const attendeesWithQr = attendees.map((attendee, index) => ({
+    ...attendee,
+    qrUuid: uuidv4(),
+  }));
 
-    // Build batch insert query
-    const values = attendeesWithQr.map((attendee, index) => {
-        const offset = index * 9; // 8 columns per attendee
-        return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9})`;
-    }).join(', ');
+  // Build batch insert query
+  const values = attendeesWithQr
+    .map((attendee, index) => {
+      const offset = index * 9; // 8 columns per attendee
+      return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9})`;
+    })
+    .join(", ");
 
-    const sql = `
+  const sql = `
         INSERT INTO attendees (registration_id, is_primary, first_name, last_name, email, phone, ticket_id, qr_uuid,
                                session_id)
         VALUES ${values} RETURNING *;`;
 
-    // Flatten the values array for the query
-    const queryValues = attendeesWithQr.flatMap(attendee => [
-        registrationId,
-        attendee.isPrimary,
-        attendee.firstName,
-        attendee.lastName,
-        attendee.email,
-        attendee.phone,
-        attendee.ticketId,
-        attendee.qrUuid,
-        attendee.sessionId
-    ]);
+  // Flatten the values array for the query
+  const queryValues = attendeesWithQr.flatMap((attendee) => [
+    registrationId,
+    attendee.isPrimary,
+    attendee.firstName,
+    attendee.lastName,
+    attendee.email,
+    attendee.phone,
+    attendee.ticketId,
+    attendee.qrUuid,
+    attendee.sessionId,
+  ]);
 
-    const result = await query(sql, queryValues);
-    return result.rows;
+  const result = await query(sql, queryValues);
+  return result.rows;
 };
 
-exports.getAttendeeByQrUuid = async ({qrUuid}) => {
-    const sql = `
+exports.getAttendeeByQrUuid = async ({ qrUuid }) => {
+  const sql = `
         SELECT a.*, r.event_id, r.club_id, r.status as registration_status
         FROM attendees a
                  JOIN registration r ON a.registration_id = r.id
         WHERE a.qr_uuid = $1
     `;
-    const result = await query(sql, [qrUuid]);
-    return result.rows[0];
+  const result = await query(sql, [qrUuid]);
+  return result.rows[0];
 };
 
 // Enhanced validation using both attendeeId and qrUuid for security
-exports.getAttendeeByIdAndQrUuid = async ({attendeeId, qrUuid}) => {
-    const sql = `
+exports.getAttendeeByIdAndQrUuid = async ({ attendeeId, qrUuid }) => {
+  const sql = `
         SELECT a.*,
                r.event_id,
                r.club_id,
@@ -67,13 +69,17 @@ exports.getAttendeeByIdAndQrUuid = async ({attendeeId, qrUuid}) => {
         WHERE a.id = $1
           AND a.qr_uuid = $2
     `;
-    const result = await query(sql, [attendeeId, qrUuid]);
-    return result.rows[0];
+  const result = await query(sql, [attendeeId, qrUuid]);
+  return result.rows[0];
 };
 
 // Triple validation using registrationId, attendeeId, and qrUuid for maximum security
-exports.getAttendeeByIdRegistrationAndQrUuid = async ({registrationId, attendeeId, qrUuid}) => {
-    const sql = `
+exports.getAttendeeByIdRegistrationAndQrUuid = async ({
+  registrationId,
+  attendeeId,
+  qrUuid,
+}) => {
+  const sql = `
         SELECT a.*,
                r.event_id,
                r.status     as registration_status,
@@ -86,25 +92,23 @@ exports.getAttendeeByIdRegistrationAndQrUuid = async ({registrationId, attendeeI
           AND a.id = $2
           AND a.qr_uuid = $3
     `;
-    const result = await query(sql, [registrationId, attendeeId, qrUuid]);
-    return result.rows[0];
+  const result = await query(sql, [registrationId, attendeeId, qrUuid]);
+  return result.rows[0];
 };
 
-
-exports.getAttendeesByRegistrationId = async ({registrationId}) => {
-    const sql = `
+exports.getAttendeesByRegistrationId = async ({ registrationId }) => {
+  const sql = `
         SELECT a.*, t.title as ticket_title
         FROM attendees a
                  LEFT JOIN ticket t ON a.ticket_id = t.id
         WHERE a.registration_id = $1
         ORDER BY a.is_primary DESC, a.id ASC;`;
-    const result = await query(sql, [registrationId]);
-    return result.rows;
+  const result = await query(sql, [registrationId]);
+  return result.rows;
 };
 
-
-exports.getRegistrationWithAttendees = async ({registrationId}) => {
-    const sql = `
+exports.getRegistrationWithAttendees = async ({ registrationId }) => {
+  const sql = `
         SELECT r.*,
                COALESCE(
                        json_agg(
@@ -130,76 +134,82 @@ exports.getRegistrationWithAttendees = async ({registrationId}) => {
         GROUP BY r.id
     `;
 
-    const result = await query(sql, [registrationId]);
-    return result.rows[0];
+  const result = await query(sql, [registrationId]);
+  return result.rows[0];
 };
 
-exports.getAttendeeById = async ({attendeeId}) => {
-    if (!attendeeId) {
-        throw new CustomError("Attendee ID is required", 400);
-    }
+exports.getAttendeeById = async ({ attendeeId }) => {
+  if (!attendeeId) {
+    throw new CustomError("Attendee ID is required", 400);
+  }
 
-    const sql = `
+  const sql = `
         SELECT a.*, r.event_id, r.status as registration_status
         FROM attendees a
                  JOIN registration r ON a.registration_id = r.id
         WHERE a.id = $1
     `;
-    const result = await query(sql, [attendeeId]);
-    if (result.rows.length === 0) {
-        throw new CustomError("Attendee not found", 404);
-    }
-    return result.rows[0];
+  const result = await query(sql, [attendeeId]);
+  if (result.rows.length === 0) {
+    throw new CustomError("Attendee not found", 404);
+  }
+  return result.rows[0];
 };
 
-exports.deleteAttendee = async ({attendeeId, eventId}) => {
-    if (!attendeeId) {
-        throw new CustomError("Attendee ID is required", 400);
-    }
-    if (!eventId) {
-        throw new CustomError("Event ID is required", 400);
-    }
+exports.deleteAttendee = async ({ attendeeId, eventId }) => {
+  if (!attendeeId) {
+    throw new CustomError("Attendee ID is required", 400);
+  }
+  if (!eventId) {
+    throw new CustomError("Event ID is required", 400);
+  }
 
-    // First verify the attendee exists and belongs to the event
-    const verifySql = `
+  // First verify the attendee exists and belongs to the event
+  const verifySql = `
         SELECT a.id, a.registration_id, r.event_id, r.status as registration_status
         FROM attendees a
                  JOIN registration r ON a.registration_id = r.id
         WHERE a.id = $1
           AND r.event_id = $2
     `;
-    const verifyResult = await query(verifySql, [attendeeId, eventId]);
-    if (verifyResult.rows.length === 0) {
-        throw new CustomError("Attendee not found for this event", 404);
-    }
+  const verifyResult = await query(verifySql, [attendeeId, eventId]);
+  if (verifyResult.rows.length === 0) {
+    throw new CustomError("Attendee not found for this event", 404);
+  }
 
-    const attendee = verifyResult.rows[0];
+  const attendee = verifyResult.rows[0];
 
-    // Check if this is the last attendee in the registration
-    const countSql = `
+  // Check if this is the last attendee in the registration
+  const countSql = `
         SELECT COUNT(*) as attendee_count
         FROM attendees
         WHERE registration_id = $1
     `;
-    const countResult = await query(countSql, [attendee.registrationId]);
-    const attendeeCount = parseInt(countResult.rows[0].attendeeCount);
+  const countResult = await query(countSql, [attendee.registrationId]);
+  const attendeeCount = parseInt(countResult.rows[0].attendeeCount);
 
-    if (attendeeCount === 1) {
-        // If this is the last attendee, delete the entire registration
-        const deleteRegistrationSql = `DELETE
+  if (attendeeCount === 1) {
+    // If this is the last attendee, delete the entire registration
+    const deleteRegistrationSql = `DELETE
                                        FROM registration
                                        WHERE id = $1`;
-        await query(deleteRegistrationSql, [attendee.registrationId]);
-        return {message: "Registration deleted (last attendee removed)", deletedRegistration: true};
-    } else {
-        // If there are other attendees, just delete this attendee
-        const deleteAttendeeSql = `DELETE
+    await query(deleteRegistrationSql, [attendee.registrationId]);
+    return {
+      message: "Registration deleted (last attendee removed)",
+      deletedRegistration: true,
+    };
+  } else {
+    // If there are other attendees, just delete this attendee
+    const deleteAttendeeSql = `DELETE
                                    FROM attendees
                                    WHERE id = $1`;
-        const deleteResult = await query(deleteAttendeeSql, [attendeeId]);
-        if (deleteResult.rowCount === 0) {
-            throw new CustomError("Failed to delete attendee", 500);
-        }
-        return {message: "Attendee deleted successfully", deletedRegistration: false};
+    const deleteResult = await query(deleteAttendeeSql, [attendeeId]);
+    if (deleteResult.rowCount === 0) {
+      throw new CustomError("Failed to delete attendee", 500);
     }
-}; 
+    return {
+      message: "Attendee deleted successfully",
+      deletedRegistration: false,
+    };
+  }
+};

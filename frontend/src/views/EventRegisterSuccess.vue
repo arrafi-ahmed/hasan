@@ -1,11 +1,11 @@
 <script setup>
 import $axios from '@/plugins/axios'
-import {computed, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useTheme} from 'vuetify'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useTheme } from 'vuetify'
 import QRCodeVue3 from 'qrcode-vue3'
-import {toast} from "vue-sonner";
-import {generateQrData} from "@/others/util.js";
+import { toast } from 'vue-sonner'
+import { generateQrData } from '@/others/util.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,8 +31,6 @@ const clearRegistrationLocalStorage = () => {
     localStorage.removeItem('registrationData')
     localStorage.removeItem('selectedTickets')
     localStorage.removeItem('tempSessionId')
-
-
   } catch (error) {
     console.error('Error clearing localStorage:', error)
   }
@@ -45,8 +43,8 @@ const getAttendeeTicket = (attendee) => {
   }
 
   // Find the ticket that matches this attendee's ticketId
-  return tempRegistration.value.selectedTickets.find(ticket =>
-    ticket.ticketId === attendee.ticketId
+  return tempRegistration.value.selectedTickets.find(
+    (ticket) => ticket.ticketId === attendee.ticketId,
   )
 }
 
@@ -60,35 +58,31 @@ const fetchTempRegistration = async () => {
       const attendeeIds = route.query.attendee_ids?.split(',') || []
       const qrUuids = route.query.qr_uuids?.split(',') || []
 
-
       // For free registrations with multiple attendees, we need to validate each attendee
       if (attendeeIds.length > 0 && qrUuids.length > 0) {
-
         // Fetch complete free registration data using the new endpoint
         const response = await $axios.get(`/registration/getFreeRegistrationConfirmation`, {
           params: {
             registrationId: registrationId.value,
           },
-          headers: {'X-Suppress-Toast': 'true'}
+          headers: { 'X-Suppress-Toast': 'true' },
         })
 
         if (response.data.payload) {
           // Validate that all attendees exist and have matching QR UUIDs
           const attendees = response.data.payload.attendees || []
-          const validAttendees = attendees.filter(attendee =>
-            attendeeIds.includes(attendee.id.toString()) &&
-            qrUuids.includes(attendee.qrUuid)
+          const validAttendees = attendees.filter(
+            (attendee) =>
+              attendeeIds.includes(attendee.id.toString()) && qrUuids.includes(attendee.qrUuid),
           )
 
           if (validAttendees.length === attendeeIds.length) {
-
-
             // Transform the data to match the expected format
-            const selectedTickets = validAttendees.map(attendee => ({
+            const selectedTickets = validAttendees.map((attendee) => ({
               ticketId: attendee.ticketId,
               title: attendee.ticketTitle || 'Unknown Ticket',
               unitPrice: attendee.unitPrice || 0, // Use real price from backend
-              quantity: 1
+              quantity: 1,
             }))
 
             // Use the complete data structure from the new endpoint
@@ -103,7 +97,9 @@ const fetchTempRegistration = async () => {
             console.error('QR UUID validation failed for some attendees')
             console.error('Expected:', attendeeIds.length, 'Valid:', validAttendees.length)
             console.error('Valid attendees:', validAttendees)
-            toast.error(`QR UUID validation failed. Expected ${attendeeIds.length} attendees, found ${validAttendees.length} valid.`)
+            toast.error(
+              `QR UUID validation failed. Expected ${attendeeIds.length} attendees, found ${validAttendees.length} valid.`,
+            )
           }
         }
       } else {
@@ -111,7 +107,6 @@ const fetchTempRegistration = async () => {
         toast.error('Invalid registration data. Please contact support.')
       }
     } else if (sessionId.value) {
-
       // Fallback: check localStorage if session_id not in URL
       if (!sessionId.value) {
         const storedSessionId = localStorage.getItem('tempSessionId')
@@ -126,18 +121,17 @@ const fetchTempRegistration = async () => {
       }
 
       const response = await $axios.get(`/temp-registration/success/${sessionId.value}`, {
-        headers: {'X-Suppress-Toast': 'true'}
+        headers: { 'X-Suppress-Toast': 'true' },
       })
       tempRegistration.value = response.data.payload
-
     } else {
-      error.value = 'No registration information provided. Please ensure you completed the registration process.'
+      error.value =
+        'No registration information provided. Please ensure you completed the registration process.'
       return
     }
 
     // Clear registration-related localStorage after successful fetch
     clearRegistrationLocalStorage()
-
   } catch (err) {
     console.error('Error fetching registration:', err)
     error.value = err.response?.data?.message || 'Failed to load registration details'
@@ -162,81 +156,44 @@ onMounted(() => {
 <template>
   <v-container class="success-container">
     <v-row justify="center">
-      <v-col
-        cols="12"
-        lg="6"
-        md="8"
-      >
+      <v-col cols="12" lg="6" md="8">
         <!-- Loading State -->
-        <div
-          v-if="isLoading"
-          class="text-center py-16"
-        >
+        <div v-if="isLoading" class="text-center py-16">
           <v-progress-circular
             :color="theme.global.current.value.colors.primary"
             indeterminate
             size="64"
             width="4"
           />
-          <h3 class="text-h5 mt-6 mb-3">
-            Processing your registration
-          </h3>
+          <h3 class="text-h5 mt-6 mb-3">Processing your registration</h3>
           <p class="text-body-1 text-medium-emphasis">
             Please wait while we confirm your details...
           </p>
         </div>
 
         <!-- Error State -->
-        <div
-          v-else-if="error"
-          class="text-center py-16"
-        >
-          <v-card
-            class="modern-card"
-            elevation="0"
-          >
+        <div v-else-if="error" class="text-center py-16">
+          <v-card class="modern-card" elevation="0">
             <v-card-text class="pa-8">
-              <v-icon
-                :color="theme.global.current.value.colors.error"
-                class="mb-6"
-                size="64"
-              >
+              <v-icon :color="theme.global.current.value.colors.error" class="mb-6" size="64">
                 mdi-alert-circle-outline
               </v-icon>
-              <h3 class="text-h5 mb-4">
-                Registration Status Unclear
-              </h3>
+              <h3 class="text-h5 mb-4">Registration Status Unclear</h3>
               <p class="text-body-1 mb-8">
                 {{ error }}
               </p>
-              <v-btn
-                color="primary"
-                @click="retryFetch"
-              >
-                Retry
-              </v-btn>
+              <v-btn color="primary" @click="retryFetch">Retry</v-btn>
             </v-card-text>
           </v-card>
         </div>
 
         <!-- Success State -->
-        <div
-          v-else-if="tempRegistration"
-          class="py-8"
-        >
-          <v-card
-            class="modern-card"
-            elevation="0"
-          >
+        <div v-else-if="tempRegistration" class="py-8">
+          <v-card class="modern-card" elevation="0">
             <!-- Success Header -->
             <div class="success-header">
               <div class="success-icon">
-                <v-icon
-                  color="white"
-                  size="32"
-                >
-                  mdi-check-circle
-                </v-icon>
+                <v-icon color="white" size="32">mdi-check-circle</v-icon>
               </div>
               <h2 class="success-title">
                 {{ route.query.registration_id ? 'Free Registration' : 'Payment' }} Successful!
@@ -245,49 +202,49 @@ onMounted(() => {
               <!--                Registration ID: {{ route.query.registration_id }} | Attendees:-->
               <!--                {{ route.query.attendee_ids?.split(',').length || 0 }}-->
               <!--              </p>-->
-              <p class="success-subtitle">
-                Welcome to the tour
-              </p>
+              <p class="success-subtitle">Welcome to the tour</p>
             </div>
 
             <v-card-text class="pa-8">
               <p class="text-body-1 text-center mb-8">
-                Your registration has been confirmed. Please save your QR code for check-in at the tour.
+                Your registration has been confirmed. Please save your QR code for check-in at the
+                tour.
               </p>
 
               <!-- Order Summary -->
-              <div
-                v-if="tempRegistration.orders"
-                class="mb-6"
-              >
-                <h4 class="text-h6 mb-4 text-center">
-                  Order Summary
-                </h4>
-                <v-card
-                  class="pa-4"
-                  variant="outlined"
-                >
-                  <p><strong>Order Number:</strong> {{ tempRegistration.orders.orderNumber }}</p>
-                  <p><strong>Total Amount:</strong> ${{ (tempRegistration.orders.totalAmount / 100).toFixed(2) }}</p>
+              <div v-if="tempRegistration.orders" class="mb-6">
+                <h4 class="text-h6 mb-4 text-center">Order Summary</h4>
+                <v-card class="pa-4" variant="outlined">
+                  <p>
+                    <strong>Order Number:</strong>
+                    {{ tempRegistration.orders.orderNumber }}
+                  </p>
+                  <p>
+                    <strong>Total Amount:</strong>
+                    ${{ (tempRegistration.orders.totalAmount / 100).toFixed(2) }}
+                  </p>
                   <p>
                     <strong>Status:</strong>
                     <span
-                      :class="tempRegistration.orders.paymentStatus === 'free' ? 'text-info' : 'text-success'"
+                      :class="
+                        tempRegistration.orders.paymentStatus === 'free'
+                          ? 'text-info'
+                          : 'text-success'
+                      "
                     >
-                      {{ tempRegistration.orders.paymentStatus === 'free' ? 'Free Registration' : 'Paid' }}
+                      {{
+                        tempRegistration.orders.paymentStatus === 'free'
+                          ? 'Free Registration'
+                          : 'Paid'
+                      }}
                     </span>
                   </p>
                 </v-card>
               </div>
 
               <!-- Attendees List -->
-              <div
-                v-if="tempRegistration?.attendees?.length > 0"
-                class="mb-6"
-              >
-                <h4 class="text-h6 mb-6 text-center">
-                  Registered Attendees
-                </h4>
+              <div v-if="tempRegistration?.attendees?.length > 0" class="mb-6">
+                <h4 class="text-h6 mb-6 text-center">Registered Attendees</h4>
                 <div class="attendees-container">
                   <div
                     v-for="(attendee, index) in tempRegistration.attendees"
@@ -300,31 +257,21 @@ onMounted(() => {
                       </div>
                       <div class="attendee-details">
                         <span class="attendee-email">{{ attendee.email }}</span>
-                        <span
-                          v-if="attendee.phone"
-                          class="attendee-phone"
-                        >{{ attendee.phone }}</span>
+                        <span v-if="attendee.phone" class="attendee-phone">
+                          {{ attendee.phone }}
+                        </span>
                       </div>
 
                       <!-- Ticket Information for this attendee -->
-                      <div
-                        v-if="getAttendeeTicket(attendee)"
-                        class="ticket-info"
-                      >
+                      <div v-if="getAttendeeTicket(attendee)" class="ticket-info">
                         <div class="ticket-badge">
-                          <v-icon
-                            class="mr-2"
-                            color="primary"
-                            size="16"
-                          >
-                            mdi-ticket
-                          </v-icon>
+                          <v-icon class="mr-2" color="primary" size="16">mdi-ticket</v-icon>
                           <span class="ticket-name">{{ getAttendeeTicket(attendee).title }}</span>
                         </div>
                         <div class="ticket-details">
-                          <span class="ticket-price">${{
-                            (getAttendeeTicket(attendee).unitPrice / 100).toFixed(2)
-                          }}</span>
+                          <span class="ticket-price">
+                            ${{ (getAttendeeTicket(attendee).unitPrice / 100).toFixed(2) }}
+                          </span>
                           <!--                          <span class="ticket-type">{{ getAttendeeTicket(attendee).type || 'Standard' }}</span>-->
                         </div>
                       </div>
@@ -332,17 +279,9 @@ onMounted(() => {
 
                     <!-- Individual QR Code for each attendee -->
                     <div class="qr-container">
-                      <h6 class="qr-title">
-                        QR Code for {{ attendee.firstName }}
-                      </h6>
+                      <h6 class="qr-title">QR Code for {{ attendee.firstName }}</h6>
                       <p class="qr-security-note">
-                        <v-icon
-                          class="mr-1"
-                          color="success"
-                          size="16"
-                        >
-                          mdi-shield-check
-                        </v-icon>
+                        <v-icon class="mr-1" color="success" size="16">mdi-shield-check</v-icon>
                         Secure QR Code
                       </p>
                       <QRCodeVue3
@@ -350,10 +289,13 @@ onMounted(() => {
                         :dots-options="qrOptions"
                         :download="true"
                         :height="200"
-                        :value="generateQrData({
-                          registrationId : registrationId || attendee.registrationId,
-                          attendeeId: attendee.id,
-                          qrUuid: attendee.qrUuid})"
+                        :value="
+                          generateQrData({
+                            registrationId: registrationId || attendee.registrationId,
+                            attendeeId: attendee.id,
+                            qrUuid: attendee.qrUuid,
+                          })
+                        "
                         :width="200"
                         download-button="download-qr-btn"
                       />
@@ -366,28 +308,16 @@ onMounted(() => {
         </div>
 
         <!-- Fallback State -->
-        <div
-          v-else
-          class="text-center py-16"
-        >
-          <v-card
-            class="modern-card"
-            elevation="0"
-          >
+        <div v-else class="text-center py-16">
+          <v-card class="modern-card" elevation="0">
             <v-card-text class="pa-8">
-              <v-icon
-                :color="theme.global.current.value.colors.info"
-                class="mb-6"
-                size="64"
-              >
+              <v-icon :color="theme.global.current.value.colors.info" class="mb-6" size="64">
                 mdi-information
               </v-icon>
-              <h3 class="text-h5 mb-4">
-                Payment Completed
-              </h3>
+              <h3 class="text-h5 mb-4">Payment Completed</h3>
               <p class="text-body-1 mb-8">
-                Your payment has been processed successfully! Your registration details are being finalized. You will
-                receive a confirmation email shortly.
+                Your payment has been processed successfully! Your registration details are being
+                finalized. You will receive a confirmation email shortly.
               </p>
             </v-card-text>
           </v-card>
@@ -650,7 +580,6 @@ onMounted(() => {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
   transform: translateY(-1px);
 }
-
 
 /* Responsive Design */
 @media (max-width: 768px) {

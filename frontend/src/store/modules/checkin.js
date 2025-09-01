@@ -18,10 +18,10 @@ export const mutations = {
 }
 
 export const actions = {
-  scanByRegistrationId({commit}, request) {
+  scanByRegistrationId({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .post('/checkin/scanByRegistrationId', {payload: request})
+        .post('/checkin/scanByRegistrationId', { payload: request })
         .then((response) => {
           // commit("setRegistration", response.data?.payload?.checkinResult);
           resolve(response.data?.payload)
@@ -32,8 +32,7 @@ export const actions = {
     })
   },
 
-  save({commit}, request) {
-
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/checkin/save', request)
@@ -45,7 +44,7 @@ export const actions = {
               checkinTime: response.data.payload?.createdAt,
               registrationId: response.data.payload?.registrationId,
             },
-            {root: true},
+            { root: true },
           )
           resolve(response.data?.payload)
         })
@@ -55,10 +54,10 @@ export const actions = {
     })
   },
 
-  delete({commit}, request) {
+  delete({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .delete('/checkin/delete', {data: request})
+        .delete('/checkin/delete', { data: request })
         .then((response) => {
           // Update the attendee's checkin status in the registration store
           commit(
@@ -68,7 +67,7 @@ export const actions = {
               checkinTime: null,
               attendeeId: request.attendeeId,
             },
-            {root: true},
+            { root: true },
           )
           resolve(response.data?.payload)
         })
@@ -77,11 +76,11 @@ export const actions = {
         })
     })
   },
-  setStatistics({commit}, request) {
+  setStatistics({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/checkin/getStatistics', {
-          params: {eventId: request.eventId, date: request.date},
+          params: { eventId: request.eventId, date: request.date },
         })
         .then((response) => {
           commit('setStatistics', response.data?.payload)

@@ -26,10 +26,10 @@ export const mutations = {
 }
 
 export const actions = {
-  setOrders({commit}, request) {
+  setOrders({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/order/getOrdersByEventId', {params: {eventId: request}})
+        .get('/order/getOrdersByEventId', { params: { eventId: request } })
         .then((response) => {
           commit('setOrders', response.data?.payload)
           resolve(response)
@@ -39,10 +39,10 @@ export const actions = {
         })
     })
   },
-  setCurrentOrder({commit}, request) {
+  setCurrentOrder({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/order/getOrderById', {params: {orderId: request}})
+        .get('/order/getOrderById', { params: { orderId: request } })
         .then((response) => {
           commit('setCurrentOrder', response.data?.payload)
           resolve(response)
@@ -52,10 +52,10 @@ export const actions = {
         })
     })
   },
-  getOrderWithItems({commit}, request) {
+  getOrderWithItems({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/order/getOrderWithItems', {params: {orderId: request}})
+        .get('/order/getOrderWithItems', { params: { orderId: request } })
         .then((response) => {
           commit('setCurrentOrder', response.data?.payload)
           resolve(response)
@@ -65,7 +65,7 @@ export const actions = {
         })
     })
   },
-  createOrder({commit}, request) {
+  createOrder({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/order/createOrder', request)

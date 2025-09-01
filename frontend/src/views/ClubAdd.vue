@@ -1,12 +1,12 @@
 <script setup>
-import {reactive, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
-import {isValidImage} from '@/others/util'
-import {useDisplay} from 'vuetify'
+import { reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { isValidImage } from '@/others/util'
+import { useDisplay } from 'vuetify'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {mobile} = useDisplay()
+const { mobile } = useDisplay()
 const router = useRouter()
 const store = useStore()
 
@@ -15,7 +15,7 @@ const newClubInit = {
   location: null,
   logo: null,
 }
-const newClub = reactive({...newClubInit})
+const newClub = reactive({ ...newClubInit })
 
 const form = ref(null)
 const isFormValid = ref(true)
@@ -51,21 +51,13 @@ const handleAddClub = async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Add Club"
-          subtitle="Create a new club and set up its details"
-        />
+        <PageTitle subtitle="Create a new club and set up its details" title="Add Club" />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col>
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-          @submit.prevent="handleAddClub"
-        >
+        <v-form ref="form" v-model="isFormValid" fast-fail @submit.prevent="handleAddClub">
           <v-text-field
             v-model="newClub.name"
             :rules="[(v) => !!v || 'Name is required!']"
@@ -110,11 +102,7 @@ const handleAddClub = async () => {
 
           <div class="d-flex align-center mt-3 mt-md-4">
             <v-spacer />
-            <v-btn
-              :density="mobile ? 'comfortable' : 'default'"
-              color="primary"
-              type="submit"
-            >
+            <v-btn :density="mobile ? 'comfortable' : 'default'" color="primary" type="submit">
               Add
             </v-btn>
           </div>

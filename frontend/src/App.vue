@@ -1,14 +1,14 @@
 <script setup>
-import {Toaster} from 'vue-sonner'
+import { Toaster } from 'vue-sonner'
 import ProgressLoader from '@/components/ProgressLoader.vue'
-import {watch} from 'vue'
-import {useRoute} from 'vue-router'
-import {appInfo} from '@/others/util'
+import { watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { appInfo } from '@/others/util'
 
 const route = useRoute()
 const toastOptions = {
   class: 'pa-3',
-  style: {fontFamily: "'Poppins', sans-serif"},
+  style: { fontFamily: "'Poppins', sans-serif" },
 }
 
 watch(route, (to) => {

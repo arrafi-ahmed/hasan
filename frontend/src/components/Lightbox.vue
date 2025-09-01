@@ -1,8 +1,8 @@
 <script setup>
-import {getEventImageUrl} from '@/util'
-import {ref} from 'vue'
+import { getEventImageUrl } from '@/util'
+import { ref } from 'vue'
 
-const {imgSet, openingIndex, imgSrc, aspectRatio} = defineProps([
+const { imgSet, openingIndex, imgSrc, aspectRatio } = defineProps([
   'imgSet',
   'openingIndex',
   'imgSrc',
@@ -49,10 +49,7 @@ const getNextImage = () => {
     @click="switchDialog"
   />
 
-  <v-dialog
-    v-model="dialog"
-    :max-width="!fullSize ? '100vh' : undefined"
-  >
+  <v-dialog v-model="dialog" :max-width="!fullSize ? '100vh' : undefined">
     <v-card class="position-relative">
       <v-btn
         :block="false"
@@ -71,16 +68,8 @@ const getNextImage = () => {
         :src="getEventImageUrl(currImg || null)"
         @click="switchFullsize"
       >
-        <v-row
-          v-if="imgSet"
-          align="center"
-          class="fill-height ma-0"
-          justify="space-between"
-        >
-          <v-col
-            class="d-flex justify-center"
-            cols="auto"
-          >
+        <v-row v-if="imgSet" align="center" class="fill-height ma-0" justify="space-between">
+          <v-col class="d-flex justify-center" cols="auto">
             <v-icon
               v-if="currIndex > 0"
               class="cursor-pointer"
@@ -91,10 +80,7 @@ const getNextImage = () => {
               mdi-chevron-left-circle
             </v-icon>
           </v-col>
-          <v-col
-            class="d-flex justify-center"
-            cols="auto"
-          >
+          <v-col class="d-flex justify-center" cols="auto">
             <v-icon
               v-if="currIndex < imgSet.length - 1"
               class="cursor-pointer"

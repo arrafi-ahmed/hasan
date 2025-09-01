@@ -32,13 +32,11 @@ export const mutations = {
 }
 
 export const actions = {
-  setPackages({commit}, request) {
+  setPackages({ commit }, request) {
     return new Promise((resolve, reject) => {
-
       $axios
-        .get('/sponsorship-package/getPackagesByEventId', {params: {eventId: request}})
+        .get('/sponsorship-package/getPackagesByEventId', { params: { eventId: request } })
         .then((response) => {
-
           commit('setPackages', response.data?.payload)
           resolve(response)
         })
@@ -48,10 +46,10 @@ export const actions = {
         })
     })
   },
-  setCurrentPackage({commit}, request) {
+  setCurrentPackage({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/sponsorship-package/getPackageById', {params: {packageId: request}})
+        .get('/sponsorship-package/getPackageById', { params: { packageId: request } })
         .then((response) => {
           commit('setCurrentPackage', response.data?.payload)
           resolve(response)
@@ -61,7 +59,7 @@ export const actions = {
         })
     })
   },
-  savePackage({commit}, request) {
+  savePackage({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/sponsorship-package/save', request)
@@ -78,10 +76,10 @@ export const actions = {
         })
     })
   },
-  deletePackage({commit}, request) {
+  deletePackage({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .delete('/sponsorship-package/deletePackage', {data: request})
+        .delete('/sponsorship-package/deletePackage', { data: request })
         .then((response) => {
           commit('removePackage', request.packageId)
           resolve(response)
@@ -91,7 +89,7 @@ export const actions = {
         })
     })
   },
-  updatePackageStatus({commit}, request) {
+  updatePackageStatus({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/sponsorship-package/updateStatus', request)

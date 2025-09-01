@@ -9,28 +9,24 @@ const router = useRouter()
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">
-          Welcome to Binatnaa Tours
-        </h1>
-        <p class="hero-subtitle">
-          Discover amazing tours and adventures with us
-        </p>
+        <h1 class="hero-title">Welcome to Binatnaa Tours</h1>
+        <p class="hero-subtitle">Discover amazing tours and adventures with us</p>
         <div class="hero-actions">
           <v-btn
-            color="primary"
-            size="large"
-            href="https://binatnaa.com/todos-viajes/"
             class="hero-btn"
+            color="primary"
+            href="https://binatnaa.com/todos-viajes/"
+            size="large"
             target="_blank"
           >
             View Tours
           </v-btn>
           <v-btn
-            variant="outlined"
-            size="large"          
-            href="https://web.whatsapp.com/send?phone=34664219269&text="
             class="hero-btn"
+            href="https://web.whatsapp.com/send?phone=34664219269&text="
+            size="large"
             target="_blank"
+            variant="outlined"
           >
             Contact Us
           </v-btn>
@@ -75,8 +71,10 @@ const router = useRouter()
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-              url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80') center/cover;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80')
+      center/cover;
   color: white;
 }
 
@@ -153,21 +151,21 @@ const router = useRouter()
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .hero-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .hero-btn {
     width: 100%;
     max-width: 280px;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }

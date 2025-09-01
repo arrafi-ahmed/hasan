@@ -3,34 +3,34 @@
  */
 export class Club {
   constructor(data = {}) {
-    this.id = data.id || null;
-    this.name = data.name || '';
-    this.location = data.location || null;
-    this.logo = data.logo || null;
+    this.id = data.id || null
+    this.name = data.name || ''
+    this.location = data.location || null
+    this.logo = data.logo || null
   }
 
   /**
    * Validates the club data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.name || this.name.trim().length === 0) {
-      errors.push('Name is required');
+      errors.push('Name is required')
     }
 
     if (this.name && this.name.length > 100) {
-      errors.push('Name must be 100 characters or less');
+      errors.push('Name must be 100 characters or less')
     }
 
     if (this.logo && this.logo.length > 255) {
-      errors.push('Logo path must be 255 characters or less');
+      errors.push('Logo path must be 255 characters or less')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -41,7 +41,7 @@ export class Club {
       id: this.id,
       name: this.name,
       location: this.location,
-      logo: this.logo
-    };
+      logo: this.logo,
+    }
   }
 }

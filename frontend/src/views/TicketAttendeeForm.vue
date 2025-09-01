@@ -1,9 +1,9 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
-import {toast} from 'vue-sonner'
-import {Attendee} from "@/models/index.js";
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { toast } from 'vue-sonner'
+import { Attendee } from '@/models/index.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,19 +17,19 @@ const isFormValid = ref(true)
 
 const tickets = computed(() => store.state.ticket.tickets || [])
 const selectedTickets = computed(() => JSON.parse(localStorage.getItem('selectedTickets')) || [])
-const attendees = ref();
+const attendees = ref()
 const totalAttendees = computed(() => {
   return selectedTickets.value.reduce((sum, ticket) => {
     const quantity = ticket.quantity || 1
 
     return sum + quantity
   }, 0)
-});
+})
 
 // Quick lookup for title by id (display-only)
 const ticketsById = computed(() => {
-  const map = new Map();
-  (selectedTickets.value || []).forEach(t => map.set(t.ticketId, t))
+  const map = new Map()
+  ;(selectedTickets.value || []).forEach((t) => map.set(t.ticketId, t))
   return map
 })
 const ticketTitleById = (id) => ticketsById.value.get(id)?.title ?? ''
@@ -56,7 +56,7 @@ function getAvailableTicketsForAttendee(attendees, selectedTickets, currentIndex
       })
     }
   }
-  return options.map(o => ({value: o.value, title: o.title}))
+  return options.map((o) => ({ value: o.value, title: o.title }))
 }
 
 function handleSelectTicket(ticketId) {
@@ -76,7 +76,7 @@ const nextStep = async () => {
 
   if (currentStep.value < totalAttendees.value - 1) {
     currentStep.value++
-    attendees.value[currentStep.value] = new Attendee({...attendees.value[currentStep.value]})
+    attendees.value[currentStep.value] = new Attendee({ ...attendees.value[currentStep.value] })
   } else {
     proceedToCheckout()
   }
@@ -98,7 +98,7 @@ const proceedToCheckout = async () => {
       lastName: attendee.lastName,
       email: attendee.email,
       phone: attendee.phone,
-      ticketId: attendee.ticketId,
+      ticketId: selectedTickets.value[0]?.ticketId,
       isPrimary: attendee.isPrimary,
     }))
 
@@ -111,7 +111,7 @@ const proceedToCheckout = async () => {
     localStorage.setItem('attendeesData', JSON.stringify(formattedAttendees))
     router.push({
       name: 'checkout-slug',
-      params: {slug: route.params.slug},
+      params: { slug: route.params.slug },
     })
   } catch (error) {
     console.error('Error proceeding to checkout:', error)
@@ -126,18 +126,16 @@ const goBack = () => {
 
   router.push({
     name: 'tickets-slug',
-    params: {slug: route.params.slug},
+    params: { slug: route.params.slug },
   })
 }
 
 // Initialize data and forms when component mounts
 const initializeData = async () => {
-
-
   // Get route params - only slug-based routing
   if (!route.params.slug) {
     console.error('No slug provided, redirecting to homepage')
-    return router.push({name: 'homepage'})
+    return router.push({ name: 'homepage' })
   }
 
   if (!selectedTickets.value.length) {
@@ -145,10 +143,13 @@ const initializeData = async () => {
     toast.error('No ticket data found. Please return to tickets page.')
     return router.push({
       name: 'tickets-slug',
-      params: {slug: route.params.slug},
+      params: { slug: route.params.slug },
     })
   }
-  attendees.value = [...JSON.parse(localStorage.getItem('attendeesData'))].map((i) => ({...i, title: null}))
+  attendees.value = [...JSON.parse(localStorage.getItem('attendeesData'))].map((i) => ({
+    ...i,
+    title: null,
+  }))
 
   isDataReady.value = true
 }
@@ -163,19 +164,9 @@ onMounted(async () => {
   <section class="section">
     <v-container>
       <!-- Loading State -->
-      <div
-        v-if="!isDataReady"
-        class="text-center py-16"
-      >
-        <v-progress-circular
-          color="primary"
-          indeterminate
-          size="64"
-          width="4"
-        />
-        <h3 class="text-h5 mt-6 mb-3">
-          Loading attendee forms...
-        </h3>
+      <div v-if="!isDataReady" class="text-center py-16">
+        <v-progress-circular color="primary" indeterminate size="64" width="4" />
+        <h3 class="text-h5 mt-6 mb-3">Loading attendee forms...</h3>
         <p class="text-body-1 text-medium-emphasis">
           Please wait while we prepare your registration forms.
         </p>
@@ -184,15 +175,9 @@ onMounted(async () => {
       <!-- Main Content -->
       <div v-else>
         <v-row justify="center">
-          <v-col
-            cols="12"
-            md="8"
-          >
+          <v-col cols="12" md="8">
             <!-- Progress Indicator -->
-            <v-card
-              class="mb-6"
-              elevation="2"
-            >
+            <v-card class="mb-6" elevation="2">
               <v-card-text class="pa-4">
                 <div class="d-flex align-center justify-space-between">
                   <span class="text-body-1">
@@ -213,105 +198,91 @@ onMounted(async () => {
               <v-card-title class="bg-primary text-white py-4">
                 <h3 class="text-h5 font-weight-bold">
                   Attendee {{ currentStep + 1 }}:
-                  {{ attendees[currentStep].title || ' Select Package Type' }}
+                  {{ attendees[currentStep].title }}
                 </h3>
               </v-card-title>
 
               <v-card-text class="pa-6">
-                <v-form
-                  ref="attendeeForm"
-                  v-model="isFormValid"
-                  @submit.prevent="nextStep"
-                >
-                  <v-row>
-                    <v-col cols="12">
-                      <v-select
-                        v-model="attendees[currentStep].ticketId"
-                        :items="getAvailableTicketsForAttendee(attendees, selectedTickets, currentStep)"
-                        :rules="[(v) => !!v || 'Package type is required']"
-                        density="comfortable"
-                        item-title="title"
-                        item-value="value"
-                        label="Package Type *"
-                        required
-                        variant="solo"
-                        hide-details="auto"
-                        @update:model-value="handleSelectTicket"
-                      />
-                    </v-col>
-                  </v-row>
+                <v-form ref="attendeeForm" v-model="isFormValid" @submit.prevent="nextStep">
+                  <!--                  <v-row>-->
+                  <!--                    <v-col cols="12">-->
+                  <!--                      <v-select-->
+                  <!--                        v-model="attendees[currentStep].ticketId"-->
+                  <!--                        :items="-->
+                  <!--                          getAvailableTicketsForAttendee(attendees, selectedTickets, currentStep)-->
+                  <!--                        "-->
+                  <!--                        :rules="[(v) => !!v || 'Package type is required']"-->
+                  <!--                        density="comfortable"-->
+                  <!--                        item-title="title"-->
+                  <!--                        item-value="value"-->
+                  <!--                        label="Package Type *"-->
+                  <!--                        required-->
+                  <!--                        variant="solo"-->
+                  <!--                        hide-details="auto"-->
+                  <!--                        @update:model-value="handleSelectTicket"-->
+                  <!--                      />-->
+                  <!--                    </v-col>-->
+                  <!--                  </v-row>-->
 
                   <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="attendees[currentStep].firstName"
                         :rules="[
                           (v) => !!v || 'First name is required',
-                          (v) => (v && v.length <= 50) || 'Must not exceed 50 characters'
+                          (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
                         ]"
                         density="comfortable"
+                        hide-details="auto"
                         label="First Name *"
                         required
                         variant="solo"
-                        hide-details="auto"
                       />
                     </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="attendees[currentStep].lastName"
                         :rules="[
                           (v) => !!v || 'Last name is required',
-                          (v) => (v && v.length <= 50) || 'Must not exceed 50 characters'
+                          (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
                         ]"
                         density="comfortable"
+                        hide-details="auto"
                         label="Last Name *"
                         required
                         variant="solo"
-                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
 
                   <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="attendees[currentStep].email"
                         :rules="[
                           (v) => !!v || 'Email is required',
-                          (v) => /.+@.+\..+/.test(v) || 'Email must be valid'
+                          (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
                         ]"
                         density="comfortable"
+                        hide-details="auto"
                         label="Email *"
                         required
                         type="email"
                         variant="solo"
-                        hide-details="auto"
                       />
                     </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="attendees[currentStep].phone"
                         :rules="[
                           (v) => !!v || 'Phone is required',
-                          (v) => (v && v.length >= 4) || 'Phone must be at least 4 digits'
+                          (v) => (v && v.length >= 4) || 'Phone must be at least 4 digits',
                         ]"
                         density="comfortable"
+                        hide-details="auto"
                         label="Phone *"
                         required
                         variant="solo"
-                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -322,12 +293,7 @@ onMounted(async () => {
 
               <v-card-actions class="pa-6 pt-0">
                 <v-spacer />
-                <v-btn
-                  v-if="currentStep > 0"
-                  class="mr-4"
-                  variant="outlined"
-                  @click="prevStep"
-                >
+                <v-btn v-if="currentStep > 0" class="mr-4" variant="outlined" @click="prevStep">
                   Previous
                 </v-btn>
                 <v-btn

@@ -31,7 +31,7 @@ export const mutations = {
 }
 
 export const actions = {
-  setClubs({commit}) {
+  setClubs({ commit }) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/club/getAllClubs')
@@ -44,10 +44,10 @@ export const actions = {
         })
     })
   },
-  setClub({commit}, request) {
+  setClub({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/club/getClub', {params: {clubId: request}})
+        .get('/club/getClub', { params: { clubId: request } })
         .then((response) => {
           commit('setClub', response.data?.payload)
           resolve(response)
@@ -57,7 +57,7 @@ export const actions = {
         })
     })
   },
-  save({commit}, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/club/save', request)
@@ -70,11 +70,11 @@ export const actions = {
         })
     })
   },
-  removeClub({commit}, request) {
+  removeClub({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/club/removeClub', {
-          params: {clubId: request.clubId},
+          params: { clubId: request.clubId },
         })
         .then((response) => {
           commit('removeClub', request)

@@ -160,7 +160,7 @@ onMounted(async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle title="Edit Event" subtitle="Update your event details and configuration" />
+        <PageTitle subtitle="Update your event details and configuration" title="Edit Event" />
       </v-col>
     </v-row>
 
@@ -265,18 +265,18 @@ onMounted(async () => {
               />
 
               <v-file-upload
-                accept="image/*"
-                class="mb-4"
-                density="compact"
-                title="Update Banner"
                 :rules="[
                   (v) =>
                     !v ||
                     (Array.isArray(v) ? v : [v]).every((file) => isValidImage(file)) ||
                     'Only jpg/jpeg/png allowed!',
                 ]"
-                show-size
+                accept="image/*"
+                class="mb-4"
+                density="compact"
                 rounded
+                show-size
+                title="Update Banner"
                 variant="solo"
                 @update:model-value="handleBannerUpdate"
               />

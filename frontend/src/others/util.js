@@ -1,8 +1,8 @@
-import {toast} from 'vue-sonner'
-import {countries} from '@/others/country-list'
+import { toast } from 'vue-sonner'
+import { countries } from '@/others/country-list'
 import $axios from '@/plugins/axios'
 
-export const appInfo = {name: 'Binatnaa Tours', version: 1.0}
+export const appInfo = { name: 'Binatnaa Tours', version: 1.0 }
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 export const clientBaseUrl = import.meta.env.VITE_BASE_URL
 export const stripePublic = import.meta.env.VITE_STRIPE_PUBLIC
@@ -130,21 +130,21 @@ export const getToLink = (item) => {
     const paramVal = item.to.params[paramKey]
     return {
       name: item.to.name,
-      params: {[paramKey]: paramVal},
+      params: { [paramKey]: paramVal },
     }
   }
   return item.to
 }
 
 export const checkinItems = [
-  {title: 'Pending', value: false},
-  {title: 'Checked-in', value: true},
+  { title: 'Pending', value: false },
+  { title: 'Checked-in', value: true },
 ]
 
 export const extrasItems = [
-  {title: '', value: null},
-  {title: 'Not Redeemed', value: false},
-  {title: 'Redeemed', value: true},
+  { title: '', value: null },
+  { title: 'Not Redeemed', value: false },
+  { title: 'Redeemed', value: true },
 ]
 
 export const getQueryParam = (param) => {
@@ -181,7 +181,7 @@ export const isValidImage = (file) => {
   return allowedTypes.includes(file.type)
 }
 
-export const generateQrData = ({registrationId, attendeeId, qrUuid}) => {
+export const generateQrData = ({ registrationId, attendeeId, qrUuid }) => {
   const qrData = {
     r: registrationId,
     a: attendeeId,
@@ -227,14 +227,13 @@ export const isValidPass = [
 export const showApiQueryMsg = (color = 'blue') => {
   if (localStorage.hasOwnProperty('apiQueryMsg')) {
     toast(localStorage.getItem('apiQueryMsg'), {
-      cardProps: {color},
+      cardProps: { color },
       action: {
         label: 'Close',
         buttonProps: {
           color: 'white',
         },
-        onClick() {
-        },
+        onClick() {},
       },
     })
     localStorage.removeItem('apiQueryMsg')
@@ -242,11 +241,11 @@ export const showApiQueryMsg = (color = 'blue') => {
 }
 
 export const input_fields = [
-  {id: 0, title: 'Short answer'},
-  {id: 1, title: 'Paragraph'},
-  {id: 2, title: 'Multiple choice'},
-  {id: 3, title: 'Checkboxes'},
-  {id: 4, title: 'Dropdown'},
+  { id: 0, title: 'Short answer' },
+  { id: 1, title: 'Paragraph' },
+  { id: 2, title: 'Multiple choice' },
+  { id: 3, title: 'Checkboxes' },
+  { id: 4, title: 'Dropdown' },
 ]
 
 export const getInputType = (typeId) => {
@@ -258,20 +257,28 @@ export const getCountryList = (filterName) => {
   return countries.map((item) => item[filterName])
 }
 
-export const getCurrencySymbol = (currencyCode, type) => {
-  const currencyCodeLower = currencyCode.toString().toLowerCase()
-
+export const getCurrencySymbol = ({ code, type }) => {
+  const codeLower = code.toString().toLowerCase()
   const currencyMap = {
-    usd: {icon: 'mdi-currency-usd', symbol: '$'},
-    gbp: {icon: 'mdi-currency-gbp', symbol: '£'},
-    eur: {icon: 'mdi-currency-eur', symbol: '€'},
+    usd: { icon: 'mdi-currency-usd', symbol: '$', value: 'usd' },
+    gbp: { icon: 'mdi-currency-gbp', symbol: '£', value: 'gbp' },
+    eur: { icon: 'mdi-currency-eur', symbol: '€', value: 'eur' },
+    thb: { icon: 'mdi-currency-thb', symbol: '฿', value: 'thb' },
   }
-
-  return currencyMap[currencyCodeLower][type]
+  const currencyData = currencyMap[codeLower]
+  if (!currencyData) {
+    return null // Or undefined, or throw an error, depending on your desired behavior
+  }
+  if (type === undefined) {
+    return currencyData
+  }
+  return currencyData[type]
 }
 
-export const handleRedirect = ({param, hardRedirect = true}) => {
-  const paramValue = getQueryParam({param})
+export const defaultCurrency = getCurrencySymbol({ code: 'usd' })
+
+export const handleRedirect = ({ param, hardRedirect = true }) => {
+  const paramValue = getQueryParam({ param })
   if (paramValue) {
     let newUrl = paramValue
 
@@ -283,15 +290,15 @@ export const handleRedirect = ({param, hardRedirect = true}) => {
 }
 
 export const handleRemoveQueriesNRedirect = ({
-                                               params = [], // Array of param names to check/remove
-                                               saveToLocalStorage = true,
-                                               hardRedirect = true,
-                                             }) => {
+  params = [], // Array of param names to check/remove
+  saveToLocalStorage = true,
+  hardRedirect = true,
+}) => {
   let found = false
   let queryParamsToRemove = []
 
   params.forEach((paramName) => {
-    const paramValue = getQueryParam({param: paramName})
+    const paramValue = getQueryParam({ param: paramName })
 
     if (paramValue) {
       found = true
@@ -304,7 +311,7 @@ export const handleRemoveQueriesNRedirect = ({
   })
 
   if (found) {
-    const newUrl = removeQueryParams({paramsToRemove: queryParamsToRemove})
+    const newUrl = removeQueryParams({ paramsToRemove: queryParamsToRemove })
 
     if (hardRedirect) {
       window.location.replace(newUrl)
@@ -316,8 +323,8 @@ export const handleRemoveQueriesNRedirect = ({
   return false
 }
 
-export const ifSudo = ({role}) => role === 10
-export const ifAdmin = ({role}) => role === 20
+export const ifSudo = ({ role }) => role === 10
+export const ifAdmin = ({ role }) => role === 20
 
 export const generatePassword = (length = 8) => {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/()-*&^%$#@!'

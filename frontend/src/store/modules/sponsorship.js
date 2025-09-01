@@ -26,10 +26,10 @@ export const mutations = {
 }
 
 export const actions = {
-  setSponsorships({commit}, request) {
+  setSponsorships({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/sponsorship/getSponsorshipsByEventId', {params: {eventId: request}})
+        .get('/sponsorship/getSponsorshipsByEventId', { params: { eventId: request } })
         .then((response) => {
           commit('setSponsorships', response.data?.payload)
           resolve(response)
@@ -39,11 +39,11 @@ export const actions = {
         })
     })
   },
-  setSponsorshipsByRegistration({commit}, request) {
+  setSponsorshipsByRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/sponsorship/getSponsorshipsByRegistrationId', {
-          params: {registrationId: request},
+          params: { registrationId: request },
         })
         .then((response) => {
           commit('setSponsorships', response.data?.payload)
@@ -54,10 +54,10 @@ export const actions = {
         })
     })
   },
-  setCurrentSponsorship({commit}, request) {
+  setCurrentSponsorship({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/sponsorship/getSponsorshipById', {params: {sponsorshipId: request}})
+        .get('/sponsorship/getSponsorshipById', { params: { sponsorshipId: request } })
         .then((response) => {
           commit('setCurrentSponsorship', response.data?.payload)
           resolve(response)
@@ -67,7 +67,7 @@ export const actions = {
         })
     })
   },
-  createSponsorship({commit}, request) {
+  createSponsorship({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/sponsorship/create', request)
@@ -80,7 +80,7 @@ export const actions = {
         })
     })
   },
-  createSponsorshipPaymentIntent({commit}, request) {
+  createSponsorshipPaymentIntent({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/sponsorship/createSponsorshipPaymentIntent', request)

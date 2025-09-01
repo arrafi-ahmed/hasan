@@ -1,8 +1,8 @@
 <script setup>
-import {computed, nextTick, onMounted, ref} from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import FOG from 'vanta/dist/vanta.fog.min'
-import {useRoute} from 'vue-router'
-import {useStore} from 'vuex'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import HeaderlessFooter from './Footer.vue'
 
 const route = useRoute()
@@ -45,10 +45,7 @@ onMounted(async () => {
 
 <template>
   <v-app full-height>
-    <div
-      ref="fogElement"
-      class="fill-height bg-tertiary d-flex align-center"
-    >
+    <div ref="fogElement" class="fill-height bg-tertiary d-flex align-center">
       <v-main>
         <router-view :key="route.fullPath" />
       </v-main>

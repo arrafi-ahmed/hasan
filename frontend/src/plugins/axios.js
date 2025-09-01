@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import {toast} from 'vue-sonner'
+import { toast } from 'vue-sonner'
 
 const $axios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -32,9 +32,7 @@ $axios.interceptors.request.use((config) => {
   store.commit('setProgress', true)
 
   // Check if this is a public route
-  const isPublicRoute = publicRoutes.some(
-    (route) => config.url === route,
-  )
+  const isPublicRoute = publicRoutes.some((route) => config.url === route)
 
   // Only add Authorization header for non-public routes
   if (!isPublicRoute) {

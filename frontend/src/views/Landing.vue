@@ -1,22 +1,19 @@
 <script setup>
-import {getClientPublicImageUrl} from '@/others/util'
-import {useDisplay} from 'vuetify'
+import { getClientPublicImageUrl } from '@/others/util'
+import { useDisplay } from 'vuetify'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 
 const scrollTo = (sectionId) => {
   const element = document.getElementById(sectionId)
   if (element) {
-    element.scrollIntoView({behavior: 'smooth'})
+    element.scrollIntoView({ behavior: 'smooth' })
   }
 }
 </script>
 
 <template>
-  <v-container
-    class="limit-max-width-xl fill-height landing"
-    fluid
-  >
+  <v-container class="limit-max-width-xl fill-height landing" fluid>
     <!--    section 1-->
     <v-row
       :class="{
@@ -27,10 +24,7 @@ const scrollTo = (sectionId) => {
       class="rounded-xl"
       no-gutters
     >
-      <v-col
-        class="d-none d-sm-flex"
-        cols="5"
-      >
+      <v-col class="d-none d-sm-flex" cols="5">
         <v-row no-gutters>
           <v-col cols="11">
             <v-img :src="getClientPublicImageUrl('landing1.png')" />
@@ -45,20 +39,10 @@ const scrollTo = (sectionId) => {
         cols="12"
         md="7"
       >
-        <v-row
-          align="center"
-          justify="center"
-        >
+        <v-row align="center" justify="center">
           <v-col>
-            <v-row
-              class="mt-7 mt-md-0"
-              justify="center"
-            >
-              <v-col
-                :class="{ 'bg-overlay-mobile-logo rounded': xs }"
-                cols="7"
-                md="9"
-              >
+            <v-row class="mt-7 mt-md-0" justify="center">
+              <v-col :class="{ 'bg-overlay-mobile-logo rounded': xs }" cols="7" md="9">
                 <v-img
                   :src="getClientPublicImageUrl('logo.png')"
                   class="v-icon--clickable"
@@ -78,32 +62,17 @@ const scrollTo = (sectionId) => {
                 </p>
               </v-col>
             </v-row>
-            <v-row
-              align="center"
-              class="pt-4"
-              justify="center"
-            >
+            <v-row align="center" class="pt-4" justify="center">
               <v-col cols="auto">
-                <v-btn
-                  color="primary"
-                  size="large"
-                  @click.prevent="scrollTo('contact_section')"
-                >
+                <v-btn color="primary" size="large" @click.prevent="scrollTo('contact_section')">
                   Contattaci
                 </v-btn>
               </v-col>
             </v-row>
 
-            <v-row
-              align="center"
-              class="py-4"
-              justify="center"
-            >
+            <v-row align="center" class="py-4" justify="center">
               <v-col cols="auto">
-                <v-img
-                  :src="getClientPublicImageUrl('landing2.png')"
-                  :width="35"
-                />
+                <v-img :src="getClientPublicImageUrl('landing2.png')" :width="35" />
               </v-col>
               <v-col cols="auto">
                 <small class="landing-text">by Ferdinando Guzzo Consulting</small>
@@ -115,27 +84,12 @@ const scrollTo = (sectionId) => {
     </v-row>
 
     <!--    section 2-->
-    <v-row
-      class="py-5 py-md-15"
-      justify="center"
-    >
-      <v-col
-        cols="12"
-        sm="10"
-      >
+    <v-row class="py-5 py-md-15" justify="center">
+      <v-col cols="12" sm="10">
         <v-row justify="center">
-          <v-col
-            cols="12"
-            sm="8"
-          >
-            <h1 class="landing-heading">
-              Rivoluziona I Tuoi Eventi
-            </h1>
-            <v-row
-              align="center"
-              class="mt-2 mt-md-4"
-              justify="center"
-            >
+          <v-col cols="12" sm="8">
+            <h1 class="landing-heading">Rivoluziona I Tuoi Eventi</h1>
+            <v-row align="center" class="mt-2 mt-md-4" justify="center">
               <v-col cols="12">
                 <div id="contact_section">
                   <p class="landing-text">
@@ -144,33 +98,21 @@ const scrollTo = (sectionId) => {
                     business con la nostra soluzione all-in-one.
                   </p>
 
-                  <h3 class="mt-5 landing-heading">
-                    Contatti
-                  </h3>
+                  <h3 class="mt-5 landing-heading">Contatti</h3>
                   <p class="landing-text">
                     Email:
-                    <a
-                      class="landing-link"
-                      href="mailto:contact@clickevent.it"
-                    >
+                    <a class="landing-link" href="mailto:contact@clickevent.it">
                       ferdinandoguzzo@gmail.com
                     </a>
-                    <br>
+                    <br />
                     Telefono:
-                    <a
-                      class="landing-link"
-                      href="tel:+393273471259"
-                    >+393273471259</a>
-                    <br>
+                    <a class="landing-link" href="tel:+393273471259">+393273471259</a>
+                    <br />
                     Sito Web:
-                    <a
-                      class="landing-link"
-                      href="http://www.clickevent.it"
-                      target="_blank"
-                    >
+                    <a class="landing-link" href="http://www.clickevent.it" target="_blank">
                       www.ferdinandoguzzo.it
                     </a>
-                    <br>
+                    <br />
                     Linkedin:
                     <a
                       class="landing-link"
@@ -179,12 +121,10 @@ const scrollTo = (sectionId) => {
                     >
                       ferdinandoguzzo
                     </a>
-                    <br>
+                    <br />
                   </p>
 
-                  <h3 class="mt-5 landing-heading">
-                    Grazie Per L'Attenzione
-                  </h3>
+                  <h3 class="mt-5 landing-heading">Grazie Per L'Attenzione</h3>
                   <p class="landing-text">
                     Siamo entusiasti di poter collaborare con voi per rendere i vostri eventi
                     indimenticabili. Non esitate a contattarci per qualsiasi domanda o per iniziare
@@ -195,17 +135,8 @@ const scrollTo = (sectionId) => {
             </v-row>
           </v-col>
 
-          <v-col
-            cols="12"
-            order="first"
-            order-sm="last"
-            sm="3"
-          >
-            <v-img
-              :src="getClientPublicImageUrl('landing6.png')"
-              class="h-100 rounded"
-              cover
-            />
+          <v-col cols="12" order="first" order-sm="last" sm="3">
+            <v-img :src="getClientPublicImageUrl('landing6.png')" class="h-100 rounded" cover />
           </v-col>
         </v-row>
       </v-col>

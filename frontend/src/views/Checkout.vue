@@ -1,10 +1,10 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
-import {loadStripe} from '@stripe/stripe-js/pure'
-import {toast} from 'vue-sonner'
-import {stripePublic} from '@/others/util'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { loadStripe } from '@stripe/stripe-js/pure'
+import { toast } from 'vue-sonner'
+import { defaultCurrency, stripePublic } from '@/others/util'
 import $axios from '@/plugins/axios'
 
 const route = useRoute()
@@ -24,24 +24,23 @@ const selectedTickets = computed(() => JSON.parse(localStorage.getItem('selected
 const registration = computed(() => JSON.parse(localStorage.getItem('registrationData')))
 
 const isFreeOrder = computed(() => {
-  return selectedTickets.value &&
-    selectedTickets.value.every((item) => item.unitPrice === 0)
+  return selectedTickets.value && selectedTickets.value.every((item) => item.unitPrice === 0)
 })
 // Computed properties for order summary
 const totalAmount = computed(() => {
-
   return selectedTickets.value.reduce((total, item) => {
     return total + (item.unitPrice || 0) * (item.quantity || 1)
   }, 0)
 })
 
-
 const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-US', {
+  price = price / 100
+  const val = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: defaultCurrency.value.toUpperCase(),
     minimumFractionDigits: 2,
   }).format(price)
+  return val
 }
 
 // Initialize Stripe
@@ -58,7 +57,7 @@ const initializeStripe = async () => {
 const getEventBySlug = async (slug) => {
   try {
     const response = await $axios.get(`/event/getEventBySlug?slug=${slug}`, {
-      headers: {'X-Suppress-Toast': 'true'}
+      headers: { 'X-Suppress-Toast': 'true' },
     })
     if (response.data.payload) {
       return response.data.payload
@@ -72,7 +71,6 @@ const getEventBySlug = async (slug) => {
 
 // Initialize checkout process
 const initializeCheckout = async () => {
-
   try {
     isProcessingPayment.value = true
 
@@ -80,14 +78,13 @@ const initializeCheckout = async () => {
     const storedAttendees = localStorage.getItem('attendeesData')
     if (!storedAttendees) {
       toast.error('No order data found. Please try again.')
-      return router.push({name: 'landing'})
+      return router.push({ name: 'landing' })
     }
 
     Object.assign(attendees, JSON.parse(storedAttendees))
 
     // Check if this is a free order
     if (isFreeOrder.value) {
-
       return // Don't initialize Stripe for free orders
     }
 
@@ -102,7 +99,11 @@ const initializeCheckout = async () => {
     }
 
     // Validate ticket data
-    if (!selectedTickets.value || !Array.isArray(selectedTickets.value) || selectedTickets.value.length === 0) {
+    if (
+      !selectedTickets.value ||
+      !Array.isArray(selectedTickets.value) ||
+      selectedTickets.value.length === 0
+    ) {
       toast.error('No ticket data found. Please return to tickets page.')
       return
     }
@@ -113,11 +114,9 @@ const initializeCheckout = async () => {
       registration: registration.value,
     }
 
-
     const response = await $axios.post('/stripe/create-secure-payment-intent', requestData, {
-      headers: {'X-Suppress-Toast': 'true'}
+      headers: { 'X-Suppress-Toast': 'true' },
     })
-
 
     clientSecret.value = response.data.payload.clientSecret
     totalAmount.value = response.data.payload.totalAmount
@@ -125,7 +124,6 @@ const initializeCheckout = async () => {
 
     // Store sessionId in localStorage as backup
     localStorage.setItem('tempSessionId', sessionId.value)
-
 
     // Create payment element
     if (!stripe.value) {
@@ -169,7 +167,11 @@ const handleFreeRegistration = async () => {
       return
     }
 
-    if (!selectedTickets.value || !Array.isArray(selectedTickets.value) || selectedTickets.value.length === 0) {
+    if (
+      !selectedTickets.value ||
+      !Array.isArray(selectedTickets.value) ||
+      selectedTickets.value.length === 0
+    ) {
       toast.error('No tickets selected. Please select tickets first.')
       return
     }
@@ -194,12 +196,14 @@ const handleFreeRegistration = async () => {
       eventId: event.id,
     }
 
-
     // Call backend to process free registration
-    const response = await $axios.post('/registration/complete-free-registration', registrationData, {})
+    const response = await $axios.post(
+      '/registration/complete-free-registration',
+      registrationData,
+      {},
+    )
 
     if (response.data.payload && response.data.payload.registrationId) {
-
       // Clear localStorage
       localStorage.removeItem('attendeesData')
       localStorage.removeItem('registrationData')
@@ -208,13 +212,17 @@ const handleFreeRegistration = async () => {
       // Redirect to success page with registration ID and attendee data for free registrations
       // For multiple attendees, we need to pass all attendee information
       const attendeesData = response.data.payload.attendees || []
-      const attendeeIds = attendeesData.map(a => a.id).join(',')
-      const qrUuids = attendeesData.map(a => a.qrUuid).join(',')
+      const attendeeIds = attendeesData.map((a) => a.id).join(',')
+      const qrUuids = attendeesData.map((a) => a.qrUuid).join(',')
 
       if (route.params.slug) {
-        router.push(`/${route.params.slug}/success?registration_id=${response.data.payload.registrationId}&attendee_ids=${attendeeIds}&qr_uuids=${qrUuids}`)
+        router.push(
+          `/${route.params.slug}/success?registration_id=${response.data.payload.registrationId}&attendee_ids=${attendeeIds}&qr_uuids=${qrUuids}`,
+        )
       } else {
-        router.push(`/success?registration_id=${response.data.payload.registrationId}&attendee_ids=${attendeeIds}&qr_uuids=${qrUuids}`)
+        router.push(
+          `/success?registration_id=${response.data.payload.registrationId}&attendee_ids=${attendeeIds}&qr_uuids=${qrUuids}`,
+        )
       }
     }
   } catch (error) {
@@ -240,7 +248,6 @@ const handlePayment = async () => {
       throw new Error('Session ID not available. Please try again.')
     }
 
-
     // Build success URL using our session ID
     let successUrl
     if (route.params.slug) {
@@ -250,8 +257,7 @@ const handlePayment = async () => {
       successUrl = `${window.location.origin}/success?session_id=${sessionId.value}`
     }
 
-
-    const {error} = await stripe.value.confirmPayment({
+    const { error } = await stripe.value.confirmPayment({
       elements: elements.value,
       confirmParams: {
         return_url: successUrl,
@@ -281,40 +287,21 @@ onMounted(async () => {
 <template>
   <v-container class="checkout-container">
     <v-row justify="center">
-      <v-col
-        cols="12"
-        lg="10"
-      >
+      <v-col cols="12" lg="10">
         <!--              {{registration}}-->
         <v-row>
           <!-- Order Summary -->
-          <v-col
-            cols="12"
-            md="4"
-            class="order-summary-col"
-          >
-            <v-card
-              class="order-summary-card"
-              elevation="4"
-            >
+          <v-col class="order-summary-col" cols="12" md="4">
+            <v-card class="order-summary-card" elevation="4">
               <v-card-title class="text-h5 pa-4">
-                <v-icon left>
-                  mdi-cart
-                </v-icon>
+                <v-icon left>mdi-cart</v-icon>
                 Order Summary
               </v-card-title>
 
               <v-card-text class="pa-4">
                 <!-- Order Items -->
-                <div
-                  v-if="selectedTickets && selectedTickets.length > 0"
-                  class="mb-4"
-                >
-                  <div
-                    v-for="item in selectedTickets"
-                    :key="item.ticketId"
-                    class="order-item mb-3"
-                  >
+                <div v-if="selectedTickets && selectedTickets.length > 0" class="mb-4">
+                  <div v-for="item in selectedTickets" :key="item.ticketId" class="order-item mb-3">
                     <div class="d-flex justify-space-between align-center">
                       <div>
                         <div class="text-subtitle-2 font-weight-medium">
@@ -339,50 +326,33 @@ onMounted(async () => {
                 <!-- Total -->
                 <v-divider class="my-4" />
                 <div class="d-flex justify-space-between align-center">
-                  <div class="text-h6 font-weight-bold">
-                    Total
-                  </div>
+                  <div class="text-h6 font-weight-bold">Total</div>
                   <div class="text-h6 font-weight-bold">
                     {{ formatPrice(totalAmount) }}
                   </div>
                 </div>
 
                 <!-- Attendee Info -->
-                <div
-                  v-if="attendees?.length > 0"
-                  class="mt-6"
-                >
+                <div v-if="attendees?.length > 0" class="mt-6">
                   <v-divider class="mb-4" />
-                  <div class="text-subtitle-2 font-weight-medium mb-3">
-                    Attendee Details
-                  </div>
+                  <div class="text-subtitle-2 font-weight-medium mb-3">Attendee Details</div>
                   <div class="attendee-info">
-                    <div
-                      v-for="(attendee, index) in attendees"
-                      :key="index"
-                      class="mb-3"
-                    >
+                    <div v-for="(attendee, index) in attendees" :key="index" class="mb-3">
                       <div class="text-body-2">
                         <strong>Attendee {{ index + 1 }}:</strong>
                         {{ attendee.firstName }} {{ attendee.lastName }}
                       </div>
-                      <div
-                        v-if="attendee.email"
-                        class="text-body-2 text-medium-emphasis"
-                      >
-                        <strong>Email:</strong> {{ attendee.email }}
+                      <div v-if="attendee.email" class="text-body-2 text-medium-emphasis">
+                        <strong>Email:</strong>
+                        {{ attendee.email }}
                       </div>
-                      <div
-                        v-if="attendee.phone"
-                        class="text-body-2 text-medium-emphasis"
-                      >
-                        <strong>Phone:</strong> {{ attendee.phone }}
+                      <div v-if="attendee.phone" class="text-body-2 text-medium-emphasis">
+                        <strong>Phone:</strong>
+                        {{ attendee.phone }}
                       </div>
-                      <div
-                        v-if="attendee.ticketTitle"
-                        class="text-body-2 text-primary"
-                      >
-                        <strong>Ticket:</strong> {{ attendee.ticketTitle }}
+                      <div v-if="attendee.ticketTitle" class="text-body-2 text-primary">
+                        <strong>Ticket:</strong>
+                        {{ attendee.ticketTitle }}
                       </div>
                     </div>
                   </div>
@@ -392,50 +362,20 @@ onMounted(async () => {
           </v-col>
 
           <!-- Payment Form -->
-          <v-col
-            cols="12"
-            md="8"
-            class="payment-form-col"
-          >
-            <v-card
-              class="checkout-card"
-              elevation="4"
-            >
+          <v-col class="payment-form-col" cols="12" md="8">
+            <v-card class="checkout-card" elevation="4">
               <v-card-title class="text-h4 text-center pa-6">
-                {{
-                  isFreeOrder
-                    ? 'Complete Free Registration'
-                    : 'Complete Your Registration'
-                }}
+                {{ isFreeOrder ? 'Complete Free Registration' : 'Complete Your Registration' }}
               </v-card-title>
 
               <v-card-text class="pa-6">
                 <!-- Payment Form (only show for paid orders) -->
-                <div
-                  v-if="
-                    !isFreeOrder
-                  "
-                  id="payment-element"
-                  class="mb-6"
-                />
+                <div v-if="!isFreeOrder" id="payment-element" class="mb-6" />
 
                 <!-- Free Registration Message -->
-                <div
-                  v-if="
-                    isFreeOrder
-                  "
-                  class="text-center mb-6"
-                >
-                  <v-icon
-                    class="mb-4"
-                    color="primary"
-                    size="64"
-                  >
-                    mdi-ticket-confirmation
-                  </v-icon>
-                  <h3 class="text-h5 mb-2">
-                    Free Registration
-                  </h3>
+                <div v-if="isFreeOrder" class="text-center mb-6">
+                  <v-icon class="mb-4" color="primary" size="64">mdi-ticket-confirmation</v-icon>
+                  <h3 class="text-h5 mb-2">Free Registration</h3>
                   <p class="text-body-1 text-medium-emphasis">
                     No payment required. Click the button below to complete your registration.
                   </p>
@@ -443,39 +383,31 @@ onMounted(async () => {
 
                 <!-- Payment Button (only show for paid orders) -->
                 <v-btn
-                  v-if="
-                    !isFreeOrder
-                  "
+                  v-if="!isFreeOrder"
                   :disabled="isProcessingPayment"
                   :loading="isProcessingPayment"
                   block
+                  class="payment-btn"
                   color="primary"
                   size="large"
-                  class="payment-btn"
                   @click="handlePayment"
                 >
-                  <v-icon left>
-                    mdi-credit-card
-                  </v-icon>
+                  <v-icon left>mdi-credit-card</v-icon>
                   {{ isProcessingPayment ? 'Processing...' : 'Pay Now' }}
                 </v-btn>
 
                 <!-- Free Order Button (if applicable) -->
                 <v-btn
-                  v-if="
-                    isFreeOrder
-                  "
+                  v-if="isFreeOrder"
                   :disabled="isProcessingPayment"
                   :loading="isProcessingPayment"
                   block
+                  class="payment-btn"
                   color="primary"
                   size="large"
-                  class="payment-btn"
                   @click="handleFreeRegistration"
                 >
-                  <v-icon left>
-                    mdi-ticket-confirmation
-                  </v-icon>
+                  <v-icon left>mdi-ticket-confirmation</v-icon>
                   Complete Free Registration
                 </v-btn>
               </v-card-text>
@@ -555,53 +487,53 @@ onMounted(async () => {
     align-items: flex-start;
     min-height: auto;
   }
-  
+
   .order-summary-col {
     order: 1;
   }
-  
+
   .payment-form-col {
     order: 2;
   }
-  
+
   .order-summary-card {
     position: static;
     margin-bottom: 24px;
   }
-  
+
   .checkout-card .v-card-title {
     font-size: 1.5rem !important;
     padding: 16px !important;
   }
-  
+
   .checkout-card .v-card-text {
     padding: 16px !important;
   }
-  
+
   .order-summary-card .v-card-title {
     font-size: 1.25rem !important;
     padding: 16px !important;
   }
-  
+
   .order-summary-card .v-card-text {
     padding: 16px !important;
   }
-  
+
   .payment-btn {
     height: 48px !important;
     font-size: 0.875rem !important;
   }
-  
+
   #payment-element {
     min-height: 180px;
     margin-bottom: 20px;
   }
-  
+
   /* Improve touch targets */
   .order-item {
     padding: 16px 0;
   }
-  
+
   .attendee-info .text-body-2 {
     padding: 4px 0;
   }
@@ -611,61 +543,61 @@ onMounted(async () => {
   .checkout-container {
     padding: 12px;
   }
-  
+
   .checkout-card .v-card-title {
     font-size: 1.25rem !important;
     padding: 12px !important;
   }
-  
+
   .checkout-card .v-card-text {
     padding: 12px !important;
   }
-  
+
   .order-summary-card .v-card-title {
     font-size: 1.125rem !important;
     padding: 12px !important;
   }
-  
+
   .order-summary-card .v-card-text {
     padding: 12px !important;
   }
-  
+
   .order-item {
     padding: 8px 0;
   }
-  
+
   .text-h6 {
     font-size: 1.125rem !important;
   }
-  
+
   .text-subtitle-2 {
     font-size: 0.875rem !important;
   }
-  
+
   .text-body-2 {
     font-size: 0.875rem !important;
   }
-  
+
   .payment-btn {
     height: 44px !important;
     font-size: 0.8125rem !important;
   }
-  
+
   .attendee-info .text-body-2 {
     font-size: 0.8125rem !important;
     line-height: 1.4;
   }
-  
+
   #payment-element {
     min-height: 160px;
     margin-bottom: 16px;
   }
-  
+
   /* Ensure minimum touch target size */
   .payment-btn {
     min-height: 44px !important;
   }
-  
+
   .order-item {
     min-height: 44px !important;
     display: flex !important;

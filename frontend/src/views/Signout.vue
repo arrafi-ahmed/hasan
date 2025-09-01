@@ -1,24 +1,22 @@
 <script setup>
-import {useStore} from 'vuex'
-import {toast} from 'vue-sonner'
+import { useStore } from 'vuex'
+import { toast } from 'vue-sonner'
 
 const store = useStore()
 store
   .dispatch('auth/signout')
   .then((res) => {
     toast(`Signout successful!`, {
-      cardProps: {color: 'success'},
+      cardProps: { color: 'success' },
       action: {
         label: 'Close',
         buttonProps: {
           color: 'white',
         },
-        onClick() {
-        },
+        onClick() {},
       },
     })
     window.location.href = '/signin'
   })
-  .catch((err) => {
-  })
+  .catch((err) => {})
 </script>

@@ -3,33 +3,33 @@ const CustomError = require("../model/CustomError");
 const { defaultCurrency } = require("../others/util");
 
 exports.save = async ({ payload }) => {
-    if (!payload) {
-        throw new CustomError("Payload is required", 400);
-    }
+  if (!payload) {
+    throw new CustomError("Payload is required", 400);
+  }
 
-    // For new packages, remove id to let database auto-generate it
-    const { id, ...packageData } = payload;
+  // For new packages, remove id to let database auto-generate it
+  const { id, ...packageData } = payload;
 
-    // Validate required fields (only NOT NULL columns from DB schema)
-    if (!packageData.name || !packageData.name.trim()) {
-        throw new CustomError("Name is required", 400);
-    }
+  // Validate required fields (only NOT NULL columns from DB schema)
+  if (!packageData.name || !packageData.name.trim()) {
+    throw new CustomError("Name is required", 400);
+  }
 
-    if (!packageData.price || packageData.price <= 0) {
-        throw new CustomError("Valid price is required", 400);
-    }
+  if (!packageData.price || packageData.price <= 0) {
+    throw new CustomError("Valid price is required", 400);
+  }
 
-    if (!packageData.eventId) {
-        throw new CustomError("Event ID is required", 400);
-    }
+  if (!packageData.eventId) {
+    throw new CustomError("Event ID is required", 400);
+  }
 
-    if (!packageData.clubId) {
-        throw new CustomError("Club ID is required", 400);
-    }
+  if (!packageData.clubId) {
+    throw new CustomError("Club ID is required", 400);
+  }
 
-    if (id) {
-        // Update existing package
-        const sql = `
+  if (id) {
+    // Update existing package
+    const sql = `
             INSERT INTO sponsorship_package (id, name, description, price, currency, available_count, features,
                                              event_id, club_id,
                                              is_active, created_at, updated_at)
@@ -47,121 +47,141 @@ exports.save = async ({ payload }) => {
                 updated_at = NOW()
                 RETURNING *
         `;
-        const values = [id, packageData.name, packageData.description, packageData.price,
-            packageData.currency || defaultCurrency.code, packageData.availableCount, JSON.stringify(packageData.features),
-            packageData.eventId, packageData.clubId, packageData.isActive !== undefined ? packageData.isActive : true];
-        const result = await query(sql, values);
+    const values = [
+      id,
+      packageData.name,
+      packageData.description,
+      packageData.price,
+      packageData.currency || defaultCurrency.code,
+      packageData.availableCount,
+      JSON.stringify(packageData.features),
+      packageData.eventId,
+      packageData.clubId,
+      packageData.isActive !== undefined ? packageData.isActive : true,
+    ];
+    const result = await query(sql, values);
 
-        if (!result.rows[0]) {
-            throw new CustomError("Failed to update sponsorship package", 500);
-        }
+    if (!result.rows[0]) {
+      throw new CustomError("Failed to update sponsorship package", 500);
+    }
 
-        return result.rows[0];
-    } else {
-        // Create new package
-        const sql = `
+    return result.rows[0];
+  } else {
+    // Create new package
+    const sql = `
             INSERT INTO sponsorship_package (name, description, price, currency, available_count, features, event_id,
                                              club_id, is_active,
                                              created_at, updated_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW()) RETURNING *
         `;
-        const values = [packageData.name, packageData.description, packageData.price,
-        packageData.currency || defaultCurrency.code, packageData.availableCount, JSON.stringify(packageData.features),
-        packageData.eventId, packageData.clubId, packageData.isActive !== undefined ? packageData.isActive : true];
-        const result = await query(sql, values);
+    const values = [
+      packageData.name,
+      packageData.description,
+      packageData.price,
+      packageData.currency || defaultCurrency.code,
+      packageData.availableCount,
+      JSON.stringify(packageData.features),
+      packageData.eventId,
+      packageData.clubId,
+      packageData.isActive !== undefined ? packageData.isActive : true,
+    ];
+    const result = await query(sql, values);
 
-        if (!result.rows[0]) {
-            throw new CustomError("Failed to create sponsorship package", 500);
-        }
-
-        return result.rows[0];
+    if (!result.rows[0]) {
+      throw new CustomError("Failed to create sponsorship package", 500);
     }
+
+    return result.rows[0];
+  }
 };
 
 exports.getPackagesByEventId = async ({ eventId }) => {
-    if (!eventId) {
-        throw new CustomError("Event ID is required", 400);
-    }
+  if (!eventId) {
+    throw new CustomError("Event ID is required", 400);
+  }
 
-    const sql = `
+  const sql = `
         SELECT *
         FROM sponsorship_package
         WHERE event_id = $1
           AND is_active = true
         ORDER BY price DESC
     `;
-    const result = await query(sql, [eventId]);
-    return result.rows;
+  const result = await query(sql, [eventId]);
+  return result.rows;
 };
 
 exports.getPackageById = async ({ packageId }) => {
-    if (!packageId) {
-        throw new CustomError("Package ID is required", 400);
-    }
+  if (!packageId) {
+    throw new CustomError("Package ID is required", 400);
+  }
 
-    const sql = `
+  const sql = `
         SELECT *
         FROM sponsorship_package
         WHERE id = $1
     `;
-    const result = await query(sql, [packageId]);
+  const result = await query(sql, [packageId]);
 
-    if (!result.rows[0]) {
-        throw new CustomError("Sponsorship package not found", 404);
-    }
+  if (!result.rows[0]) {
+    throw new CustomError("Sponsorship package not found", 404);
+  }
 
-    return result.rows[0];
+  return result.rows[0];
 };
 
 exports.deletePackage = async ({ packageId, eventId, clubId }) => {
-    if (!packageId) {
-        throw new CustomError("Package ID is required", 400);
-    }
+  if (!packageId) {
+    throw new CustomError("Package ID is required", 400);
+  }
 
-    if (!eventId) {
-        throw new CustomError("Event ID is required", 400);
-    }
+  if (!eventId) {
+    throw new CustomError("Event ID is required", 400);
+  }
 
-    if (!clubId) {
-        throw new CustomError("Club ID is required", 400);
-    }
+  if (!clubId) {
+    throw new CustomError("Club ID is required", 400);
+  }
 
-    const sql = `
+  const sql = `
         DELETE
         FROM sponsorship_package
         WHERE id = $1
           AND event_id = $2
           AND club_id = $3 RETURNING *
     `;
-    const result = await query(sql, [packageId, eventId, clubId]);
+  const result = await query(sql, [packageId, eventId, clubId]);
 
-    if (!result.rows[0]) {
-        throw new CustomError("Sponsorship package not found or access denied", 404);
-    }
+  if (!result.rows[0]) {
+    throw new CustomError(
+      "Sponsorship package not found or access denied",
+      404,
+    );
+  }
 
-    return result.rows[0];
+  return result.rows[0];
 };
 
 exports.updatePackageStatus = async ({ packageId, isActive }) => {
-    if (!packageId) {
-        throw new CustomError("Package ID is required", 400);
-    }
+  if (!packageId) {
+    throw new CustomError("Package ID is required", 400);
+  }
 
-    if (isActive === undefined || isActive === null) {
-        throw new CustomError("Active status is required", 400);
-    }
+  if (isActive === undefined || isActive === null) {
+    throw new CustomError("Active status is required", 400);
+  }
 
-    const sql = `
+  const sql = `
         UPDATE sponsorship_package
         SET is_active  = $1,
             updated_at = NOW()
         WHERE id = $2 RETURNING *
     `;
-    const result = await query(sql, [isActive, packageId]);
+  const result = await query(sql, [isActive, packageId]);
 
-    if (!result.rows[0]) {
-        throw new CustomError("Sponsorship package not found", 404);
-    }
+  if (!result.rows[0]) {
+    throw new CustomError("Sponsorship package not found", 404);
+  }
 
-    return result.rows[0];
-}; 
+  return result.rows[0];
+};

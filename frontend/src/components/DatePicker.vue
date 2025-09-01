@@ -1,18 +1,18 @@
 <script setup>
-import {defineEmits, defineProps, ref, watch} from 'vue'
-import {useDisplay} from 'vuetify'
-import {formatDate} from '@/others/util'
+import { defineEmits, defineProps, ref, watch } from 'vue'
+import { useDisplay } from 'vuetify'
+import { formatDate } from '@/others/util'
 
 const model = defineModel()
-const {width, height, xs} = useDisplay()
+const { width, height, xs } = useDisplay()
 const emit = defineEmits(['update:modelValue', 'updateDate'])
 
-const {label, color, customClass, rules, variant} = defineProps({
-  label: {type: String},
-  color: {type: String},
-  customClass: {type: String},
-  rules: {type: Object},
-  variant: {type: String},
+const { label, color, customClass, rules, variant } = defineProps({
+  label: { type: String },
+  color: { type: String },
+  customClass: { type: String },
+  rules: { type: Object },
+  variant: { type: String },
 })
 const selectedDate = ref()
 const menu = ref(false)
@@ -37,10 +37,7 @@ watch(
 </script>
 
 <template v-if="selectedDate">
-  <v-menu
-    v-model="menu"
-    :close-on-content-click="false"
-  >
+  <v-menu v-model="menu" :close-on-content-click="false">
     <template #activator="{ props }">
       <v-text-field
         v-model="selectedDate"

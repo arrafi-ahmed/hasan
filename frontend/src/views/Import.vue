@@ -1,11 +1,11 @@
 <script setup>
-import {ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
-import {useDisplay} from 'vuetify'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { useDisplay } from 'vuetify'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -28,7 +28,7 @@ const handleAttendeeImport = async () => {
   formData.append('attendeeImportExcel', attendeeImportExcel.value)
 
   store.dispatch('registration/bulkImportAttendee', formData).then((result) => {
-    router.push({name: 'event-attendees', params: {eventId: route.params.eventId}})
+    router.push({ name: 'event-attendees', params: { eventId: route.params.eventId } })
   })
 }
 </script>
@@ -38,24 +38,13 @@ const handleAttendeeImport = async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Import"
-          subtitle="Import attendee data from Excel files"
-        />
+        <PageTitle subtitle="Import attendee data from Excel files" title="Import" />
       </v-col>
     </v-row>
 
-    <v-row
-      align="center"
-      justify="center"
-    >
+    <v-row align="center" justify="center">
       <v-col>
-        <v-card
-          class="mx-auto pa-4 pa-md-8 my-4"
-          elevation="0"
-          max-width="700"
-          rounded="lg"
-        >
+        <v-card class="mx-auto pa-4 pa-md-8 my-4" elevation="0" max-width="700" rounded="lg">
           <v-card-title class="text-center font-weight-bold">
             <h2>Attendee Import</h2>
           </v-card-title>

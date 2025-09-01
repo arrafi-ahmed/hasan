@@ -1,13 +1,13 @@
 <script setup>
 import ImageManager from '@/components/ImageManager.vue'
-import {computed, onMounted, reactive, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {getClubImageUrl, isValidImage} from '@/others/util'
-import {useDisplay} from 'vuetify'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { getClubImageUrl, isValidImage } from '@/others/util'
+import { useDisplay } from 'vuetify'
 import PageTitle from '@/components/PageTitle.vue'
 
-const {mobile} = useDisplay()
+const { mobile } = useDisplay()
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
@@ -32,7 +32,7 @@ const newClubInit = {
   logo: null,
   rmImage: null,
 }
-const newClub = reactive({...newClubInit})
+const newClub = reactive({ ...newClubInit })
 
 const form = ref(null)
 const isFormValid = ref(true)
@@ -95,30 +95,15 @@ onMounted(async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Edit Club"
-          subtitle="Update your club details and configuration"
-        />
+        <PageTitle subtitle="Update your club details and configuration" title="Edit Club" />
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        lg="8"
-        xl="6"
-      >
-        <v-card
-          class="form-card"
-          elevation="4"
-        >
+      <v-col cols="12" lg="8" xl="6">
+        <v-card class="form-card" elevation="4">
           <v-card-text class="pa-6">
-            <v-form
-              ref="form"
-              v-model="isFormValid"
-              fast-fail
-              @submit.prevent="handleEditClub"
-            >
+            <v-form ref="form" v-model="isFormValid" fast-fail @submit.prevent="handleEditClub">
               <v-text-field
                 v-model="newClub.name"
                 :rules="[(v) => !!v || 'Name is required!']"
@@ -171,13 +156,7 @@ onMounted(async () => {
 
               <div class="d-flex align-center mt-3 mt-md-4">
                 <v-spacer />
-                <v-btn
-                  :size="xs ? 'default' : 'large'"
-                  color="primary"
-                  type="submit"
-                >
-                  Save
-                </v-btn>
+                <v-btn :size="xs ? 'default' : 'large'" color="primary" type="submit">Save</v-btn>
               </div>
             </v-form>
           </v-card-text>

@@ -8,14 +8,14 @@
 import '@mdi/font/css/materialdesignicons.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import 'vuetify/styles'
-import {VFileUpload} from 'vuetify/labs/VFileUpload'
-import {VDateInput} from 'vuetify/labs/VDateInput'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
+import { VDateInput } from 'vuetify/labs/VDateInput'
 // Composables
-import {createVuetify} from 'vuetify'
+import { createVuetify } from 'vuetify'
 
 // Icon sets
-import {aliases, mdi} from 'vuetify/iconsets/mdi'
-import {fa} from 'vuetify/iconsets/fa'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { fa } from 'vuetify/iconsets/fa'
 
 const light = {
   dark: false,

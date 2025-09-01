@@ -1,8 +1,8 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 
-const {animationType} = defineProps({
-  animationType: {default: 'slide-fade'},
+const { animationType } = defineProps({
+  animationType: { default: 'slide-fade' },
 })
 const target = ref()
 const animate = ref(false)
@@ -22,10 +22,7 @@ onMounted(() => {
 <template>
   <div ref="target">
     <transition :name="animationType">
-      <div
-        v-appear="animate"
-        class="animated-component"
-      >
+      <div v-appear="animate" class="animated-component">
         <slot />
       </div>
     </transition>

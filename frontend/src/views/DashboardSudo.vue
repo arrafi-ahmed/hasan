@@ -1,13 +1,13 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import PageTitle from '@/components/PageTitle.vue'
-import {useDisplay} from 'vuetify'
-import {getClubImageUrl} from '@/others/util'
+import { useDisplay } from 'vuetify'
+import { getClubImageUrl } from '@/others/util'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 
-const {mobile} = useDisplay()
+const { mobile } = useDisplay()
 
 const route = useRoute()
 const router = useRouter()
@@ -27,7 +27,7 @@ const handleClickCredential = (club) => {
   })
 }
 const deleteClub = (clubId) => {
-  store.dispatch('club/removeClub', {clubId})
+  store.dispatch('club/removeClub', { clubId })
 }
 const fetchData = () => {
   store.dispatch('club/setClubs')
@@ -41,25 +41,13 @@ onMounted(() => {
   <v-container>
     <v-row>
       <v-col>
-        <page-title
-          justify="space-between"
-          sub-title="Super Admin"
-          title="Dashboard"
-        >
+        <page-title justify="space-between" sub-title="Super Admin" title="Dashboard">
           <v-row align="center">
-            <v-divider
-              class="mx-2"
-              inset
-              vertical
-            />
+            <v-divider class="mx-2" inset vertical />
 
             <v-menu>
               <template #activator="{ props }">
-                <v-btn
-                  icon="mdi-dots-vertical"
-                  v-bind="props"
-                  variant="text"
-                />
+                <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text" />
               </template>
               <v-list density="compact">
                 <v-list-item
@@ -79,23 +67,14 @@ onMounted(() => {
 
     <v-row justify="center">
       <v-col>
-        <v-expansion-panels
-          v-model="panel"
-          multiple
-        >
+        <v-expansion-panels v-model="panel" multiple>
           <v-expansion-panel value="clubList">
             <v-expansion-panel-title>
-              <v-icon size="x-large">
-                mdi-list-box
-              </v-icon>
+              <v-icon size="x-large">mdi-list-box</v-icon>
               <span class="text-body-1 pl-2">All Clubs</span>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-list
-                v-if="clubs.length > 0"
-                density="default"
-                lines="two"
-              >
+              <v-list v-if="clubs.length > 0" density="default" lines="two">
                 <template v-for="(item, index) in clubs">
                   <v-list-item
                     v-if="item"
@@ -111,11 +90,7 @@ onMounted(() => {
                     "
                   >
                     <template #prepend>
-                      <v-avatar
-                        :image="getClubImageUrl(item.logo)"
-                        :size="80"
-                        rounded="sm"
-                      />
+                      <v-avatar :image="getClubImageUrl(item.logo)" :size="80" rounded="sm" />
                     </template>
 
                     <template #append>
@@ -186,14 +161,7 @@ onMounted(() => {
                   <v-divider v-if="index !== clubs.length - 1" />
                 </template>
               </v-list>
-              <v-alert
-                v-else
-                border="start"
-                closable
-                density="compact"
-              >
-                No clubs found!
-              </v-alert>
+              <v-alert v-else border="start" closable density="compact">No clubs found!</v-alert>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>

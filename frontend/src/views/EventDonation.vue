@@ -4,21 +4,12 @@
     <v-row class="mb-6">
       <v-col cols="12">
         <div class="text-center">
-          <h1 class="text-h3 font-weight-bold mb-3 text-primary">
-            Support Our Event
-          </h1>
+          <h1 class="text-h3 font-weight-bold mb-3 text-primary">Support Our Event</h1>
           <p class="text-h6 text-medium-emphasis mb-4">
             Choose a donation package and help make this event extraordinary
           </p>
-          <v-chip
-            class="mb-2"
-            color="primary"
-            size="large"
-            variant="tonal"
-          >
-            <v-icon start>
-              mdi-heart
-            </v-icon>
+          <v-chip class="mb-2" color="primary" size="large" variant="tonal">
+            <v-icon start>mdi-heart</v-icon>
             Your support makes a difference
           </v-chip>
         </div>
@@ -26,17 +17,8 @@
     </v-row>
 
     <!-- Donation Packages -->
-    <v-row
-      v-if="!isLoading && packages.length > 0"
-      class="mb-8"
-    >
-      <v-col
-        v-for="pkg in packages"
-        :key="pkg.id"
-        cols="12"
-        lg="4"
-        md="6"
-      >
+    <v-row v-if="!isLoading && packages.length > 0" class="mb-8">
+      <v-col v-for="pkg in packages" :key="pkg.id" cols="12" lg="4" md="6">
         <v-card
           :class="{ 'selected-package': selectedPackage?.id === pkg.id }"
           class="donation-package-card h-100"
@@ -90,9 +72,7 @@
               variant="elevated"
               @click="selectPackage(pkg)"
             >
-              <v-icon start>
-                mdi-gift
-              </v-icon>
+              <v-icon start>mdi-gift</v-icon>
               Choose This Package
             </v-btn>
           </v-card-actions>
@@ -102,37 +82,17 @@
 
     <!-- Loading State -->
     <v-row v-if="isLoading">
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        <v-progress-circular
-          color="primary"
-          indeterminate
-          size="64"
-        />
-        <p class="text-body-1 text-medium-emphasis mt-4">
-          Loading donation packages...
-        </p>
+      <v-col class="text-center" cols="12">
+        <v-progress-circular color="primary" indeterminate size="64" />
+        <p class="text-body-1 text-medium-emphasis mt-4">Loading donation packages...</p>
       </v-col>
     </v-row>
 
     <!-- No Packages Found -->
     <v-row v-if="!isLoading && packages.length === 0">
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        <v-icon
-          class="mb-4"
-          color="disabled"
-          size="64"
-        >
-          mdi-package-variant-closed
-        </v-icon>
-        <h3 class="text-h5 font-weight-bold mb-2">
-          No Donation Packages Available
-        </h3>
+      <v-col class="text-center" cols="12">
+        <v-icon class="mb-4" color="disabled" size="64">mdi-package-variant-closed</v-icon>
+        <h3 class="text-h5 font-weight-bold mb-2">No Donation Packages Available</h3>
         <p class="text-body-1 text-medium-emphasis">
           Check back later for sponsorship opportunities.
         </p>
@@ -140,37 +100,21 @@
     </v-row>
 
     <!-- Sponsorship Form Dialog -->
-    <v-dialog
-      v-model="showSponsorshipDialog"
-      max-width="600"
-      persistent
-    >
+    <v-dialog v-model="showSponsorshipDialog" max-width="600" persistent>
       <v-card>
-        <v-card-title class="d-flex align-center justify-space-between py-6 px-6 bg-primary text-white">
+        <v-card-title
+          class="d-flex align-center justify-space-between py-6 px-6 bg-primary text-white"
+        >
           <div class="d-flex align-center">
-            <v-icon
-              class="mr-3"
-              size="28"
-            >
-              mdi-gift
-            </v-icon>
+            <v-icon class="mr-3" size="28">mdi-gift</v-icon>
             <span class="text-h5 font-weight-medium">Complete Sponsorship</span>
           </div>
-          <v-btn
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            @click="closeSponsorshipDialog"
-          />
+          <v-btn icon="mdi-close" size="small" variant="text" @click="closeSponsorshipDialog" />
         </v-card-title>
 
         <v-card-text class="pa-6">
           <!-- Package Summary -->
-          <v-card
-            class="mb-6"
-            color="primary"
-            variant="tonal"
-          >
+          <v-card class="mb-6" color="primary" variant="tonal">
             <v-card-text class="pa-4">
               <div class="d-flex align-center justify-space-between">
                 <div>
@@ -191,18 +135,12 @@
           </v-card>
 
           <!-- Sponsor Information Form -->
-          <v-form
-            ref="sponsorshipForm"
-            v-model="isFormValid"
-          >
+          <v-form ref="sponsorshipForm" v-model="isFormValid">
             <v-row>
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="sponsorForm.firstName"
-                  :rules="[v => !!v || 'First name is required']"
+                  :rules="[(v) => !!v || 'First name is required']"
                   density="compact"
                   hide-details="auto"
                   label="First Name"
@@ -210,13 +148,10 @@
                   variant="solo"
                 />
               </v-col>
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="sponsorForm.lastName"
-                  :rules="[v => !!v || 'Last name is required']"
+                  :rules="[(v) => !!v || 'Last name is required']"
                   density="compact"
                   hide-details="auto"
                   label="Last Name"
@@ -227,15 +162,12 @@
             </v-row>
 
             <v-row>
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="sponsorForm.email"
                   :rules="[
-                    v => !!v || 'Email is required',
-                    v => /.+@.+\..+/.test(v) || 'Email must be valid'
+                    (v) => !!v || 'Email is required',
+                    (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
                   ]"
                   density="compact"
                   hide-details="auto"
@@ -245,10 +177,7 @@
                   variant="solo"
                 />
               </v-col>
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="sponsorForm.phone"
                   density="compact"
@@ -290,24 +219,15 @@
           <v-divider class="my-6" />
 
           <div class="mb-4">
-            <h4 class="text-h6 font-weight-semibold mb-3">
-              Payment Information
-            </h4>
-            <div
-              id="card-element"
-              class="payment-element-container"
-            />
-            <div
-              id="card-errors"
-              class="text-error text-body-2 mt-2"
-              role="alert"
-            />
+            <h4 class="text-h6 font-weight-semibold mb-3">Payment Information</h4>
+            <div id="card-element" class="payment-element-container" />
+            <div id="card-errors" class="text-error text-body-2 mt-2" role="alert" />
           </div>
 
           <!-- Terms and Conditions -->
           <v-checkbox
             v-model="acceptedTerms"
-            :rules="[v => !!v || 'You must accept the terms and conditions']"
+            :rules="[(v) => !!v || 'You must accept the terms and conditions']"
             class="mb-4"
             label="I agree to the terms and conditions"
             required
@@ -324,42 +244,24 @@
             variant="elevated"
             @click="processSponsorship"
           >
-            <v-icon start>
-              mdi-credit-card
-            </v-icon>
-            Complete Sponsorship - {{ formatPrice(selectedPackage?.price, selectedPackage?.currency) }}
+            <v-icon start>mdi-credit-card</v-icon>
+            Complete Sponsorship -
+            {{ formatPrice(selectedPackage?.price, selectedPackage?.currency) }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- Success Dialog -->
-    <v-dialog
-      v-model="showSuccessDialog"
-      max-width="500"
-      persistent
-    >
+    <v-dialog v-model="showSuccessDialog" max-width="500" persistent>
       <v-card>
         <v-card-text class="text-center pa-6">
-          <v-icon
-            class="mb-4"
-            color="success"
-            size="64"
-          >
-            mdi-check-circle
-          </v-icon>
-          <h3 class="text-h5 font-weight-bold mb-2 text-success">
-            Sponsorship Successful!
-          </h3>
+          <v-icon class="mb-4" color="success" size="64">mdi-check-circle</v-icon>
+          <h3 class="text-h5 font-weight-bold mb-2 text-success">Sponsorship Successful!</h3>
           <p class="text-body-1 text-medium-emphasis mb-4">
             Thank you for your generous support! You will receive a confirmation email shortly.
           </p>
-          <v-btn
-            color="primary"
-            size="large"
-            variant="elevated"
-            @click="closeSuccessDialog"
-          >
+          <v-btn color="primary" size="large" variant="elevated" @click="closeSuccessDialog">
             Continue
           </v-btn>
         </v-card-text>
@@ -369,10 +271,10 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {toast} from 'vue-sonner'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 
 const store = useStore()
 const route = useRoute()
@@ -397,7 +299,7 @@ const sponsorForm = ref({
   email: '',
   phone: '',
   organization: '',
-  message: ''
+  message: '',
 })
 
 // Stripe elements
@@ -412,8 +314,9 @@ const fetchData = async () => {
       await store.dispatch('sponsorshipPackage/setPackages', route.params.eventId)
     } else {
       await Promise.all([
-        store.dispatch('event/setEvent', {eventId: route.params.eventId}),
-        store.dispatch('sponsorshipPackage/setPackages', route.params.eventId)])
+        store.dispatch('event/setEvent', { eventId: route.params.eventId }),
+        store.dispatch('sponsorshipPackage/setPackages', route.params.eventId),
+      ])
     }
   } catch (error) {
     console.error('Failed to fetch data:', error)
@@ -452,7 +355,7 @@ const closeSponsorshipDialog = () => {
 
 const closeSuccessDialog = () => {
   showSuccessDialog.value = false
-  router.push({name: 'landing'})
+  router.push({ name: 'landing' })
 }
 
 const resetForm = () => {
@@ -462,7 +365,7 @@ const resetForm = () => {
     email: '',
     phone: '',
     organization: '',
-    message: ''
+    message: '',
   }
   acceptedTerms.value = false
   isFormValid.value = false
@@ -510,7 +413,7 @@ const setupStripe = () => {
     cardElement.mount('#card-element')
 
     // Handle validation errors
-    cardElement.on('change', ({error}) => {
+    cardElement.on('change', ({ error }) => {
       const displayError = document.getElementById('card-errors')
       if (error) {
         displayError.textContent = error.message
@@ -539,13 +442,13 @@ const processSponsorship = async () => {
       amount: selectedPackage.value.price,
       currency: selectedPackage.value.currency,
       sponsorEmail: sponsorForm.value.email,
-      eventId: route.params.eventId
+      eventId: route.params.eventId,
     })
 
-    const {clientSecret} = response.data.payload
+    const { clientSecret } = response.data.payload
 
     // Confirm payment
-    const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: cardElement,
         billing_details: {
@@ -570,7 +473,7 @@ const processSponsorship = async () => {
           email: sponsorForm.value.email,
           phone: sponsorForm.value.phone,
           organization: sponsorForm.value.organization,
-          message: sponsorForm.value.message
+          message: sponsorForm.value.message,
         },
         packageType: selectedPackage.value.name,
         amount: selectedPackage.value.price,
@@ -578,7 +481,7 @@ const processSponsorship = async () => {
         eventId: route.params.eventId,
         clubId: event.value.clubId,
         paymentStatus: 'paid',
-        stripePaymentIntentId: paymentIntent.id
+        stripePaymentIntentId: paymentIntent.id,
       })
 
       closeSponsorshipDialog()

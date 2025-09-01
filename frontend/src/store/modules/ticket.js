@@ -32,10 +32,10 @@ export const mutations = {
 }
 
 export const actions = {
-  setTickets({commit}, request) {
+  setTickets({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/ticket/getTicketsByEventId', {params: {eventId: request}})
+        .get('/ticket/getTicketsByEventId', { params: { eventId: request } })
         .then((response) => {
           commit('setTickets', response.data?.payload)
           resolve(response)
@@ -45,10 +45,10 @@ export const actions = {
         })
     })
   },
-  setCurrentTicket({commit}, request) {
+  setCurrentTicket({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/ticket/getTicketById', {params: {ticketId: request}})
+        .get('/ticket/getTicketById', { params: { ticketId: request } })
         .then((response) => {
           commit('setCurrentTicket', response.data?.payload)
           resolve(response)
@@ -58,7 +58,7 @@ export const actions = {
         })
     })
   },
-  saveTicket({commit}, request) {
+  saveTicket({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/ticket/save', request)
@@ -79,10 +79,10 @@ export const actions = {
         })
     })
   },
-  removeTicket({commit}, request) {
+  removeTicket({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .delete('/ticket/removeTicket', {data: request})
+        .delete('/ticket/removeTicket', { data: request })
         .then((response) => {
           commit('removeTicket', request.ticketId)
           resolve(response)

@@ -1,15 +1,15 @@
 <script setup>
 import PageTitle from '@/components/PageTitle.vue'
-import {computed, onMounted, ref} from 'vue'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {toast} from 'vue-sonner'
-import {useDisplay} from 'vuetify'
-import {loadStripe} from '@stripe/stripe-js/pure'
-import {stripePublic} from '@/others/util'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
+import { useDisplay } from 'vuetify'
+import { loadStripe } from '@stripe/stripe-js/pure'
+import { stripePublic } from '@/others/util'
 import NoItemsFound from '@/components/NoItemsFound.vue'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -82,7 +82,6 @@ const processPayment = async () => {
     })
 
     const result = response.data
-
 
     if (result.payload?.clientSecret && result.payload.clientSecret !== 'no-stripe') {
       // Initialize Stripe Elements for payment
@@ -163,11 +162,8 @@ onMounted(async () => {
               sector: regData.sector || parsedData.sector,
               expectation: regData.expectation || parsedData.expectation,
             }
-
           }
-        } catch (error) {
-
-        }
+        } catch (error) {}
       }
     } catch (error) {
       console.warn('Failed to parse registration data:', error)
@@ -209,16 +205,8 @@ onMounted(async () => {
   <v-container>
     <v-row>
       <v-col>
-        <page-title
-          :sub-title="event?.name"
-          justify="space-between"
-          title="Purchase Vouchers"
-        >
-          <v-btn
-            icon="mdi-arrow-left"
-            variant="text"
-            @click="$router.back()"
-          />
+        <page-title :sub-title="event?.name" justify="space-between" title="Purchase Vouchers">
+          <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
         </page-title>
       </v-col>
     </v-row>
@@ -230,13 +218,7 @@ onMounted(async () => {
           <v-card-text>
             <div v-if="extras.length > 0">
               <v-row>
-                <v-col
-                  v-for="extra in extras"
-                  :key="extra.id"
-                  cols="12"
-                  lg="4"
-                  md="6"
-                >
+                <v-col v-for="extra in extras" :key="extra.id" cols="12" lg="4" md="6">
                   <v-card
                     :class="{ selected: isExtrasSelected(extra.id) }"
                     class="extras-card"
@@ -256,9 +238,7 @@ onMounted(async () => {
                       </p>
 
                       <div v-if="extra.content && extra.content.length > 0">
-                        <div class="text-caption font-weight-medium mb-2">
-                          Contents:
-                        </div>
+                        <div class="text-caption font-weight-medium mb-2">Contents:</div>
                         <v-list density="compact">
                           <v-list-item
                             v-for="(item, index) in extra.content"
@@ -266,10 +246,7 @@ onMounted(async () => {
                             class="pa-0"
                           >
                             <template #prepend>
-                              <v-chip
-                                density="comfortable"
-                                size="small"
-                              >
+                              <v-chip density="comfortable" size="small">
                                 {{ item.quantity }}x
                               </v-chip>
                             </template>
@@ -296,9 +273,7 @@ onMounted(async () => {
 
               <!-- Total and Purchase Button -->
               <div class="text-center mt-8">
-                <div class="text-h5 mb-4">
-                  Total: {{ formatPrice(getTotalPrice()) }}
-                </div>
+                <div class="text-h5 mb-4">Total: {{ formatPrice(getTotalPrice()) }}</div>
                 <v-btn
                   :disabled="selectedExtras.length === 0"
                   :loading="isProcessingPayment"
@@ -327,11 +302,7 @@ onMounted(async () => {
     </v-row>
 
     <!-- Payment Form Dialog -->
-    <v-dialog
-      v-model="showPaymentForm"
-      max-width="500"
-      persistent
-    >
+    <v-dialog v-model="showPaymentForm" max-width="500" persistent>
       <v-card>
         <v-card-title>Complete Payment</v-card-title>
         <v-card-text>
@@ -339,17 +310,8 @@ onMounted(async () => {
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="grey"
-            variant="text"
-            @click="showPaymentForm = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="confirmPayment"
-          >
+          <v-btn color="grey" variant="text" @click="showPaymentForm = false">Cancel</v-btn>
+          <v-btn color="primary" @click="confirmPayment">
             Pay {{ formatPrice(getTotalPrice()) }}
           </v-btn>
         </v-card-actions>

@@ -3,15 +3,15 @@
  */
 export class Ticket {
   constructor(data = {}) {
-    this.id = data.id || null;
-    this.title = data.title || '';
-    this.description = data.description || '';
-    this.price = data.price || 0;
-    this.currency = data.currency || 'USD';
-    this.currentStock = data.currentStock || 0;
-    this.maxStock = data.maxStock || null;
-    this.eventId = data.eventId || null;
-    this.createdAt = data.createdAt || null;
+    this.id = data.id || null
+    this.title = data.title || ''
+    this.description = data.description || ''
+    this.price = data.price || 0
+    this.currency = data.currency || 'USD'
+    this.currentStock = data.currentStock || 0
+    this.maxStock = data.maxStock || null
+    this.eventId = data.eventId || null
+    this.createdAt = data.createdAt || null
   }
 
   /**
@@ -24,15 +24,15 @@ export class Ticket {
       GBP: 'GBP',
       JPY: 'JPY',
       CAD: 'CAD',
-      AUD: 'AUD'
-    };
+      AUD: 'AUD',
+    }
   }
 
   /**
    * Check if ticket is free
    */
   isFree() {
-    return this.price === 0;
+    return this.price === 0
   }
 
   /**
@@ -40,16 +40,16 @@ export class Ticket {
    */
   isAvailable() {
     if (this.maxStock === null) {
-      return true; // Unlimited stock
+      return true // Unlimited stock
     }
-    return this.currentStock > 0;
+    return this.currentStock > 0
   }
 
   /**
    * Check if ticket has unlimited stock
    */
   hasUnlimitedStock() {
-    return this.maxStock === null;
+    return this.maxStock === null
   }
 
   /**
@@ -57,9 +57,9 @@ export class Ticket {
    */
   getRemainingStock() {
     if (this.maxStock === null) {
-      return null; // Unlimited
+      return null // Unlimited
     }
-    return this.currentStock;
+    return this.currentStock
   }
 
   /**
@@ -67,15 +67,15 @@ export class Ticket {
    */
   decreaseStock(quantity = 1) {
     if (this.maxStock === null) {
-      return true; // Unlimited stock
+      return true // Unlimited stock
     }
 
     if (this.currentStock >= quantity) {
-      this.currentStock -= quantity;
-      return true;
+      this.currentStock -= quantity
+      return true
     }
 
-    return false; // Not enough stock
+    return false // Not enough stock
   }
 
   /**
@@ -83,37 +83,37 @@ export class Ticket {
    */
   increaseStock(quantity = 1) {
     if (this.maxStock === null) {
-      return true; // Unlimited stock
+      return true // Unlimited stock
     }
 
     if (this.maxStock === null || this.currentStock + quantity <= this.maxStock) {
-      this.currentStock += quantity;
-      return true;
+      this.currentStock += quantity
+      return true
     }
 
-    return false; // Would exceed max stock
+    return false // Would exceed max stock
   }
 
   /**
    * Format price for display
    */
   formatPrice(quantity = 1) {
-    const total = this.price * quantity;
+    const total = this.price * quantity
 
     if (this.isFree()) {
-      return 'Free';
+      return 'Free'
     }
 
     // Basic formatting
     switch (this.currency) {
       case 'USD':
-        return `$${(total / 100).toFixed(2)}`;
+        return `$${(total / 100).toFixed(2)}`
       case 'EUR':
-        return `€${(total / 100).toFixed(2)}`;
+        return `€${(total / 100).toFixed(2)}`
       case 'GBP':
-        return `£${(total / 100).toFixed(2)}`;
+        return `£${(total / 100).toFixed(2)}`
       default:
-        return `${(total / 100).toFixed(2)} ${this.currency}`;
+        return `${(total / 100).toFixed(2)} ${this.currency}`
     }
   }
 
@@ -121,51 +121,51 @@ export class Ticket {
    * Get price in cents
    */
   getPriceInCents(quantity = 1) {
-    return this.price * quantity;
+    return this.price * quantity
   }
 
   /**
    * Validates the ticket data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.title || this.title.trim().length === 0) {
-      errors.push('Title is required');
+      errors.push('Title is required')
     }
 
     if (this.title && this.title.length > 100) {
-      errors.push('Title must be 100 characters or less');
+      errors.push('Title must be 100 characters or less')
     }
 
     if (this.price < 0) {
-      errors.push('Price cannot be negative');
+      errors.push('Price cannot be negative')
     }
 
     if (!this.currency || this.currency.length !== 3) {
-      errors.push('Currency must be a 3-character code');
+      errors.push('Currency must be a 3-character code')
     }
 
     if (this.currentStock < 0) {
-      errors.push('Current stock cannot be negative');
+      errors.push('Current stock cannot be negative')
     }
 
     if (this.maxStock !== null && this.maxStock < 0) {
-      errors.push('Max stock cannot be negative');
+      errors.push('Max stock cannot be negative')
     }
 
     if (this.maxStock !== null && this.currentStock > this.maxStock) {
-      errors.push('Current stock cannot exceed max stock');
+      errors.push('Current stock cannot exceed max stock')
     }
 
     if (!this.eventId) {
-      errors.push('Event ID is required');
+      errors.push('Event ID is required')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -181,7 +181,7 @@ export class Ticket {
       currentStock: this.currentStock,
       maxStock: this.maxStock,
       eventId: this.eventId,
-      createdAt: this.createdAt
-    };
+      createdAt: this.createdAt,
+    }
   }
 }

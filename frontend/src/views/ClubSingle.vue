@@ -1,15 +1,15 @@
 <script setup>
-import {computed, onMounted} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {getApiPublicImgUrl, getEventImageUrl} from '@/others/util'
-import {useStore} from 'vuex'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getApiPublicImgUrl, getEventImageUrl } from '@/others/util'
+import { useStore } from 'vuex'
 import Logo from '@/components/Logo.vue'
-import {useDisplay} from 'vuetify'
+import { useDisplay } from 'vuetify'
 
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-const {sm} = useDisplay()
+const { sm } = useDisplay()
 
 const club = computed(() => store.state.club.club)
 const events = computed(() => store.state.event.events)
@@ -29,15 +29,8 @@ onMounted(async () => {
 </script>
 <template>
   <v-container class="fill-height">
-    <v-row
-      align="center"
-      justify="center"
-      no-gutters
-    >
-      <v-col
-        cols="12"
-        sm="10"
-      >
+    <v-row align="center" justify="center" no-gutters>
+      <v-col cols="12" sm="10">
         <v-card
           v-if="club.id"
           class="mx-auto pa-0 pa-md-5 my-0 my-md-2 rounded-xl bg-transparent"
@@ -61,9 +54,7 @@ onMounted(async () => {
                 })
               "
             />
-            <v-card-title class="text-center text-wrap mt-2 mt-md-5">
-              Upcoming events
-            </v-card-title>
+            <v-card-title class="text-center text-wrap mt-2 mt-md-5">Upcoming events</v-card-title>
             <v-card-subtitle class="text-center mb-4 mb-md-8">
               Select and book your entry
             </v-card-subtitle>
@@ -129,9 +120,7 @@ onMounted(async () => {
               </template>
             </v-carousel>
             <div v-else>
-              <div class="text-center">
-                No events available!
-              </div>
+              <div class="text-center">No events available!</div>
             </div>
           </v-card-text>
         </v-card>

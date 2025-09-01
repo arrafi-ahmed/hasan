@@ -1,10 +1,10 @@
 <script setup>
 import NoItemsFound from '@/components/NoItemsFound.vue'
-import {computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import Extras from '@/models/Extras'
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
 import ExtrasItem from '@/models/ExtrasItem'
-import {useRoute, useRouter} from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import PageTitle from '@/components/PageTitle.vue'
 
@@ -23,7 +23,7 @@ const targetClubId = computed(() =>
 const club = computed(() => store.state.club.club)
 const extras = computed(() => store.state.event.extras)
 
-const newExtras = reactive({...new Extras()})
+const newExtras = reactive({ ...new Extras() })
 
 const openAddExtrasDialog = () => {
   addExtrasDialog.value = !addExtrasDialog.value
@@ -32,11 +32,11 @@ const addExtrasDialog = ref(false)
 const addExtrasForm = ref(null)
 const isAddExtrasFormValid = ref(true)
 
-const openEditExtrasDialog = ({id}) => {
+const openEditExtrasDialog = ({ id }) => {
   editExtrasDialog.value = !editExtrasDialog.value
   const foundExtra = extras.value.find((item) => item.id === id)
   if (foundExtra) {
-    Object.assign(newExtras, {...foundExtra})
+    Object.assign(newExtras, { ...foundExtra })
   }
 }
 const editExtrasDialog = ref(false)
@@ -59,7 +59,7 @@ const handleExtrasSave = async () => {
 
   newExtras.eventId = route.params.eventId
 
-  store.dispatch('event/saveExtras', {newExtras}).then((result) => {
+  store.dispatch('event/saveExtras', { newExtras }).then((result) => {
     // newEvent = {...newEvent, ...newEventInit}
     Object.assign(newExtras, {
       ...new Extras(),
@@ -72,7 +72,7 @@ const handleExtrasSave = async () => {
   })
 }
 
-const deleteExtras = async ({extrasId}) => {
+const deleteExtras = async ({ extrasId }) => {
   await store.dispatch('event/removeExtras', {
     extrasId,
     eventId: route.params.eventId,
@@ -95,10 +95,7 @@ onMounted(async () => {
     <!-- Header Section -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <PageTitle
-          title="Vouchers"
-          :subtitle="club.name"
-        >
+        <PageTitle :subtitle="club.name" title="Vouchers">
           <template #actions>
             <v-btn
               color="primary"
@@ -109,40 +106,21 @@ onMounted(async () => {
               Create
             </v-btn>
           </template>
-          
+
           <template #mobile-actions>
-            <v-btn
-              color="primary"
-              icon="mdi-plus"
-              rounded="lg"
-              @click="openAddExtrasDialog"
-            />
+            <v-btn color="primary" icon="mdi-plus" rounded="lg" @click="openAddExtrasDialog" />
           </template>
         </PageTitle>
       </v-col>
     </v-row>
 
-    <v-row
-      v-if="extras.length > 0"
-      align="stretch"
-    >
-      <v-col
-        v-for="(extra, index) in extras"
-        cols="12"
-        lg="3"
-        md="4"
-        sm="6"
-      >
-        <v-card
-          class="fill-height"
-          rounded="lg"
-        >
+    <v-row v-if="extras.length > 0" align="stretch">
+      <v-col v-for="(extra, index) in extras" cols="12" lg="3" md="4" sm="6">
+        <v-card class="fill-height" rounded="lg">
           <v-card-title>
             <div class="d-flex justify-space-between align-center">
               <div>{{ extra.name }}</div>
-              <v-chip density="compact">
-                € {{ extra.price }}
-              </v-chip>
+              <v-chip density="compact">€ {{ extra.price }}</v-chip>
             </div>
           </v-card-title>
           <v-card-subtitle>
@@ -153,16 +131,9 @@ onMounted(async () => {
             <v-list density="compact">
               <v-list-item v-for="(content, contentIndex) in extra.content">
                 <template #prepend>
-                  <v-chip
-                    density="comfortable"
-                    size="small"
-                  >
-                    {{ content.quantity }} x
-                  </v-chip>
+                  <v-chip density="comfortable" size="small">{{ content.quantity }} x</v-chip>
                 </template>
-                <template #title>
-                  &nbsp;{{ content.name }}
-                </template>
+                <template #title>&nbsp;{{ content.name }}</template>
               </v-list-item>
             </v-list>
           </v-card-text>
@@ -204,10 +175,7 @@ onMounted(async () => {
     </v-row>
   </v-container>
 
-  <v-dialog
-    v-model="addExtrasDialog"
-    :width="500"
-  >
+  <v-dialog v-model="addExtrasDialog" :width="500">
     <v-card>
       <v-card-title class="d-flex justify-space-between">
         <h2>Add Voucher</h2>
@@ -256,11 +224,7 @@ onMounted(async () => {
             type="number"
             variant="outlined"
           />
-          <v-row
-            v-for="(item, index) in newExtras.content"
-            :key="index"
-            no-gutters
-          >
+          <v-row v-for="(item, index) in newExtras.content" :key="index" no-gutters>
             <v-col cols="9">
               <v-text-field
                 v-model="item.name"
@@ -287,34 +251,20 @@ onMounted(async () => {
               />
             </v-col>
           </v-row>
-          <v-btn
-            class="mt-2"
-            color="primary"
-            size="small"
-            @click="addMoreExtrasItems"
-          >
+          <v-btn class="mt-2" color="primary" size="small" @click="addMoreExtrasItems">
             Add More Item
           </v-btn>
 
           <v-card-actions class="mt-2 mt-md-4">
             <v-spacer />
-            <v-btn
-              color="primary"
-              type="submit"
-              variant="flat"
-            >
-              Save
-            </v-btn>
+            <v-btn color="primary" type="submit" variant="flat">Save</v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>
     </v-card>
   </v-dialog>
 
-  <v-dialog
-    v-model="editExtrasDialog"
-    :width="500"
-  >
+  <v-dialog v-model="editExtrasDialog" :width="500">
     <v-card>
       <v-card-title class="d-flex justify-space-between">
         <h2>Edit Voucher</h2>
@@ -363,11 +313,7 @@ onMounted(async () => {
             type="number"
             variant="outlined"
           />
-          <v-row
-            v-for="(item, index) in newExtras.content"
-            :key="index"
-            no-gutters
-          >
+          <v-row v-for="(item, index) in newExtras.content" :key="index" no-gutters>
             <v-col cols="9">
               <v-text-field
                 v-model="item.name"
@@ -394,24 +340,13 @@ onMounted(async () => {
               />
             </v-col>
           </v-row>
-          <v-btn
-            class="mt-2"
-            color="primary"
-            size="small"
-            @click="addMoreExtrasItems"
-          >
+          <v-btn class="mt-2" color="primary" size="small" @click="addMoreExtrasItems">
             Add More Item
           </v-btn>
 
           <v-card-actions class="mt-2 mt-md-4">
             <v-spacer />
-            <v-btn
-              color="primary"
-              type="submit"
-              variant="flat"
-            >
-              Save
-            </v-btn>
+            <v-btn color="primary" type="submit" variant="flat">Save</v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>

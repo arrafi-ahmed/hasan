@@ -1,6 +1,6 @@
 <script setup>
-import {computed} from 'vue'
-import {useRoute} from 'vue-router'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import PageTitle from '@/components/PageTitle.vue'
 import termsContent from '@/others/content/terms.html?raw'
 import privacyPolicyContent from '@/others/content/privacy-policy.html?raw'
@@ -30,20 +30,10 @@ const staticContent = computed(() =>
 </script>
 <template>
   <v-container>
-    <page-title
-      :title="pageTitle"
-      justify="space-between"
-    >
-      <v-btn
-        icon="mdi-arrow-left"
-        variant="text"
-        @click="$router.back()"
-      />
+    <page-title :title="pageTitle" justify="space-between">
+      <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
-    <v-row
-      align="center"
-      justify="center"
-    >
+    <v-row align="center" justify="center">
       <v-col cols="auto mt-5">
         <div v-html="staticContent" />
       </v-col>

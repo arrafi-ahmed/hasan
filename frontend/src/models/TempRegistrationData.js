@@ -3,129 +3,129 @@
  */
 export class TempRegistrationData {
   constructor(data = {}) {
-    this.sessionId = data.sessionId || null;
-    this.registrationData = data.registrationData || null;
-    this.ticketItems = data.ticketItems || null;
-    this.eventId = data.eventId || null;
-    this.clubId = data.clubId || null;
-    this.createdAt = data.createdAt || null;
-    this.expiresAt = data.expiresAt || null;
+    this.sessionId = data.sessionId || null
+    this.registrationData = data.registrationData || null
+    this.ticketItems = data.ticketItems || null
+    this.eventId = data.eventId || null
+    this.clubId = data.clubId || null
+    this.createdAt = data.createdAt || null
+    this.expiresAt = data.expiresAt || null
   }
 
   /**
    * Check if the temporary data has expired
    */
   isExpired() {
-    if (!this.expiresAt) return true;
+    if (!this.expiresAt) return true
 
-    const now = new Date();
-    const expiry = new Date(this.expiresAt);
+    const now = new Date()
+    const expiry = new Date(this.expiresAt)
 
-    return now > expiry;
+    return now > expiry
   }
 
   /**
    * Check if the temporary data is still valid
    */
   isValid() {
-    return !this.isExpired();
+    return !this.isExpired()
   }
 
   /**
    * Get time until expiry in minutes
    */
   getTimeUntilExpiry() {
-    if (!this.expiresAt) return 0;
+    if (!this.expiresAt) return 0
 
-    const now = new Date();
-    const expiry = new Date(this.expiresAt);
-    const diffInMs = expiry - now;
+    const now = new Date()
+    const expiry = new Date(this.expiresAt)
+    const diffInMs = expiry - now
 
-    if (diffInMs <= 0) return 0;
+    if (diffInMs <= 0) return 0
 
-    return Math.ceil(diffInMs / (1000 * 60));
+    return Math.ceil(diffInMs / (1000 * 60))
   }
 
   /**
    * Check if data expires soon (within 5 minutes)
    */
   expiresSoon() {
-    const timeUntilExpiry = this.getTimeUntilExpiry();
-    return timeUntilExpiry > 0 && timeUntilExpiry <= 5;
+    const timeUntilExpiry = this.getTimeUntilExpiry()
+    return timeUntilExpiry > 0 && timeUntilExpiry <= 5
   }
 
   /**
    * Get registration data field
    */
   getRegistrationField(key) {
-    if (!this.registrationData) return null;
-    return this.registrationData[key];
+    if (!this.registrationData) return null
+    return this.registrationData[key]
   }
 
   /**
    * Get ticket item by index
    */
   getTicketItem(index) {
-    if (!this.ticketItems || !Array.isArray(this.ticketItems)) return null;
-    return this.ticketItems[index] || null;
+    if (!this.ticketItems || !Array.isArray(this.ticketItems)) return null
+    return this.ticketItems[index] || null
   }
 
   /**
    * Get total number of ticket items
    */
   getTicketItemCount() {
-    if (!this.ticketItems || !Array.isArray(this.ticketItems)) return 0;
-    return this.ticketItems.length;
+    if (!this.ticketItems || !Array.isArray(this.ticketItems)) return 0
+    return this.ticketItems.length
   }
 
   /**
    * Check if has ticket items
    */
   hasTicketItems() {
-    return this.getTicketItemCount() > 0;
+    return this.getTicketItemCount() > 0
   }
 
   /**
    * Check if has registration data
    */
   hasRegistrationData() {
-    return this.registrationData && Object.keys(this.registrationData).length > 0;
+    return this.registrationData && Object.keys(this.registrationData).length > 0
   }
 
   /**
    * Validates the temporary registration data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.sessionId) {
-      errors.push('Session ID is required');
+      errors.push('Session ID is required')
     }
 
     if (!this.registrationData || typeof this.registrationData !== 'object') {
-      errors.push('Registration data must be an object');
+      errors.push('Registration data must be an object')
     }
 
     if (!this.ticketItems || !Array.isArray(this.ticketItems)) {
-      errors.push('Ticket items must be an array');
+      errors.push('Ticket items must be an array')
     }
 
     if (!this.eventId) {
-      errors.push('Event ID is required');
+      errors.push('Event ID is required')
     }
 
     if (!this.clubId) {
-      errors.push('Club ID is required');
+      errors.push('Club ID is required')
     }
 
     if (!this.expiresAt) {
-      errors.push('Expiry time is required');
+      errors.push('Expiry time is required')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -139,7 +139,7 @@ export class TempRegistrationData {
       eventId: this.eventId,
       clubId: this.clubId,
       createdAt: this.createdAt,
-      expiresAt: this.expiresAt
-    };
+      expiresAt: this.expiresAt,
+    }
   }
 }

@@ -1,15 +1,15 @@
 <script setup>
 import Logo from '@/components/Logo.vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useStore} from 'vuex'
-import {computed, ref} from 'vue'
-import {appInfo, getClientPublicImageUrl, getToLink} from '@/others/util'
-import {useDisplay} from 'vuetify'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { computed, ref } from 'vue'
+import { getClientPublicImageUrl, getToLink } from '@/others/util'
+import { useDisplay } from 'vuetify'
 
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
-const {smAndUp} = useDisplay()
+const { smAndUp } = useDisplay()
 
 const signedin = computed(() => store.getters['auth/signedin'])
 const currentUser = computed(() => store.getters['auth/getCurrentUser'])
@@ -25,36 +25,34 @@ const isAdmin = computed(() => store.getters['auth/isAdmin'])
 const menuItemsSudo = [
   {
     title: 'Dashboard',
-    to: {name: 'dashboard-sudo'},
+    to: { name: 'dashboard-sudo' },
     icon: 'mdi-view-dashboard',
   },
   {
     title: 'Add Club',
-    to: {name: 'club-add'},
+    to: { name: 'club-add' },
     icon: 'mdi-plus',
   },
 ]
 const menuItemsAdmin = [
   {
     title: 'Dashboard',
-    to: {name: 'dashboard-admin'},
+    to: { name: 'dashboard-admin' },
     icon: 'mdi-view-dashboard',
   },
   {
     title: 'Add Tour',
-    to: {name: 'event-add'},
+    to: { name: 'event-add' },
     icon: 'mdi-plus',
   },
   {
     title: 'Edit Club',
-    to: {name: 'club-edit'},
+    to: { name: 'club-edit' },
     icon: 'mdi-pencil',
   },
 ]
 
 const menuItems = computed(() => {
-
-
   let items = []
   if (isSudo.value) {
     items = items.concat(menuItemsSudo)
@@ -70,7 +68,7 @@ const menuItems = computed(() => {
     items = items.concat([
       {
         title: 'Profile',
-        to: {name: 'dashboard-admin'},
+        to: { name: 'dashboard-admin' },
         icon: 'mdi-account',
       },
       // {
@@ -144,8 +142,7 @@ const getBackButtonText = computed(() => {
 })
 
 const handleLogoClick = () => {
-
-  router.push({name: 'landing'})
+  router.push({ name: 'landing' })
 }
 
 const goBack = () => {
@@ -159,19 +156,19 @@ const goBack = () => {
     // Route-based navigation for purchase flow
     switch (route.name) {
       case 'tickets-slug':
-        router.push({name: 'event-landing-slug', params: {slug: route.params.slug}})
+        router.push({ name: 'event-landing-slug', params: { slug: route.params.slug } })
         break
       case 'checkout-slug':
-        router.push({name: 'tickets-slug', params: {slug: route.params.slug}})
+        router.push({ name: 'tickets-slug', params: { slug: route.params.slug } })
         break
       case 'attendee-form-slug':
-        router.push({name: 'tickets-slug', params: {slug: route.params.slug}})
+        router.push({ name: 'tickets-slug', params: { slug: route.params.slug } })
         break
       case 'event-register-success-slug':
-        router.push({name: 'event-landing-slug', params: {slug: route.params.slug}})
+        router.push({ name: 'event-landing-slug', params: { slug: route.params.slug } })
         break
       case 'success':
-        router.push({name: 'landing'})
+        router.push({ name: 'landing' })
         break
       default:
         router.back()
@@ -181,24 +178,12 @@ const goBack = () => {
 </script>
 
 <template>
-  <v-app-bar
-    class="modern-app-bar"
-    elevation="0"
-    height="72"
-    color="transparent"
-  >
+  <v-app-bar class="modern-app-bar" color="transparent" elevation="0" height="72">
     <div class="app-bar-container">
       <!-- Logo Section -->
-      <div
-        class="logo-container"
-        @click="handleLogoClick"
-      >
-<!--          :title="appInfo.name"-->
-        <Logo
-          :img-src="getClientPublicImageUrl('logo.png')"
-          width="70"
-          class="app-logo"
-        />
+      <div class="logo-container" @click="handleLogoClick">
+        <!--          :title="appInfo.name"-->
+        <Logo :img-src="getClientPublicImageUrl('logo.png')" class="app-logo" width="70" />
       </div>
 
       <v-spacer />
@@ -211,12 +196,7 @@ const goBack = () => {
         variant="text"
         @click="goBack"
       >
-        <v-icon
-          class="mr-1"
-          size="20"
-        >
-          mdi-arrow-left
-        </v-icon>
+        <v-icon class="mr-1" size="20">mdi-arrow-left</v-icon>
         <span class="back-text">{{ getBackButtonText }}</span>
       </v-btn>
 
@@ -228,29 +208,13 @@ const goBack = () => {
         variant="text"
         @click="drawer = !drawer"
       >
-        <v-avatar
-          class="user-avatar"
-          size="32"
-        >
-          <v-icon
-            color="primary"
-            size="20"
-          >
-            mdi-account
-          </v-icon>
+        <v-avatar class="user-avatar" size="32">
+          <v-icon color="primary" size="20">mdi-account</v-icon>
         </v-avatar>
-        <span
-          v-if="smAndUp"
-          class="user-name ml-2"
-        >
+        <span v-if="smAndUp" class="user-name ml-2">
           {{ currentUser.fullName ? currentUser.fullName.split(' ')[0] : 'User' }}
         </span>
-        <v-icon
-          class="ml-1"
-          size="16"
-        >
-          mdi-chevron-down
-        </v-icon>
+        <v-icon class="ml-1" size="16">mdi-chevron-down</v-icon>
       </v-btn>
     </div>
   </v-app-bar>
@@ -266,16 +230,8 @@ const goBack = () => {
   >
     <div class="drawer-header">
       <div class="user-profile">
-        <v-avatar
-          class="profile-avatar"
-          size="56"
-        >
-          <v-icon
-            color="white"
-            size="28"
-          >
-            mdi-account
-          </v-icon>
+        <v-avatar class="profile-avatar" size="56">
+          <v-icon color="white" size="28">mdi-account</v-icon>
         </v-avatar>
         <div class="user-info">
           <h3 class="user-full-name">
@@ -288,11 +244,7 @@ const goBack = () => {
       </div>
     </div>
 
-    <v-list
-      class="drawer-menu"
-      density="compact"
-      nav
-    >
+    <v-list class="drawer-menu" density="compact" nav>
       <v-list-item
         v-for="(item, index) in menuItems"
         :key="index"
@@ -302,10 +254,7 @@ const goBack = () => {
       >
         <template #prepend>
           <div class="menu-icon">
-            <v-icon
-              color="primary"
-              size="20"
-            >
+            <v-icon color="primary" size="20">
               {{ item.icon }}
             </v-icon>
           </div>
@@ -462,7 +411,6 @@ const goBack = () => {
 
 /* Drawer Menu */
 .drawer-menu {
-
   padding: 16px;
 }
 

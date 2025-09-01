@@ -1,11 +1,11 @@
 <script setup>
-import {onMounted, ref} from 'vue'
-import {useRouter} from 'vue-router'
-import {useDisplay} from 'vuetify'
-import {useStore} from 'vuex'
-import {toast} from 'vue-sonner'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
+import { useStore } from 'vuex'
+import { toast } from 'vue-sonner'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const router = useRouter()
 const store = useStore()
 
@@ -63,8 +63,7 @@ const fetchEventData = async () => {
               expectation: regData.expectation || data.expectation,
             }
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     }
   } catch (error) {
@@ -109,7 +108,7 @@ onMounted(async () => {
 
   if (storedData) {
     const parsedData = JSON.parse(storedData)
-    registrationData.value = {...registrationData.value, ...parsedData}
+    registrationData.value = { ...registrationData.value, ...parsedData }
 
     // If we have event data, try to fetch registration from database
     if (parsedData.email && parsedData.eventId) {
@@ -133,8 +132,7 @@ onMounted(async () => {
             expectation: regData.expectation || parsedData.expectation,
           }
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   } else if (sponsorshipData) {
     // Handle direct sponsorship without registration
@@ -154,7 +152,7 @@ onMounted(async () => {
   } else {
     // If no data, redirect back to landing page
     toast.error('No registration or sponsorship data found. Please register first.')
-    router.push({name: 'event-landing'})
+    router.push({ name: 'event-landing' })
   }
 
   // Fetch event data
@@ -200,52 +198,30 @@ onMounted(async () => {
   <section class="section section-fade">
     <v-container>
       <v-row justify="center">
-        <v-col
-          cols="12"
-          md="6"
-          sm="8"
-        >
-          <v-card
-            class="mx-auto"
-            elevation="4"
-          >
+        <v-col cols="12" md="6" sm="8">
+          <v-card class="mx-auto" elevation="4">
             <v-card-title class="text-center bg-primary text-white py-6">
-              <h2 class="text-h4 font-weight-bold">
-                Registration Complete!
-              </h2>
+              <h2 class="text-h4 font-weight-bold">Registration Complete!</h2>
             </v-card-title>
             <v-card-text class="pa-6">
               <div class="text-center">
-                <v-icon
-                  class="mb-4"
-                  color="success"
-                  size="64"
-                >
-                  mdi-check-circle
-                </v-icon>
-                <h3 class="text-h5 mb-4">
-                  Thank you for registering!
-                </h3>
+                <v-icon class="mb-4" color="success" size="64">mdi-check-circle</v-icon>
+                <h3 class="text-h5 mb-4">Thank you for registering!</h3>
                 <p class="text-body-1 mb-6">
                   Your registration has been successfully completed. You can now proceed to view and
                   purchase tickets for this event.
                 </p>
 
-                <div
-                  v-if="registrationData && registrationData.firstName"
-                  class="mb-6"
-                >
+                <div v-if="registrationData && registrationData.firstName" class="mb-6">
                   <v-divider class="my-4" />
-                  <h4 class="text-h6 mb-2">
-                    Registration Details:
-                  </h4>
+                  <h4 class="text-h6 mb-2">Registration Details:</h4>
                   <p class="text-body-2">
                     <strong>Name:</strong>
                     {{ registrationData.firstName }} {{ registrationData.lastName }}
-                    <br>
+                    <br />
                     <strong>Email:</strong>
                     {{ registrationData.email }}
-                    <br>
+                    <br />
                     <strong>Organization:</strong>
                     {{ registrationData.organization || 'Not specified' }}
                   </p>

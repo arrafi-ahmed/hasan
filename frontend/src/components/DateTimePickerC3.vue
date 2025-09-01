@@ -1,8 +1,8 @@
 <script setup>
-import {computed, reactive, ref, watch} from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 // the input data in JSON format
-const {data, step, type} = defineProps({
+const { data, step, type } = defineProps({
   data: {
     type: Object,
     default: () => ({}),
@@ -23,7 +23,7 @@ const inputValueInit = {
   endDate: null,
   endTime: null,
 }
-const inputValue = reactive({...inputValueInit})
+const inputValue = reactive({ ...inputValueInit })
 
 watch(
   () => data,
@@ -55,7 +55,7 @@ const setBothPicker = async (value) => {
 }
 
 // the error message to be displayed if the input is not compatible
-const error = reactive({start: '', end: ''})
+const error = reactive({ start: '', end: '' })
 
 // the validation routine to verify the input data
 const validate = (value, datetimeType) => {
@@ -82,7 +82,7 @@ const validate = (value, datetimeType) => {
 
 // the function to clear the value and the text box
 const clearValue = (datetimeType) => {
-  Object.assign(inputValue, {...inputValueInit})
+  Object.assign(inputValue, { ...inputValueInit })
   if (datetimeType === 'start') start.value = null
   else if (datetimeType === 'end') end.value = null
   error.value = ''
@@ -157,30 +157,14 @@ const endLabel = computed(() =>
 </script>
 <template>
   <!--  start date-time-->
-  <div
-    class="date-time-component"
-    @click="setBothPicker(true)"
-  >
+  <div class="date-time-component" @click="setBothPicker(true)">
     <div class="text-box">
       <label for="start">{{ startLabel }}</label>
-      <br>
-      <input
-        id="start"
-        v-model="start"
-        readonly
-        type="text"
-      >
-      <button
-        v-if="start"
-        @click="clearValue('start')"
-      >
-        x
-      </button>
+      <br />
+      <input id="start" v-model="start" readonly type="text" />
+      <button v-if="start" @click="clearValue('start')">x</button>
     </div>
-    <div
-      v-if="showStartPicker"
-      class="picker"
-    >
+    <div v-if="showStartPicker" class="picker">
       <div class="calendar">
         <input
           v-if="type === 'date' || type === 'date-time'"
@@ -189,7 +173,7 @@ const endLabel = computed(() =>
           :max="data?.endDate || ''"
           :min="data?.startDate || ''"
           type="datetime-local"
-        >
+        />
       </div>
       <div class="clock">
         <!--        <input-->
@@ -199,41 +183,23 @@ const endLabel = computed(() =>
         <!--          v-model="inputValue.startTime"-->
         <!--          :step="step * 60 || 1"-->
         <!--        />-->
-        <div
-          v-if="type === 'date-time' || type === 'time'"
-          class="format"
-        >
+        <div v-if="type === 'date-time' || type === 'time'" class="format">
           <label>
-            <input
-              v-model="format"
-              type="radio"
-              value="24"
-            >
+            <input v-model="format" type="radio" value="24" />
             24-hour
           </label>
           <label>
-            <input
-              v-model="format"
-              type="radio"
-              value="12"
-            >
+            <input v-model="format" type="radio" value="12" />
             12-hour
           </label>
         </div>
       </div>
       <div class="buttons">
-        <button @click="showStartPicker = false">
-          Cancel
-        </button>
-        <button @click="submitValue('start')">
-          OK
-        </button>
+        <button @click="showStartPicker = false">Cancel</button>
+        <button @click="submitValue('start')">OK</button>
       </div>
     </div>
-    <div
-      v-if="error.start"
-      class="error"
-    >
+    <div v-if="error.start" class="error">
       {{ error.start }}
     </div>
   </div>
@@ -243,24 +209,10 @@ const endLabel = computed(() =>
     <div class="text-box">
       <label for="end">{{ endLabel }}</label>
       br
-      <input
-        id="end"
-        v-model="end"
-        readonly
-        type="text"
-        @click="showEndPicker = true"
-      >
-      <button
-        v-if="end"
-        @click="clearValue('end')"
-      >
-        x
-      </button>
+      <input id="end" v-model="end" readonly type="text" @click="showEndPicker = true" />
+      <button v-if="end" @click="clearValue('end')">x</button>
     </div>
-    <div
-      v-if="showEndPicker"
-      class="picker"
-    >
+    <div v-if="showEndPicker" class="picker">
       <div class="calendar">
         <input
           v-if="type === 'date' || type === 'date-time'"
@@ -269,7 +221,7 @@ const endLabel = computed(() =>
           :max="data?.endDate || ''"
           :min="data?.endDate || ''"
           type="date"
-        >
+        />
       </div>
       <div class="clock">
         <input
@@ -278,42 +230,24 @@ const endLabel = computed(() =>
           v-model="inputValue.endTime"
           :step="step * 60 || 1"
           type="time"
-        >
-        <div
-          v-if="type === 'date-time' || type === 'time'"
-          class="format"
-        >
+        />
+        <div v-if="type === 'date-time' || type === 'time'" class="format">
           <label>
-            <input
-              v-model="format"
-              type="radio"
-              value="24"
-            >
+            <input v-model="format" type="radio" value="24" />
             24-hour
           </label>
           <label>
-            <input
-              v-model="format"
-              type="radio"
-              value="12"
-            >
+            <input v-model="format" type="radio" value="12" />
             12-hour
           </label>
         </div>
       </div>
       <div class="buttons">
-        <button @click="showEndPicker = false">
-          Cancel
-        </button>
-        <button @click="submitValue('end')">
-          OK
-        </button>
+        <button @click="showEndPicker = false">Cancel</button>
+        <button @click="submitValue('end')">OK</button>
       </div>
     </div>
-    <div
-      v-if="error.end"
-      class="error"
-    >
+    <div v-if="error.end" class="error">
       {{ error.end }}
     </div>
   </div>

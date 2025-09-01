@@ -9,17 +9,23 @@ import vuetify from './vuetify'
 import router from '../router'
 import store from '../store'
 import $axios from '@/plugins/axios'
-import {handleRedirect, handleRemoveQueriesNRedirect,} from '@/others/util'
+import { handleRedirect, handleRemoveQueriesNRedirect } from '@/others/util'
 
 function handleAuthRoutes(to, isSignedin, userRole) {
   if (to.matched.some((record) => record.meta.requiresNoAuth) && isSignedin) {
     return store.getters['auth/calcHome']
   } else if (to.matched.some((record) => record.meta.requiresAuth) && !isSignedin) {
-    return {name: 'signin'}
-  } else if (to.matched.some((record) => record.meta.requiresAdmin) && (!isSignedin || !store.getters['auth/isAdmin'])) {
-    return {name: 'signin'}
-  } else if (to.matched.some((record) => record.meta.requiresSudo) && (!isSignedin || !store.getters['auth/isSudo'])) {
-    return {name: 'signin'}
+    return { name: 'signin' }
+  } else if (
+    to.matched.some((record) => record.meta.requiresAdmin) &&
+    (!isSignedin || !store.getters['auth/isAdmin'])
+  ) {
+    return { name: 'signin' }
+  } else if (
+    to.matched.some((record) => record.meta.requiresSudo) &&
+    (!isSignedin || !store.getters['auth/isSudo'])
+  ) {
+    return { name: 'signin' }
   } else if (!to.name && isSignedin) {
     return store.getters['auth/calcHome'] //undefined routes visited
   }
@@ -36,7 +42,7 @@ export function registerPlugins(app) {
       return // Stop the execution of this guard, as a full page reload is happening
     }
     //save routeinfo to state
-    store.commit('setRouteInfo', {to, from})
+    store.commit('setRouteInfo', { to, from })
 
     const isSignedin = store.getters['auth/signedin']
     const currentUser = store.getters['auth/getCurrentUser']

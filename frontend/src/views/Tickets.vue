@@ -1,11 +1,11 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {useDisplay} from 'vuetify'
-import {useStore} from 'vuex'
-import {toast} from 'vue-sonner'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
+import { useStore } from 'vuex'
+import { toast } from 'vue-sonner'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
@@ -51,13 +51,12 @@ const fetchTickets = async () => {
 
     const slug = route.params.slug
 
-
     let event = null
 
     // Try to fetch by slug first if available
     if (!storedEventId && slug) {
       try {
-        await store.dispatch('event/setEventBySlug', {slug})
+        await store.dispatch('event/setEventBySlug', { slug })
       } catch (slugError) {
         console.warn('Failed to fetch event by slug:', slugError)
         console.error('Slug error details:', slugError.response?.data || slugError.message)
@@ -65,7 +64,6 @@ const fetchTickets = async () => {
     }
 
     if (eventId.value) {
-
       // Fetch tickets for this event using store action
       try {
         await store.dispatch('ticket/setTickets', eventId.value)
@@ -168,7 +166,6 @@ const proceedToForm = async () => {
     let registrationData
     try {
       registrationData = JSON.parse(storedData)
-
     } catch (error) {
       console.error('Failed to parse registration data from localStorage:', error)
       toast.error('Invalid registration data. Please complete the registration form again.')
@@ -182,10 +179,8 @@ const proceedToForm = async () => {
       return
     }
 
-
     // Transform selected tickets to the correct format for attendee forms
     const transformedItems = selectedTickets.value.map((ticket) => {
-
       return {
         ticketId: ticket.ticketId,
         title: ticket.title,
@@ -194,10 +189,8 @@ const proceedToForm = async () => {
       }
     })
 
-
     // Store tickets in localStorage for attendee forms
     localStorage.setItem('selectedTickets', JSON.stringify(transformedItems))
-
 
     // Redirect to attendee form page - only slug-based routing
     router.push({
@@ -218,7 +211,7 @@ const goBack = () => {
   // Only slug-based routing
   router.push({
     name: 'event-landing-slug',
-    params: {slug: route.params.slug},
+    params: { slug: route.params.slug },
   })
 }
 
@@ -238,78 +231,36 @@ onMounted(async () => {
   <section class="section section-fade">
     <v-container>
       <v-row>
-        <v-col
-          cols="12"
-          md="8"
-        >
-          <h2 class="text-h4 font-weight-bold mb-4">
-            Available Packages
-          </h2>
+        <v-col cols="12" md="8">
+          <h2 class="text-h4 font-weight-bold mb-4">Available Packages</h2>
         </v-col>
       </v-row>
 
       <v-row v-if="isLoading">
-        <v-col
-          class="text-center"
-          cols="12"
-        >
-          <v-progress-circular
-            color="primary"
-            indeterminate
-            size="64"
-          />
-          <p class="mt-4">
-            Loading packages...
-          </p>
+        <v-col class="text-center" cols="12">
+          <v-progress-circular color="primary" indeterminate size="64" />
+          <p class="mt-4">Loading packages...</p>
         </v-col>
       </v-row>
 
       <v-row v-else-if="tickets.length === 0">
-        <v-col
-          class="text-center"
-          cols="12"
-        >
-          <v-card
-            class="mx-auto"
-            elevation="4"
-            max-width="500"
-          >
+        <v-col class="text-center" cols="12">
+          <v-card class="mx-auto" elevation="4" max-width="500">
             <v-card-text class="pa-6">
-              <v-icon
-                class="mb-4"
-                color="info"
-                size="64"
-              >
-                mdi-ticket-outline
-              </v-icon>
-              <h3 class="text-h5 mb-4">
-                No Package Available Yet
-              </h3>
+              <v-icon class="mb-4" color="info" size="64">mdi-ticket-outline</v-icon>
+              <h3 class="text-h5 mb-4">No Package Available Yet</h3>
               <p class="text-body-1 mb-4">
-                Packages for this event haven't been created yet by the event organizer. Please check
-                back later or contact the event organizer for more information.
+                Packages for this event haven't been created yet by the event organizer. Please
+                check back later or contact the event organizer for more information.
               </p>
-              <v-btn
-                class="mt-4"
-                color="primary"
-                @click="goBack"
-              >
-                Back to Tour
-              </v-btn>
+              <v-btn class="mt-4" color="primary" @click="goBack">Back to Tour</v-btn>
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
 
       <v-row v-else>
-        <v-col
-          v-for="ticket in tickets"
-          :key="ticket.id"
-          class="mb-4"
-          cols="12"
-          md="4"
-          sm="6"
-        >
+        <v-col v-for="ticket in tickets" :key="ticket.id" class="mb-4" cols="12" md="4" sm="6">
           <v-card
             :class="{ 'ticket-selected': isTicketInCart(ticket.id) }"
             class="ticket-card"
@@ -318,9 +269,7 @@ onMounted(async () => {
             <v-card-title class="text-center py-3 bg-gradient-primary text-white">
               <div class="w-100">
                 <div class="d-flex justify-space-between align-center mb-2">
-                  <v-icon class="text-white">
-                    mdi-ticket
-                  </v-icon>
+                  <v-icon class="text-white">mdi-ticket</v-icon>
                   <v-chip
                     v-if="isTicketInCart(ticket.id)"
                     color="white"
@@ -351,10 +300,7 @@ onMounted(async () => {
                     size="small"
                     variant="outlined"
                   >
-                    <v-icon
-                      class="mr-1"
-                      size="16"
-                    >
+                    <v-icon class="mr-1" size="16">
                       {{ ticket.currentStock > 0 ? 'mdi-check-circle' : 'mdi-close-circle' }}
                     </v-icon>
                     {{ ticket.currentStock || 0 }} available
@@ -396,9 +342,7 @@ onMounted(async () => {
       size="large"
       @click="showCartDialog = true"
     >
-      <v-icon size="26">
-        mdi-cart
-      </v-icon>
+      <v-icon size="26">mdi-cart</v-icon>
       <v-badge
         :content="selectedTickets.length"
         :model-value="selectedTickets.length > 0"
@@ -416,26 +360,16 @@ onMounted(async () => {
     persistent
     transition="dialog-bottom-transition"
   >
-    <v-card
-      class="modern-cart-dialog"
-      elevation="0"
-    >
+    <v-card class="modern-cart-dialog" elevation="0">
       <!-- Sleek Header -->
       <div class="cart-header">
         <div class="d-flex justify-space-between align-center pa-4">
           <div class="d-flex align-center">
             <div class="cart-icon-wrapper">
-              <v-icon
-                color="white"
-                size="18"
-              >
-                mdi-shopping
-              </v-icon>
+              <v-icon color="white" size="18">mdi-shopping</v-icon>
             </div>
             <div class="ml-3">
-              <div class="text-h6 font-weight-bold text-white">
-                Cart
-              </div>
+              <div class="text-h6 font-weight-bold text-white">Cart</div>
               <div class="text-caption text-white">
                 {{ selectedTickets.length }} item{{ selectedTickets.length !== 1 ? 's' : '' }}
               </div>
@@ -449,33 +383,19 @@ onMounted(async () => {
             variant="text"
             @click="showCartDialog = false"
           >
-            <v-icon size="16">
-              mdi-close
-            </v-icon>
+            <v-icon size="16">mdi-close</v-icon>
           </v-btn>
         </div>
       </div>
 
       <!-- Content -->
       <v-card-text class="pa-0">
-        <div
-          v-if="selectedTickets.length === 0"
-          class="text-center py-12"
-        >
+        <div v-if="selectedTickets.length === 0" class="text-center py-12">
           <div class="empty-cart-icon">
-            <v-icon
-              color="grey-lighten-2"
-              size="40"
-            >
-              mdi-shopping-outline
-            </v-icon>
+            <v-icon color="grey-lighten-2" size="40">mdi-shopping-outline</v-icon>
           </div>
-          <h3 class="text-h6 text-grey-darken-1 mb-2 mt-4">
-            Your cart is empty
-          </h3>
-          <p class="text-body-2 text-grey-lighten-1 mb-6">
-            Select tickets to get started
-          </p>
+          <h3 class="text-h6 text-grey-darken-1 mb-2 mt-4">Your cart is empty</h3>
+          <p class="text-body-2 text-grey-lighten-1 mb-6">Select tickets to get started</p>
           <v-btn
             class="continue-btn"
             color="primary"
@@ -487,10 +407,7 @@ onMounted(async () => {
           </v-btn>
         </div>
 
-        <div
-          v-else
-          class="cart-content"
-        >
+        <div v-else class="cart-content">
           <!-- Items List -->
           <div class="cart-items-list pa-4">
             <div
@@ -503,9 +420,7 @@ onMounted(async () => {
                   <h6 class="item-title">
                     {{ item.title }}
                   </h6>
-                  <div class="item-price">
-                    {{ formatPrice(item.unitPrice, 'USD') }} each
-                  </div>
+                  <div class="item-price">{{ formatPrice(item.unitPrice, 'USD') }} each</div>
                 </div>
 
                 <div class="item-controls">
@@ -519,9 +434,7 @@ onMounted(async () => {
                       variant="text"
                       @click="updateQuantity(item.ticketId, item.quantity - 1)"
                     >
-                      <v-icon size="14">
-                        mdi-minus
-                      </v-icon>
+                      <v-icon size="14">mdi-minus</v-icon>
                     </v-btn>
                     <span class="quantity-text">{{ item.quantity }}</span>
                     <v-btn
@@ -532,9 +445,7 @@ onMounted(async () => {
                       variant="text"
                       @click="updateQuantity(item.ticketId, item.quantity + 1)"
                     >
-                      <v-icon size="14">
-                        mdi-plus
-                      </v-icon>
+                      <v-icon size="14">mdi-plus</v-icon>
                     </v-btn>
                   </div>
 
@@ -550,18 +461,13 @@ onMounted(async () => {
                     variant="text"
                     @click="removeTicket(item.ticketId)"
                   >
-                    <v-icon size="14">
-                      mdi-close
-                    </v-icon>
+                    <v-icon size="14">mdi-close</v-icon>
                   </v-btn>
                 </div>
               </div>
 
               <!-- Subtle divider -->
-              <div
-                v-if="index < selectedTickets.length - 1"
-                class="item-divider"
-              />
+              <div v-if="index < selectedTickets.length - 1" class="item-divider" />
             </div>
           </div>
 
@@ -583,12 +489,7 @@ onMounted(async () => {
               size="large"
               @click="proceedToForm"
             >
-              <v-icon
-                class="mr-2"
-                size="18"
-              >
-                mdi-credit-card-outline
-              </v-icon>
+              <v-icon class="mr-2" size="18">mdi-credit-card-outline</v-icon>
               <span class="font-weight-medium">
                 {{ isProcessingPayment ? 'Processing...' : 'Complete Purchase' }}
               </span>
@@ -889,8 +790,9 @@ onMounted(async () => {
 
 /* Ticket Card Styles */
 .ticket-card {
-  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
-  box-shadow 0.3s;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 2, 0.6, 1),
+    box-shadow 0.3s;
   border-radius: 12px;
   min-height: 180px;
   height: 100%;

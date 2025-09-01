@@ -1,4 +1,4 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 import * as appUser from './modules/appUser'
 import * as auth from './modules/auth'
 import * as club from './modules/club'

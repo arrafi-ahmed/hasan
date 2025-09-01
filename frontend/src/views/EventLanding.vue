@@ -1,13 +1,13 @@
 <script setup>
-import {getApiPublicImgUrl, getClientPublicImageUrl} from '@/others/util'
-import {computed, onMounted, reactive, ref} from 'vue'
-import {useDisplay} from 'vuetify'
-import {useStore} from 'vuex'
-import {useRoute, useRouter} from 'vue-router'
-import {toast} from 'vue-sonner'
-import {Attendee, Registration} from "@/models/index.js";
+import { getApiPublicImgUrl } from '@/others/util'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useDisplay } from 'vuetify'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
+import { Attendee, Registration } from '@/models/index.js'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
@@ -36,7 +36,7 @@ const attendeeInit = ref({
   lastName: null,
   email: null,
   phone: null,
-  isPrimary: true
+  isPrimary: true,
 })
 const registrationInit = ref({
   organization: null,
@@ -45,11 +45,11 @@ const registrationInit = ref({
 })
 
 const attendee = reactive({
-  ...new Attendee({...attendeeInit.value}),
+  ...new Attendee({ ...attendeeInit.value }),
 })
 
 const registration = reactive({
-  ...new Registration({additionalFields: {...registrationInit.value}}),
+  ...new Registration({ additionalFields: { ...registrationInit.value } }),
 })
 
 const isProcessingPayment = ref(false)
@@ -69,7 +69,7 @@ const submitRegistration = async () => {
       router.push({
         name: 'tickets-slug',
         params: {
-          slug: event.value.slug,
+          slug: event.value.slug || eventSlug.value,
         },
       })
     } else {
@@ -93,12 +93,12 @@ const fetchEventData = async () => {
     // Try to fetch by slug first if available
     if (eventSlug.value) {
       try {
-        await store.dispatch('event/setEventBySlug', {slug: eventSlug.value})
+        await store.dispatch('event/setEventBySlug', { slug: eventSlug.value })
         // Check if event was found
         if (!event.value || !event.value.id) {
           router.push({
             name: 'not-found',
-            params: {status: 404, message: "Event not found!"}
+            params: { status: 404, message: 'Event not found!' },
           })
           return
         }
@@ -106,7 +106,7 @@ const fetchEventData = async () => {
         console.warn('Failed to fetch event by slug:', slugError)
         router.push({
           name: 'not-found',
-          params: {status: 404, message: "Event not found!"}
+          params: { status: 404, message: 'Event not found!' },
         })
         return
       }
@@ -127,19 +127,14 @@ onMounted(() => {
   <div class="event-landing">
     <!-- Compact Hero Section -->
     <section class="hero-section">
-      <div
-        :style="heroBackgroundStyle"
-        class="hero-bg"
-      >
+      <div :style="heroBackgroundStyle" class="hero-bg">
         <div class="hero-overlay" />
         <div class="hero-content">
           <div class="hero-text">
             <h1 class="hero-title">
               {{ event?.name || 'Event Registration' }}
             </h1>
-            <p class="hero-subtitle">
-              Join us for an amazing experience
-            </p>
+            <p class="hero-subtitle">Join us for an amazing experience</p>
           </div>
         </div>
       </div>
@@ -151,62 +146,55 @@ onMounted(() => {
         <div class="form-container">
           <div class="form-header">
             <h2 class="form-title">Complete Your Registration</h2>
-            <p class="form-subtitle">
-              Fill in your details to proceed to package selection
-            </p>
+            <p class="form-subtitle">Fill in your details to proceed to package selection</p>
           </div>
-          
+
           <v-card class="registration-form" elevation="2">
             <v-card-text class="pa-6">
               <v-form @submit.prevent="submitRegistration">
-                <v-row>
+                <v-row no-gutters>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="attendee.firstName"
+                      class="mb-4"
+                      hide-details="auto"
                       label="First Name"
                       required
                       variant="solo"
-                      hide-details="auto"
-                      class="mb-4"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="attendee.lastName"
+                      class="mb-4"
+                      hide-details="auto"
                       label="Last Name"
                       required
                       variant="solo"
-                      hide-details="auto"
-                      class="mb-4"
                     />
                   </v-col>
                 </v-row>
-                
+
                 <v-text-field
                   v-model="attendee.email"
+                  class="mb-4"
+                  hide-details="auto"
                   label="Email Address"
                   required
                   type="email"
                   variant="solo"
-                  hide-details="auto"
-                  class="mb-4"
                 />
-                
+
                 <v-text-field
                   v-model="attendee.phone"
+                  class="mb-6"
+                  hide-details="auto"
                   label="Phone Number"
                   required
                   variant="solo"
-                  hide-details="auto"
-                  class="mb-6"
                 />
 
-                <v-alert
-                  v-if="isLoading"
-                  class="mb-4"
-                  type="info"
-                  variant="tonal"
-                >
+                <v-alert v-if="isLoading" class="mb-4" type="info" variant="tonal">
                   Loading event information...
                 </v-alert>
 
@@ -214,11 +202,11 @@ onMounted(() => {
                   <v-btn
                     :disabled="isLoading"
                     :loading="isProcessingPayment"
+                    block
+                    class="submit-btn"
                     color="primary"
                     size="large"
                     type="submit"
-                    class="submit-btn"
-                    block
                   >
                     {{ isProcessingPayment ? 'Processing...' : 'Continue' }}
                   </v-btn>
@@ -344,19 +332,19 @@ onMounted(() => {
   .hero-section {
     height: 300px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .form-title {
     font-size: 1.75rem;
   }
-  
+
   .registration-form {
     margin: 0 16px;
   }
@@ -366,11 +354,11 @@ onMounted(() => {
   .hero-section {
     height: 250px;
   }
-  
+
   .hero-title {
     font-size: 1.75rem;
   }
-  
+
   .form-title {
     font-size: 1.5rem;
   }

@@ -13,7 +13,7 @@ export const mutations = {
 }
 
 export const actions = {
-  setFormQuestions({commit}, request) {
+  setFormQuestions({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get('/form/getFormQuestions', {
@@ -30,10 +30,10 @@ export const actions = {
         })
     })
   },
-  save({commit}, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .post('/form/save', {payload: request})
+        .post('/form/save', { payload: request })
         .then((response) => {
           resolve(response)
         })

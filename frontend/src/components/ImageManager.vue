@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 
 const {
@@ -24,14 +24,14 @@ const {
 const emit = defineEmits(['delete'])
 
 const isDeleted = ref(false)
-const imageDimensions = ref({width: 0, height: 0})
+const imageDimensions = ref({ width: 0, height: 0 })
 
 const hasImage = computed(() => {
   return src && src !== 'null' && src.trim() !== '' && !isDeleted.value
 })
 
 const imageStyle = computed(() => {
-  const {width, height} = imageDimensions.value
+  const { width, height } = imageDimensions.value
 
   if (width === 0 || height === 0) {
     // Default size if dimensions not loaded yet
@@ -65,7 +65,7 @@ const imageStyle = computed(() => {
 })
 
 const placeholderStyle = computed(() => {
-  const {width, height} = imageStyle.value
+  const { width, height } = imageStyle.value
   return {
     width,
     height,
@@ -78,15 +78,13 @@ const placeholderStyle = computed(() => {
 })
 
 const handleDelete = () => {
-
   isDeleted.value = true
   emit('delete')
 }
 
 const onImageLoad = (event) => {
-  const {naturalWidth, naturalHeight} = event.target
-  imageDimensions.value = {width: naturalWidth, height: naturalHeight}
-
+  const { naturalWidth, naturalHeight } = event.target
+  imageDimensions.value = { width: naturalWidth, height: naturalHeight }
 }
 
 const onImageError = (error) => {
@@ -95,10 +93,7 @@ const onImageError = (error) => {
 </script>
 
 <template>
-  <div
-    v-if="hasImage"
-    class="image-preview-container mb-4"
-  >
+  <div v-if="hasImage" class="image-preview-container mb-4">
     <div class="image-preview border border-4 rounded-lg">
       <v-img
         :src="src"
@@ -118,12 +113,10 @@ const onImageError = (error) => {
             color="error"
             size="small"
             title="Delete Image"
-            variant="tonal"
+            variant="flat"
             @click.stop="onClick"
           >
-            <v-icon size="20">
-              mdi-delete
-            </v-icon>
+            <v-icon size="20">mdi-delete</v-icon>
           </v-btn>
         </template>
       </confirmation-dialog>
@@ -131,24 +124,11 @@ const onImageError = (error) => {
   </div>
 
   <!-- Deleted State Placeholder -->
-  <div
-    v-else-if="isDeleted"
-    class="image-preview-container mb-4"
-  >
-    <div
-      :style="placeholderStyle"
-      class="image-preview border border-4 rounded-lg"
-    >
+  <div v-else-if="isDeleted" class="image-preview-container mb-4">
+    <div :style="placeholderStyle" class="image-preview border border-4 rounded-lg">
       <div class="placeholder-content">
-        <v-icon
-          color="grey-lighten-1"
-          size="48"
-        >
-          mdi-image-off
-        </v-icon>
-        <p class="text-body-2 text-grey-lighten-1 mt-2">
-          Image deleted
-        </p>
+        <v-icon color="grey-lighten-1" size="48">mdi-image-off</v-icon>
+        <p class="text-body-2 text-grey-lighten-1 mt-2">Image deleted</p>
       </div>
     </div>
   </div>
@@ -172,22 +152,12 @@ const onImageError = (error) => {
   backdrop-filter: blur(4px);
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0.8;
   transition: opacity 0.2s ease;
-}
-
-.image-preview:hover .delete-btn {
-  opacity: 1;
-}
-
-.delete-btn:hover {
-  background: rgba(255, 255, 255, 0.95) !important;
+  opacity: 0.9;
 }
 
 .preview-image {

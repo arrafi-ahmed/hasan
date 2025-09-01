@@ -1,21 +1,14 @@
 <script setup>
-import {appInfo} from '@/others/util'
-import {useStore} from 'vuex'
+import { appInfo } from '@/others/util'
+import { useStore } from 'vuex'
 
 const store = useStore()
 </script>
 <template>
   <v-footer class="bg-tertiary flex-grow-0">
     <div class="footer-container">
-      <v-row
-        align="center"
-        justify="center"
-        no-gutters
-      >
-        <v-col
-          class="text-center"
-          cols="12"
-        >
+      <v-row align="center" justify="center" no-gutters>
+        <v-col class="text-center" cols="12">
           <!-- Social Media Links -->
           <div class="mb-3">
             <v-btn

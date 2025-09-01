@@ -6,16 +6,16 @@ import { useDisplay } from 'vuetify'
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   subtitle: {
     type: String,
-    default: ''
+    default: '',
   },
   showBackButton: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 // Computed
@@ -43,7 +43,7 @@ const isMobile = computed(() => mobile.value)
           <p class="text-body-1 text-medium-emphasis mb-0">
             {{ subtitle }}
           </p>
-        </div>        
+        </div>
       </div>
 
       <!-- Right Side: Action Buttons -->
@@ -52,7 +52,7 @@ const isMobile = computed(() => mobile.value)
         <template v-if="!isMobile">
           <slot name="actions" />
         </template>
-        
+
         <!-- Mobile: Icon buttons -->
         <template v-else>
           <slot name="mobile-actions" />
@@ -61,9 +61,7 @@ const isMobile = computed(() => mobile.value)
     </div>
 
     <!-- Row 2: Event Name/Description -->
-    <div v-if="subtitle" class="d-flex align-center gap-3">
-      
-    </div>
+    <div v-if="subtitle" class="d-flex align-center gap-3" />
   </div>
 </template>
 

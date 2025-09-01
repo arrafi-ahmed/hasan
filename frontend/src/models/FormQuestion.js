@@ -3,12 +3,12 @@
  */
 export class FormQuestion {
   constructor(data = {}) {
-    this.id = data.id || null;
-    this.typeId = data.typeId || null;
-    this.text = data.text || '';
-    this.required = data.required || false;
-    this.options = data.options || null;
-    this.eventId = data.eventId || null;
+    this.id = data.id || null
+    this.typeId = data.typeId || null
+    this.text = data.text || ''
+    this.required = data.required || false
+    this.options = data.options || null
+    this.eventId = data.eventId || null
   }
 
   /**
@@ -24,8 +24,8 @@ export class FormQuestion {
       EMAIL: 6,
       PHONE: 7,
       DATE: 8,
-      NUMBER: 9
-    };
+      NUMBER: 9,
+    }
   }
 
   /**
@@ -34,25 +34,25 @@ export class FormQuestion {
   getTypeName() {
     switch (this.typeId) {
       case FormQuestion.QUESTION_TYPES.TEXT:
-        return 'Text Input';
+        return 'Text Input'
       case FormQuestion.QUESTION_TYPES.TEXTAREA:
-        return 'Text Area';
+        return 'Text Area'
       case FormQuestion.QUESTION_TYPES.SELECT:
-        return 'Dropdown Select';
+        return 'Dropdown Select'
       case FormQuestion.QUESTION_TYPES.RADIO:
-        return 'Radio Buttons';
+        return 'Radio Buttons'
       case FormQuestion.QUESTION_TYPES.CHECKBOX:
-        return 'Checkboxes';
+        return 'Checkboxes'
       case FormQuestion.QUESTION_TYPES.EMAIL:
-        return 'Email Input';
+        return 'Email Input'
       case FormQuestion.QUESTION_TYPES.PHONE:
-        return 'Phone Input';
+        return 'Phone Input'
       case FormQuestion.QUESTION_TYPES.DATE:
-        return 'Date Input';
+        return 'Date Input'
       case FormQuestion.QUESTION_TYPES.NUMBER:
-        return 'Number Input';
+        return 'Number Input'
       default:
-        return 'Unknown Type';
+        return 'Unknown Type'
     }
   }
 
@@ -60,22 +60,22 @@ export class FormQuestion {
    * Check if question is required
    */
   isRequired() {
-    return this.required === true;
+    return this.required === true
   }
 
   /**
    * Check if question has options
    */
   hasOptions() {
-    return this.options && Array.isArray(this.options) && this.options.length > 0;
+    return this.options && Array.isArray(this.options) && this.options.length > 0
   }
 
   /**
    * Get options array
    */
   getOptions() {
-    if (!this.hasOptions()) return [];
-    return this.options;
+    if (!this.hasOptions()) return []
+    return this.options
   }
 
   /**
@@ -85,9 +85,9 @@ export class FormQuestion {
     const typesWithOptions = [
       FormQuestion.QUESTION_TYPES.SELECT,
       FormQuestion.QUESTION_TYPES.RADIO,
-      FormQuestion.QUESTION_TYPES.CHECKBOX
-    ];
-    return typesWithOptions.includes(this.typeId);
+      FormQuestion.QUESTION_TYPES.CHECKBOX,
+    ]
+    return typesWithOptions.includes(this.typeId)
   }
 
   /**
@@ -97,9 +97,9 @@ export class FormQuestion {
     const textTypes = [
       FormQuestion.QUESTION_TYPES.TEXT,
       FormQuestion.QUESTION_TYPES.TEXTAREA,
-      FormQuestion.QUESTION_TYPES.EMAIL
-    ];
-    return textTypes.includes(this.typeId);
+      FormQuestion.QUESTION_TYPES.EMAIL,
+    ]
+    return textTypes.includes(this.typeId)
   }
 
   /**
@@ -109,63 +109,63 @@ export class FormQuestion {
     const choiceTypes = [
       FormQuestion.QUESTION_TYPES.SELECT,
       FormQuestion.QUESTION_TYPES.RADIO,
-      FormQuestion.QUESTION_TYPES.CHECKBOX
-    ];
-    return choiceTypes.includes(this.typeId);
+      FormQuestion.QUESTION_TYPES.CHECKBOX,
+    ]
+    return choiceTypes.includes(this.typeId)
   }
 
   /**
    * Check if question type is numeric
    */
   isNumeric() {
-    return this.typeId === FormQuestion.QUESTION_TYPES.NUMBER;
+    return this.typeId === FormQuestion.QUESTION_TYPES.NUMBER
   }
 
   /**
    * Check if question type is date
    */
   isDate() {
-    return this.typeId === FormQuestion.QUESTION_TYPES.DATE;
+    return this.typeId === FormQuestion.QUESTION_TYPES.DATE
   }
 
   /**
    * Validates the form question data
    */
   validate() {
-    const errors = [];
+    const errors = []
 
     if (!this.typeId) {
-      errors.push('Question type is required');
+      errors.push('Question type is required')
     }
 
     if (!this.text || this.text.trim().length === 0) {
-      errors.push('Question text is required');
+      errors.push('Question text is required')
     }
 
     if (this.text && this.text.length > 1000) {
-      errors.push('Question text must be 1000 characters or less');
+      errors.push('Question text must be 1000 characters or less')
     }
 
     if (this.typeId && !Object.values(FormQuestion.QUESTION_TYPES).includes(this.typeId)) {
-      errors.push('Invalid question type');
+      errors.push('Invalid question type')
     }
 
     if (this.supportsOptions() && !this.hasOptions()) {
-      errors.push('Options are required for this question type');
+      errors.push('Options are required for this question type')
     }
 
     if (!this.supportsOptions() && this.hasOptions()) {
-      errors.push('Options are not supported for this question type');
+      errors.push('Options are not supported for this question type')
     }
 
     if (!this.eventId) {
-      errors.push('Event ID is required');
+      errors.push('Event ID is required')
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    };
+      errors,
+    }
   }
 
   /**
@@ -178,7 +178,7 @@ export class FormQuestion {
       text: this.text,
       required: this.required,
       options: this.options,
-      eventId: this.eventId
-    };
+      eventId: this.eventId,
+    }
   }
 }

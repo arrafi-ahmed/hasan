@@ -32,10 +32,10 @@ export const mutations = {
 }
 
 export const actions = {
-  setExtras({commit}, request) {
+  setExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/extras/getExtrasByEventId', {params: {eventId: request}})
+        .get('/extras/getExtrasByEventId', { params: { eventId: request } })
         .then((response) => {
           commit('setExtras', response.data?.payload)
           resolve(response)
@@ -45,10 +45,10 @@ export const actions = {
         })
     })
   },
-  setCurrentExtras({commit}, request) {
+  setCurrentExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get('/extras/getExtrasByIds', {params: {extrasIds: JSON.stringify([request])}})
+        .get('/extras/getExtrasByIds', { params: { extrasIds: JSON.stringify([request]) } })
         .then((response) => {
           commit('setCurrentExtras', response.data?.payload[0])
           resolve(response)
@@ -58,7 +58,7 @@ export const actions = {
         })
     })
   },
-  purchaseExtras({commit}, request) {
+  purchaseExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post('/extras/purchaseExtras', request)

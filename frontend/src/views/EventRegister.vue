@@ -1,19 +1,19 @@
 <script setup>
-import {computed, nextTick, onMounted, onUnmounted, reactive, ref, watch} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {getApiPublicImgUrl, getCountryList, isValidEmail, stripePublic} from '@/others/util'
-import {useStore} from 'vuex'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getApiPublicImgUrl, getCountryList, isValidEmail, stripePublic } from '@/others/util'
+import { useStore } from 'vuex'
 import Logo from '@/components/Logo.vue'
 import Phone from '@/components/Phone.vue'
 import FormItems from '@/components/FormItems.vue'
-import {useDisplay} from 'vuetify'
-import {loadStripe} from '@stripe/stripe-js/pure'
-import {toast} from 'vue-sonner'
+import { useDisplay } from 'vuetify'
+import { loadStripe } from '@stripe/stripe-js/pure'
+import { toast } from 'vue-sonner'
 
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-const {xs, sm} = useDisplay()
+const { xs, sm } = useDisplay()
 
 const registration = computed(() => store.state.registration.registration)
 const club = computed(() => store.state.club.club)
@@ -31,7 +31,7 @@ const registrationInit = {
   eventId: null,
   clubId: null,
 }
-const newRegistration = reactive({...registrationInit})
+const newRegistration = reactive({ ...registrationInit })
 
 const form = ref(null)
 const isFormValid = ref(true)
@@ -55,7 +55,7 @@ const registerUser = async () => {
   }
 
   try {
-    const {savedRegistration, clientSecret} = await store.dispatch(
+    const { savedRegistration, clientSecret } = await store.dispatch(
       'registration/initRegistration',
       payload,
     )
@@ -88,13 +88,13 @@ const paymentClientSecret = ref(null)
 const paymentElement = ref(null)
 const isProcessingPayment = ref(false)
 
-const handleUpdatePhone = ({formattedPhone}) => {
+const handleUpdatePhone = ({ formattedPhone }) => {
   newRegistration.registrationData.phone = formattedPhone
 }
 
 const formQuestions = computed(() => store.state.form.formQuestions)
 const additionalAnswers = ref([])
-const handleUpdateAdditionalAnswers = ({newVal}) => {
+const handleUpdateAdditionalAnswers = ({ newVal }) => {
   additionalAnswers.value = newVal
 }
 
@@ -107,7 +107,7 @@ const isEventFree = computed(() => {
 
 const mustLoadStripePublic = computed(() => stripePublic)
 
-const handleExtrasSelected = ({extrasId}) => {
+const handleExtrasSelected = ({ extrasId }) => {
   const foundIndex = selectedExtrasId.value.findIndex((item) => item === extrasId)
   if (foundIndex === -1) {
     selectedExtrasId.value.push(extrasId)
@@ -125,7 +125,7 @@ const processPayment = async () => {
   isProcessingPayment.value = true
 
   try {
-    const {error} = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements: paymentElement.value,
       confirmParams: {
         return_url: `${window.location.origin}/club/${route.params.clubId}/event/${route.params.eventId}/success`,
@@ -186,10 +186,7 @@ onUnmounted(() => {
 </script>
 <template>
   <v-container class="fill-height">
-    <v-row
-      align="center"
-      justify="center"
-    >
+    <v-row align="center" justify="center">
       <v-col>
         <logo
           v-if="club.logo"
@@ -205,26 +202,11 @@ onUnmounted(() => {
             })
           "
         />
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col
-            cols="12"
-            lg="5"
-            md="5"
-            sm="8"
-          >
-            <v-card
-              class="mx-auto bg-transparent"
-              color=""
-              max-width="600"
-            >
+        <v-row align="center" justify="center">
+          <v-col cols="12" lg="5" md="5" sm="8">
+            <v-card class="mx-auto bg-transparent" color="" max-width="600">
               <v-card-text>
-                <v-card-title
-                  v-if="event"
-                  class="text-center text-wrap"
-                >
+                <v-card-title v-if="event" class="text-center text-wrap">
                   {{ event.name }}
                 </v-card-title>
                 <v-card-subtitle class="text-center mb-4 mb-md-8">
@@ -354,21 +336,13 @@ onUnmounted(() => {
                 </v-form>
 
                 <!-- Payment Form -->
-                <div
-                  v-if="showPaymentForm"
-                  class="payment-form"
-                >
-                  <v-card-title class="text-center">
-                    Complete Payment
-                  </v-card-title>
+                <div v-if="showPaymentForm" class="payment-form">
+                  <v-card-title class="text-center">Complete Payment</v-card-title>
                   <v-card-subtitle class="text-center mb-4">
                     Enter your payment details to complete registration
                   </v-card-subtitle>
 
-                  <div
-                    id="payment-element"
-                    class="mb-4"
-                  />
+                  <div id="payment-element" class="mb-4" />
 
                   <v-btn
                     :density="xs ? 'comfortable' : 'default'"
@@ -384,11 +358,7 @@ onUnmounted(() => {
                   </v-btn>
 
                   <div class="d-flex justify-center mt-3">
-                    <v-btn
-                      size="small"
-                      variant="text"
-                      @click="showPaymentForm = false"
-                    >
+                    <v-btn size="small" variant="text" @click="showPaymentForm = false">
                       Back to Registration
                     </v-btn>
                   </div>
@@ -397,13 +367,7 @@ onUnmounted(() => {
             </v-card>
           </v-col>
 
-          <v-col
-            v-if="extras.length && !showPaymentForm"
-            cols="12"
-            lg="4"
-            md="5"
-            sm="8"
-          >
+          <v-col v-if="extras.length && !showPaymentForm" cols="12" lg="4" md="5" sm="8">
             <v-card
               color="tertiary"
               subtitle="Acquista i tuoi voucher per questo evento"
@@ -427,9 +391,7 @@ onUnmounted(() => {
                   <v-card-title>
                     <div class="d-flex justify-space-between align-center">
                       <div>{{ extra.name }}</div>
-                      <v-chip density="compact">
-                        € {{ extra.price }}
-                      </v-chip>
+                      <v-chip density="compact">€ {{ extra.price }}</v-chip>
                     </div>
                   </v-card-title>
                   <v-card-subtitle>
