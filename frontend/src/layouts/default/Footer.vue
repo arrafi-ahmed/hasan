@@ -1,17 +1,7 @@
 <script setup>
-import { useStore } from 'vuex'
 import { appInfo } from '@/others/util.js'
 import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 
-const store = useStore()
-const router = useRouter()
-
-const event = computed(() => store.state.event.event)
-
-onMounted(async () => {
-  await store.dispatch('event/getFirstEvent')
-})
 </script>
 <template>
   <v-footer class="flex-grow-0 footer bg-primary">

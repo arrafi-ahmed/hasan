@@ -236,6 +236,24 @@ onMounted(async () => {
         </v-col>
       </v-row>
 
+      <!-- Instructions -->
+      <div v-if="tickets.length > 0" class="text-center mb-6">
+        <v-alert
+          color="primary"
+          variant="tonal"
+          class="mx-auto"
+          max-width="600"
+          density="compact"
+        >
+          <template #prepend>
+            <v-icon>mdi-information</v-icon>
+          </template>
+          <div class="text-body-2">
+            <strong>How to book:</strong> Click "Add to Cart" on your desired package, then use the button at the bottom to continue to registration.
+          </div>
+        </v-alert>
+      </div>
+
       <v-row v-if="isLoading">
         <v-col class="text-center" cols="12">
           <v-progress-circular color="primary" indeterminate size="64" />
@@ -244,6 +262,7 @@ onMounted(async () => {
       </v-row>
 
       <v-row v-else-if="tickets.length === 0">
+
         <v-col class="text-center" cols="12">
           <v-card class="mx-auto" elevation="4" max-width="500">
             <v-card-text class="pa-6">
@@ -259,6 +278,7 @@ onMounted(async () => {
         </v-col>
       </v-row>
 
+      
       <v-row v-else>
         <v-col v-for="ticket in tickets" :key="ticket.id" class="mb-4" cols="12" md="4" sm="6">
           <v-card
@@ -331,27 +351,55 @@ onMounted(async () => {
     </v-container>
   </section>
 
-  <!-- Floating Action Button for Cart -->
-  <v-fab-transition>
-    <v-btn
+
+
+  <!-- Quick Continue Button - Fixed Bottom Bar -->
+  <v-fade-transition>
+    <div
       v-show="selectedTickets.length > 0"
-      class="cart-fab bg-primary"
-      color="secondary"
-      elevation="12"
-      icon
-      size="large"
-      @click="showCartDialog = true"
+      class="quick-continue-bar"
     >
-      <v-icon size="26">mdi-cart</v-icon>
-      <v-badge
-        :content="selectedTickets.length"
-        :model-value="selectedTickets.length > 0"
-        color="error"
-        dot
-        floating
-      />
-    </v-btn>
-  </v-fab-transition>
+      <v-container>
+        <div class="d-flex align-center justify-space-between">
+          <div class="d-flex align-center">
+            <v-icon class="mr-2" color="white" size="20">mdi-check-circle</v-icon>
+            <div>
+              <div class="text-subtitle-2 font-weight-bold text-white">
+                {{ selectedTickets.length }} ticket{{ selectedTickets.length !== 1 ? 's' : '' }} selected
+              </div>
+              <div class="text-caption text-white">
+                Total: {{ formatPrice(getTotalAmount(), 'USD') }}
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-center gap-2">
+            <v-btn
+              class="review-btn"
+              color="white"
+              size="small"
+              variant="outlined"
+              @click="showCartDialog = true"
+            >
+              <v-icon class="mr-1" size="16">mdi-cart</v-icon>
+              Cart
+            </v-btn>
+            <v-btn
+              :disabled="selectedTickets.length === 0"
+              :loading="isProcessingPayment"
+              class="continue-btn"
+              color="white"
+              elevation="0"
+              size="default"
+              @click="proceedToForm"
+            >
+              <v-icon class="mr-2" size="18">mdi-arrow-right</v-icon>
+              Continue to Registration
+            </v-btn>
+          </div>
+        </div>
+      </v-container>
+    </div>
+  </v-fade-transition>
 
   <!-- Modern Cart Dialog -->
   <v-dialog
@@ -553,17 +601,42 @@ onMounted(async () => {
   min-height: 60vh;
 }
 
-/* Modern Cart Styles */
-.cart-fab {
-  position: fixed !important;
-  bottom: 40px;
-  right: 24px;
-  z-index: 1000;
-  border-radius: 50% !important;
-  min-width: 56px !important;
-  height: 56px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+
+
+/* Quick Continue Bar Styles */
+.quick-continue-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-accent)) 100%);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  padding: 16px 0;
   backdrop-filter: blur(10px);
+}
+
+.quick-continue-bar .v-container {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.continue-btn {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  min-width: 180px !important;
+}
+
+.review-btn {
+  font-weight: 500 !important;
+  text-transform: none !important;
+  border-radius: 6px !important;
+  min-width: 80px !important;
+}
+
+.gap-2 {
+  gap: 8px;
 }
 
 .modern-cart-dialog {
