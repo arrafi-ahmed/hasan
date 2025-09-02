@@ -134,7 +134,7 @@ onMounted(() => {
             <h1 class="hero-title">
               {{ event?.name || 'Event Registration' }}
             </h1>
-            <p class="hero-subtitle">Join us for an amazing experience</p>
+            <p class="hero-subtitle">Únete a nosotros para una experiencia increíble</p>
           </div>
         </div>
       </div>
@@ -145,8 +145,8 @@ onMounted(() => {
       <v-container class="py-8">
         <div class="form-container">
           <div class="form-header">
-            <h2 class="form-title">Complete Your Registration</h2>
-            <p class="form-subtitle">Fill in your details to proceed to package selection</p>
+            <h2 class="form-title">Completa Tu Registro</h2>
+            <p class="form-subtitle">Completa tus datos para proceder a la selección de paquetes</p>
           </div>
 
           <v-card class="registration-form" elevation="2">
@@ -158,7 +158,7 @@ onMounted(() => {
                       v-model="attendee.firstName"
                       class="mb-4"
                       hide-details="auto"
-                      label="First Name"
+                      label="Nombre"
                       required
                       variant="solo"
                     />
@@ -168,7 +168,7 @@ onMounted(() => {
                       v-model="attendee.lastName"
                       class="mb-4"
                       hide-details="auto"
-                      label="Last Name"
+                      label="Apellido"
                       required
                       variant="solo"
                     />
@@ -179,7 +179,7 @@ onMounted(() => {
                   v-model="attendee.email"
                   class="mb-4"
                   hide-details="auto"
-                  label="Email Address"
+                  label="Correo Electrónico"
                   required
                   type="email"
                   variant="solo"
@@ -189,13 +189,13 @@ onMounted(() => {
                   v-model="attendee.phone"
                   class="mb-6"
                   hide-details="auto"
-                  label="Phone Number"
+                  label="Número de Teléfono"
                   required
                   variant="solo"
                 />
 
                 <v-alert v-if="isLoading" class="mb-4" type="info" variant="tonal">
-                  Loading event information...
+                  Cargando información del evento...
                 </v-alert>
 
                 <div class="form-actions">
@@ -208,7 +208,7 @@ onMounted(() => {
                     size="large"
                     type="submit"
                   >
-                    {{ isProcessingPayment ? 'Processing...' : 'Continue' }}
+                    {{ isProcessingPayment ? 'Procesando...' : 'Continuar' }}
                   </v-btn>
                 </div>
               </v-form>

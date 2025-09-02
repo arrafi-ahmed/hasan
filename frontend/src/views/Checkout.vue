@@ -49,7 +49,7 @@ const initializeStripe = async () => {
     stripe.value = await loadStripe(stripePublic)
   } catch (error) {
     console.error('Failed to load Stripe:', error)
-    toast.error('Failed to initialize payment system')
+    toast.error('Error al inicializar el sistema de pago')
   }
 }
 
@@ -77,7 +77,7 @@ const initializeCheckout = async () => {
     // Load order data from localStorage
     const storedAttendees = localStorage.getItem('attendeesData')
     if (!storedAttendees) {
-      toast.error('No order data found. Please try again.')
+      toast.error('No se encontraron datos del pedido. Por favor intenta de nuevo.')
       return router.push({ name: 'landing' })
     }
 
@@ -94,7 +94,7 @@ const initializeCheckout = async () => {
     }
     // Validate attendee data
     if (!attendees.value || !Array.isArray(attendees.value) || attendees.value.length === 0) {
-      toast.error('No attendee data found. Please complete the attendee forms first.')
+      toast.error('No se encontraron datos de asistentes. Por favor completa los formularios de asistentes primero.')
       return
     }
 
@@ -104,7 +104,7 @@ const initializeCheckout = async () => {
       !Array.isArray(selectedTickets.value) ||
       selectedTickets.value.length === 0
     ) {
-      toast.error('No ticket data found. Please return to tickets page.')
+      toast.error('No se encontraron datos de paquetes. Por favor regresa a la página de paquetes.')
       return
     }
 
@@ -145,7 +145,7 @@ const initializeCheckout = async () => {
     paymentElement.value.mount('#payment-element')
   } catch (error) {
     console.error('Failed to initialize checkout:', error)
-    toast.error('Failed to initialize checkout. Please try again.')
+    toast.error('Error al inicializar el checkout. Por favor intenta de nuevo.')
   } finally {
     isProcessingPayment.value = false
   }
@@ -157,13 +157,13 @@ const handleFreeRegistration = async () => {
 
     // Verify this is actually a free order
     if (!isFreeOrder.value) {
-      toast.error('This order requires payment. Please use the payment button.')
+      toast.error('Este pedido requiere pago. Por favor usa el botón de pago.')
       return
     }
 
     // Validate required data
     if (!attendees.value || !Array.isArray(attendees.value) || attendees.value.length === 0) {
-      toast.error('No attendee data found. Please complete the attendee forms first.')
+      toast.error('No se encontraron datos de asistentes. Por favor completa los formularios de asistentes primero.')
       return
     }
 
@@ -172,19 +172,19 @@ const handleFreeRegistration = async () => {
       !Array.isArray(selectedTickets.value) ||
       selectedTickets.value.length === 0
     ) {
-      toast.error('No tickets selected. Please select tickets first.')
+      toast.error('No se seleccionaron paquetes. Por favor selecciona paquetes primero.')
       return
     }
 
     if (!registration.value) {
-      toast.error('No registration data found. Please complete the registration form first.')
+      toast.error('No se encontraron datos de registro. Por favor completa el formulario de registro primero.')
       return
     }
 
     // Get event data for registration
     const event = await getEventBySlug(route.params.slug)
     if (!event) {
-      toast.error('Event not found. Please try again.')
+      toast.error('Evento no encontrado. Por favor intenta de nuevo.')
       return
     }
 
@@ -236,7 +236,7 @@ const handleFreeRegistration = async () => {
 // Handle payment submission
 const handlePayment = async () => {
   if (!stripe.value || !elements.value) {
-    toast.error('Stripe not initialized')
+    toast.error('Stripe no inicializado')
     return
   }
 
@@ -245,7 +245,7 @@ const handlePayment = async () => {
   try {
     // Ensure sessionId is available
     if (!sessionId.value) {
-      throw new Error('Session ID not available. Please try again.')
+      throw new Error('ID de sesión no disponible. Por favor intenta de nuevo.')
     }
 
     // Build success URL using our session ID
@@ -266,11 +266,11 @@ const handlePayment = async () => {
 
     if (error) {
       console.error('Payment failed:', error)
-      toast.error(error.message || 'Payment failed')
+      toast.error(error.message || 'Pago fallido')
     }
   } catch (error) {
     console.error('Payment error:', error)
-    toast.error('Payment failed. Please try again.')
+    toast.error('Pago fallido. Por favor intenta de nuevo.')
   } finally {
     isProcessingPayment.value = false
   }
@@ -291,11 +291,11 @@ onMounted(async () => {
         <!--              {{registration}}-->
         <v-row>
           <!-- Order Summary -->
-          <v-col class="order-summary-col" cols="12" md="4">
+          <v-col class="order-summary-col" cols="12" md="5">
             <v-card class="order-summary-card" elevation="4">
               <v-card-title class="text-h5 pa-4">
                 <v-icon left>mdi-cart</v-icon>
-                Order Summary
+                Resumen del Pedido
               </v-card-title>
 
               <v-card-text class="pa-4">
@@ -308,7 +308,7 @@ onMounted(async () => {
                           {{ item.title }}
                         </div>
                         <div class="text-caption text-medium-emphasis">
-                          Quantity: {{ item.quantity }}
+                          Cantidad: {{ item.quantity }}
                         </div>
                       </div>
                       <div class="text-right">
@@ -316,7 +316,7 @@ onMounted(async () => {
                           {{ formatPrice(item.unitPrice * item.quantity) }}
                         </div>
                         <div class="text-caption text-medium-emphasis">
-                          {{ formatPrice(item.unitPrice) }} each
+                          {{ formatPrice(item.unitPrice) }} cada uno
                         </div>
                       </div>
                     </div>
@@ -335,23 +335,23 @@ onMounted(async () => {
                 <!-- Attendee Info -->
                 <div v-if="attendees?.length > 0" class="mt-6">
                   <v-divider class="mb-4" />
-                  <div class="text-subtitle-2 font-weight-medium mb-3">Attendee Details</div>
+                  <div class="text-subtitle-2 font-weight-medium mb-3">Detalles del Asistente</div>
                   <div class="attendee-info">
                     <div v-for="(attendee, index) in attendees" :key="index" class="mb-3">
                       <div class="text-body-2">
-                        <strong>Attendee {{ index + 1 }}:</strong>
+                        <strong>Asistente {{ index + 1 }}:</strong>
                         {{ attendee.firstName }} {{ attendee.lastName }}
                       </div>
                       <div v-if="attendee.email" class="text-body-2 text-medium-emphasis">
-                        <strong>Email:</strong>
+                        <strong>Correo:</strong>
                         {{ attendee.email }}
                       </div>
                       <div v-if="attendee.phone" class="text-body-2 text-medium-emphasis">
-                        <strong>Phone:</strong>
+                        <strong>Teléfono:</strong>
                         {{ attendee.phone }}
                       </div>
                       <div v-if="attendee.ticketTitle" class="text-body-2 text-primary">
-                        <strong>Ticket:</strong>
+                        <strong>Paquete:</strong>
                         {{ attendee.ticketTitle }}
                       </div>
                     </div>
@@ -362,10 +362,10 @@ onMounted(async () => {
           </v-col>
 
           <!-- Payment Form -->
-          <v-col class="payment-form-col" cols="12" md="8">
+          <v-col class="payment-form-col" cols="12" md="7">
             <v-card class="checkout-card" elevation="4">
               <v-card-title class="text-h4 text-center pa-6">
-                {{ isFreeOrder ? 'Complete Free Registration' : 'Complete Your Registration' }}
+                {{ isFreeOrder ? 'Completar Registro Gratuito' : 'Completa Tu Registro' }}
               </v-card-title>
 
               <v-card-text class="pa-6">
@@ -375,9 +375,9 @@ onMounted(async () => {
                 <!-- Free Registration Message -->
                 <div v-if="isFreeOrder" class="text-center mb-6">
                   <v-icon class="mb-4" color="primary" size="64">mdi-ticket-confirmation</v-icon>
-                  <h3 class="text-h5 mb-2">Free Registration</h3>
+                  <h3 class="text-h5 mb-2">Registro Gratuito</h3>
                   <p class="text-body-1 text-medium-emphasis">
-                    No payment required. Click the button below to complete your registration.
+                    No se requiere pago. Haz clic en el botón de abajo para completar tu registro.
                   </p>
                 </div>
 
@@ -393,7 +393,7 @@ onMounted(async () => {
                   @click="handlePayment"
                 >
                   <v-icon left>mdi-credit-card</v-icon>
-                  {{ isProcessingPayment ? 'Processing...' : 'Pay Now' }}
+                  {{ isProcessingPayment ? 'Procesando...' : 'Pagar Ahora' }}
                 </v-btn>
 
                 <!-- Free Order Button (if applicable) -->
@@ -408,7 +408,7 @@ onMounted(async () => {
                   @click="handleFreeRegistration"
                 >
                   <v-icon left>mdi-ticket-confirmation</v-icon>
-                  Complete Free Registration
+                  Completar Registro Gratuito
                 </v-btn>
               </v-card-text>
             </v-card>

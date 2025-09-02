@@ -9,8 +9,8 @@ const router = useRouter()
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">Welcome to Binatnaa Tours</h1>
-        <p class="hero-subtitle">Discover amazing tours and adventures with us</p>
+        <h1 class="hero-title">Bienvenido a Binatnaa Tours</h1>
+        <p class="hero-subtitle">Descubre increíbles tours y aventuras con nosotros</p>
         <div class="hero-actions">
           <v-btn
             class="hero-btn"
@@ -19,7 +19,7 @@ const router = useRouter()
             size="large"
             target="_blank"
           >
-            View Tours
+            Ver Tours
           </v-btn>
           <v-btn
             class="hero-btn"
@@ -28,7 +28,7 @@ const router = useRouter()
             target="_blank"
             variant="outlined"
           >
-            Contact Us
+            Contáctanos
           </v-btn>
         </div>
       </div>
@@ -40,18 +40,18 @@ const router = useRouter()
         <div class="info-grid">
           <div class="info-item">
             <div class="info-icon">🌍</div>
-            <h3>Amazing Destinations</h3>
-            <p>Explore the world with our curated tours</p>
+            <h3>Destinos Increíbles</h3>
+            <p>Explora el mundo con nuestros tours curados</p>
           </div>
           <div class="info-item">
             <div class="info-icon">👨‍💼</div>
-            <h3>Expert Guides</h3>
-            <p>Professional and experienced tour leaders</p>
+            <h3>Guías Expertos</h3>
+            <p>Líderes de tours profesionales y experimentados</p>
           </div>
           <div class="info-item">
             <div class="info-icon">✨</div>
-            <h3>Unforgettable Experiences</h3>
-            <p>Create memories that last a lifetime</p>
+            <h3>Experiencias Inolvidables</h3>
+            <p>Crea recuerdos que duran toda la vida</p>
           </div>
         </div>
       </div>

@@ -165,9 +165,9 @@ onMounted(() => {
             size="64"
             width="4"
           />
-          <h3 class="text-h5 mt-6 mb-3">Processing your registration</h3>
+          <h3 class="text-h5 mt-6 mb-3">Procesando tu registro</h3>
           <p class="text-body-1 text-medium-emphasis">
-            Please wait while we confirm your details...
+            Por favor espera mientras confirmamos tus detalles...
           </p>
         </div>
 
@@ -178,11 +178,11 @@ onMounted(() => {
               <v-icon :color="theme.global.current.value.colors.error" class="mb-6" size="64">
                 mdi-alert-circle-outline
               </v-icon>
-              <h3 class="text-h5 mb-4">Registration Status Unclear</h3>
+              <h3 class="text-h5 mb-4">Estado del Registro Incierto</h3>
               <p class="text-body-1 mb-8">
                 {{ error }}
               </p>
-              <v-btn color="primary" @click="retryFetch">Retry</v-btn>
+              <v-btn color="primary" @click="retryFetch">Reintentar</v-btn>
             </v-card-text>
           </v-card>
         </div>
@@ -196,35 +196,35 @@ onMounted(() => {
                 <v-icon color="white" size="32">mdi-check-circle</v-icon>
               </div>
               <h2 class="success-title">
-                {{ route.query.registration_id ? 'Free Registration' : 'Payment' }} Successful!
+                {{ route.query.registration_id ? 'Registro Gratuito' : 'Pago' }} ¡Exitoso!
               </h2>
               <!--              <p v-if="route.query.registration_id" class="success-subtitle">-->
               <!--                Registration ID: {{ route.query.registration_id }} | Attendees:-->
               <!--                {{ route.query.attendee_ids?.split(',').length || 0 }}-->
               <!--              </p>-->
-              <p class="success-subtitle">Welcome to the tour</p>
+              <p class="success-subtitle">Bienvenido al tour</p>
             </div>
 
             <v-card-text class="pa-8">
               <p class="text-body-1 text-center mb-8">
-                Your registration has been confirmed. Please save your QR code for check-in at the
+                Tu registro ha sido confirmado. Por favor guarda tu código QR para el check-in en el
                 tour.
               </p>
 
               <!-- Order Summary -->
               <div v-if="tempRegistration.orders" class="mb-6">
-                <h4 class="text-h6 mb-4 text-center">Order Summary</h4>
+                <h4 class="text-h6 mb-4 text-center">Resumen del Pedido</h4>
                 <v-card class="pa-4" variant="outlined">
                   <p>
-                    <strong>Order Number:</strong>
+                    <strong>Número de Pedido:</strong>
                     {{ tempRegistration.orders.orderNumber }}
                   </p>
                   <p>
-                    <strong>Total Amount:</strong>
+                    <strong>Monto Total:</strong>
                     ${{ (tempRegistration.orders.totalAmount / 100).toFixed(2) }}
                   </p>
                   <p>
-                    <strong>Status:</strong>
+                    <strong>Estado:</strong>
                     <span
                       :class="
                         tempRegistration.orders.paymentStatus === 'free'
@@ -234,8 +234,8 @@ onMounted(() => {
                     >
                       {{
                         tempRegistration.orders.paymentStatus === 'free'
-                          ? 'Free Registration'
-                          : 'Paid'
+                          ? 'Registro Gratuito'
+                          : 'Pagado'
                       }}
                     </span>
                   </p>
@@ -244,7 +244,7 @@ onMounted(() => {
 
               <!-- Attendees List -->
               <div v-if="tempRegistration?.attendees?.length > 0" class="mb-6">
-                <h4 class="text-h6 mb-6 text-center">Registered Attendees</h4>
+                <h4 class="text-h6 mb-6 text-center">Asistentes Registrados</h4>
                 <div class="attendees-container">
                   <div
                     v-for="(attendee, index) in tempRegistration.attendees"
@@ -279,10 +279,10 @@ onMounted(() => {
 
                     <!-- Individual QR Code for each attendee -->
                     <div class="qr-container">
-                      <h6 class="qr-title">QR Code for {{ attendee.firstName }}</h6>
+                      <h6 class="qr-title">Código QR para {{ attendee.firstName }}</h6>
                       <p class="qr-security-note">
                         <v-icon class="mr-1" color="success" size="16">mdi-shield-check</v-icon>
-                        Secure QR Code
+                        Código QR Seguro
                       </p>
                       <QRCodeVue3
                         :corners-square-options="qrOptions"
@@ -314,10 +314,10 @@ onMounted(() => {
               <v-icon :color="theme.global.current.value.colors.info" class="mb-6" size="64">
                 mdi-information
               </v-icon>
-              <h3 class="text-h5 mb-4">Payment Completed</h3>
+              <h3 class="text-h5 mb-4">Pago Completado</h3>
               <p class="text-body-1 mb-8">
-                Your payment has been processed successfully! Your registration details are being
-                finalized. You will receive a confirmation email shortly.
+                ¡Tu pago ha sido procesado exitosamente! Los detalles de tu registro están siendo
+                finalizados. Recibirás un correo de confirmación en breve.
               </p>
             </v-card-text>
           </v-card>

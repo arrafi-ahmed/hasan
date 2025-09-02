@@ -166,9 +166,9 @@ onMounted(async () => {
       <!-- Loading State -->
       <div v-if="!isDataReady" class="text-center py-16">
         <v-progress-circular color="primary" indeterminate size="64" width="4" />
-        <h3 class="text-h5 mt-6 mb-3">Loading attendee forms...</h3>
+        <h3 class="text-h5 mt-6 mb-3">Cargando formularios de asistentes...</h3>
         <p class="text-body-1 text-medium-emphasis">
-          Please wait while we prepare your registration forms.
+          Por favor espera mientras preparamos tus formularios de registro.
         </p>
       </div>
 
@@ -181,7 +181,7 @@ onMounted(async () => {
               <v-card-text class="pa-4">
                 <div class="d-flex align-center justify-space-between">
                   <span class="text-body-1">
-                    Attendee {{ currentStep + 1 }} of {{ totalAttendees }}
+                    Asistente {{ currentStep + 1 }} de {{ totalAttendees }}
                   </span>
                   <v-progress-linear
                     :model-value="((currentStep + 1) / totalAttendees) * 100"
@@ -197,7 +197,7 @@ onMounted(async () => {
             <v-card elevation="4">
               <v-card-title class="bg-primary text-white py-4">
                 <h3 class="text-h5 font-weight-bold">
-                  Attendee {{ currentStep + 1 }}:
+                  Asistente {{ currentStep + 1 }}:
                   {{ attendees[currentStep].title }}
                 </h3>
               </v-card-title>
@@ -234,7 +234,7 @@ onMounted(async () => {
                         ]"
                         density="comfortable"
                         hide-details="auto"
-                        label="First Name *"
+                        label="Nombre *"
                         required
                         variant="solo"
                       />
@@ -248,7 +248,7 @@ onMounted(async () => {
                         ]"
                         density="comfortable"
                         hide-details="auto"
-                        label="Last Name *"
+                        label="Apellido *"
                         required
                         variant="solo"
                       />
@@ -265,7 +265,7 @@ onMounted(async () => {
                         ]"
                         density="comfortable"
                         hide-details="auto"
-                        label="Email *"
+                        label="Correo Electrónico *"
                         required
                         type="email"
                         variant="solo"
@@ -280,7 +280,7 @@ onMounted(async () => {
                         ]"
                         density="comfortable"
                         hide-details="auto"
-                        label="Phone *"
+                        label="Teléfono *"
                         required
                         variant="solo"
                       />
@@ -294,7 +294,7 @@ onMounted(async () => {
               <v-card-actions class="pa-6 pt-0">
                 <v-spacer />
                 <v-btn v-if="currentStep > 0" class="mr-4" variant="outlined" @click="prevStep">
-                  Previous
+                  Anterior
                 </v-btn>
                 <v-btn
                   :disabled="isLoading"
@@ -304,7 +304,7 @@ onMounted(async () => {
                   variant="flat"
                   @click="nextStep"
                 >
-                  {{ currentStep < totalAttendees - 1 ? 'Next Attendee' : 'Complete Registration' }}
+                  {{ currentStep < totalAttendees - 1 ? 'Siguiente Asistente' : 'Completar Registro' }}
                 </v-btn>
               </v-card-actions>
             </v-card>

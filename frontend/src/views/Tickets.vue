@@ -137,11 +137,11 @@ const isTicketInCart = (ticketId) => {
 
 const getButtonText = (ticket) => {
   if (ticket.currentStock === 0) {
-    return 'Sold Out'
+    return 'Agotado'
   } else if (isTicketInCart(ticket.id)) {
-    return 'In Cart'
+    return 'En Carrito'
   } else {
-    return 'Add to Cart'
+    return 'Agregar al Carrito'
   }
 }
 
@@ -232,7 +232,7 @@ onMounted(async () => {
     <v-container>
       <v-row>
         <v-col cols="12" md="8">
-          <h2 class="text-h4 font-weight-bold mb-4">Available Packages</h2>
+          <h2 class="text-h4 font-weight-bold mb-4">Paquetes Disponibles</h2>
         </v-col>
       </v-row>
 
@@ -249,7 +249,7 @@ onMounted(async () => {
             <v-icon>mdi-information</v-icon>
           </template>
           <div class="text-body-2">
-            <strong>How to book:</strong> Click "Add to Cart" on your desired package, then use the button at the bottom to continue to registration.
+            <strong>Cómo reservar:</strong> Haz clic en "Agregar al Carrito" en tu paquete deseado, luego usa el botón de abajo para continuar al registro.
           </div>
         </v-alert>
       </div>
@@ -257,7 +257,7 @@ onMounted(async () => {
       <v-row v-if="isLoading">
         <v-col class="text-center" cols="12">
           <v-progress-circular color="primary" indeterminate size="64" />
-          <p class="mt-4">Loading packages...</p>
+          <p class="mt-4">Cargando paquetes...</p>
         </v-col>
       </v-row>
 
@@ -267,12 +267,12 @@ onMounted(async () => {
           <v-card class="mx-auto" elevation="4" max-width="500">
             <v-card-text class="pa-6">
               <v-icon class="mb-4" color="info" size="64">mdi-ticket-outline</v-icon>
-              <h3 class="text-h5 mb-4">No Package Available Yet</h3>
+              <h3 class="text-h5 mb-4">Aún No Hay Paquetes Disponibles</h3>
               <p class="text-body-1 mb-4">
-                Packages for this event haven't been created yet by the event organizer. Please
-                check back later or contact the event organizer for more information.
+                Los paquetes para este evento aún no han sido creados por el organizador del evento. Por favor
+                vuelve más tarde o contacta al organizador del evento para más información.
               </p>
-              <v-btn class="mt-4" color="primary" @click="goBack">Back to Tour</v-btn>
+              <v-btn class="mt-4" color="primary" @click="goBack">Volver al Tour</v-btn>
             </v-card-text>
           </v-card>
         </v-col>
@@ -314,7 +314,7 @@ onMounted(async () => {
 
               <div class="ticket-details mb-3">
                 <div class="d-flex justify-space-between align-center">
-                  <span class="text-caption font-weight-medium">Availability:</span>
+                  <span class="text-caption font-weight-medium">Disponibilidad:</span>
                   <v-chip
                     :color="ticket.currentStock > 0 ? 'success' : 'error'"
                     size="small"
@@ -323,7 +323,7 @@ onMounted(async () => {
                     <v-icon class="mr-1" size="16">
                       {{ ticket.currentStock > 0 ? 'mdi-check-circle' : 'mdi-close-circle' }}
                     </v-icon>
-                    {{ ticket.currentStock || 0 }} available
+                    {{ ticket.currentStock || 0 }} disponibles
                   </v-chip>
                 </div>
               </div>
@@ -365,7 +365,7 @@ onMounted(async () => {
             <v-icon class="mr-2" color="white" size="20">mdi-check-circle</v-icon>
             <div>
               <div class="text-subtitle-2 font-weight-bold text-white">
-                {{ selectedTickets.length }} ticket{{ selectedTickets.length !== 1 ? 's' : '' }} selected
+                {{ selectedTickets.length }} paquete{{ selectedTickets.length !== 1 ? 's' : '' }} seleccionado{{ selectedTickets.length !== 1 ? 's' : '' }}
               </div>
               <div class="text-caption text-white">
                 Total: {{ formatPrice(getTotalAmount(), 'USD') }}
@@ -381,7 +381,7 @@ onMounted(async () => {
               @click="showCartDialog = true"
             >
               <v-icon class="mr-1" size="16">mdi-cart</v-icon>
-              Cart
+              Carrito
             </v-btn>
             <v-btn
               :disabled="selectedTickets.length === 0"
@@ -393,7 +393,7 @@ onMounted(async () => {
               @click="proceedToForm"
             >
               <v-icon class="mr-2" size="18">mdi-arrow-right</v-icon>
-              Continue to Registration
+              Continuar al Registro
             </v-btn>
           </div>
         </div>
@@ -417,9 +417,9 @@ onMounted(async () => {
               <v-icon color="white" size="18">mdi-shopping</v-icon>
             </div>
             <div class="ml-3">
-              <div class="text-h6 font-weight-bold text-white">Cart</div>
+              <div class="text-h6 font-weight-bold text-white">Carrito</div>
               <div class="text-caption text-white">
-                {{ selectedTickets.length }} item{{ selectedTickets.length !== 1 ? 's' : '' }}
+                {{ selectedTickets.length }} artículo{{ selectedTickets.length !== 1 ? 's' : '' }}
               </div>
             </div>
           </div>
@@ -468,7 +468,7 @@ onMounted(async () => {
                   <h6 class="item-title">
                     {{ item.title }}
                   </h6>
-                  <div class="item-price">{{ formatPrice(item.unitPrice, 'USD') }} each</div>
+                  <div class="item-price">{{ formatPrice(item.unitPrice, 'USD') }} cada uno</div>
                 </div>
 
                 <div class="item-controls">
@@ -539,7 +539,7 @@ onMounted(async () => {
             >
               <v-icon class="mr-2" size="18">mdi-credit-card-outline</v-icon>
               <span class="font-weight-medium">
-                {{ isProcessingPayment ? 'Processing...' : 'Complete Purchase' }}
+                {{ isProcessingPayment ? 'Procesando...' : 'Completar Compra' }}
               </span>
             </v-btn>
 
@@ -551,7 +551,7 @@ onMounted(async () => {
                 variant="text"
                 @click="showCartDialog = false"
               >
-                Continue Shopping
+                Continuar Comprando
               </v-btn>
             </div>
           </div>
