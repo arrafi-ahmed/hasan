@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { loadStripe } from '@stripe/stripe-js/pure'
 import { toast } from 'vue-sonner'
-import { defaultCurrency, stripePublic } from '@/others/util'
+import { stripePublic, formatPrice } from '@/others/util'
 import $axios from '@/plugins/axios'
 
 const route = useRoute()
@@ -23,6 +23,19 @@ const attendees = computed(() => JSON.parse(localStorage.getItem('attendeesData'
 const selectedTickets = computed(() => JSON.parse(localStorage.getItem('selectedTickets')))
 const registration = computed(() => JSON.parse(localStorage.getItem('registrationData')))
 
+// Get event from store
+const fetchedEvent = computed(() => store.state.event.event)
+
+// Get currency from event
+const eventCurrency = computed(() => {
+  // Check if event has currency field, otherwise default to USD
+  const currency = fetchedEvent.value?.currency
+  if (currency && typeof currency === 'string' && currency.length === 3) {
+    return currency.toUpperCase()
+  }
+  return 'USD'
+})
+
 const isFreeOrder = computed(() => {
   return selectedTickets.value && selectedTickets.value.every((item) => item.unitPrice === 0)
 })
@@ -33,15 +46,7 @@ const totalAmount = computed(() => {
   }, 0)
 })
 
-const formatPrice = (price) => {
-  price = price / 100
-  const val = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: defaultCurrency.value.toUpperCase(),
-    minimumFractionDigits: 2,
-  }).format(price)
-  return val
-}
+
 
 // Initialize Stripe
 const initializeStripe = async () => {
@@ -281,6 +286,16 @@ const retryCheckout = () => {
 }
 
 onMounted(async () => {
+  // Load event data if not already in store
+  const slug = route.params.slug
+  if (slug && (!fetchedEvent.value || !fetchedEvent.value.id)) {
+    try {
+      await store.dispatch('event/setEventBySlug', { slug })
+    } catch (error) {
+      console.warn('Failed to fetch event by slug:', error)
+    }
+  }
+  
   await initializeCheckout()
 })
 </script>
@@ -313,10 +328,10 @@ onMounted(async () => {
                       </div>
                       <div class="text-right">
                         <div class="text-subtitle-2 font-weight-medium">
-                          {{ formatPrice(item.unitPrice * item.quantity) }}
+                          {{ formatPrice(item.unitPrice * item.quantity, eventCurrency) }}
                         </div>
                         <div class="text-caption text-medium-emphasis">
-                          {{ formatPrice(item.unitPrice) }} cada uno
+                          {{ formatPrice(item.unitPrice, eventCurrency) }} cada uno
                         </div>
                       </div>
                     </div>
@@ -327,8 +342,8 @@ onMounted(async () => {
                 <v-divider class="my-4" />
                 <div class="d-flex justify-space-between align-center">
                   <div class="text-h6 font-weight-bold">Total</div>
-                  <div class="text-h6 font-weight-bold">
-                    {{ formatPrice(totalAmount) }}
+                  <div class="text-h6 font-weight-bold">                  
+                    {{ formatPrice(totalAmount, eventCurrency) }}
                   </div>
                 </div>
 

@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { useStore } from 'vuex'
 import { toast } from 'vue-sonner'
+import { formatPrice, formatPriceCompact } from '@/others/util'
 
 const { xs } = useDisplay()
 const route = useRoute()
@@ -15,35 +16,22 @@ const isLoading = ref(true)
 const isProcessingPayment = ref(false)
 const showCartDialog = ref(false)
 
-const formatPrice = (price, currency = 'USD') => {
-  // Convert cents to dollars if price is in cents
-  const amount = price >= 1000 ? price / 100 : price
 
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount)
-}
-
-const formatPriceCompact = (price, currency = 'USD') => {
-  // Convert cents to dollars if price is in cents
-  const amount = price >= 1000 ? price / 100 : price
-
-  if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(1)}k`
-  } else if (amount >= 100) {
-    return `$${Math.round(amount)}`
-  } else {
-    return `$${amount.toFixed(2)}`
-  }
-}
 const storedReg = localStorage.getItem('registrationData')
 const storedEventId = storedReg ? JSON.parse(storedReg).eventId : null
 const fetchedEvent = computed(() => store.state.event.event)
 const eventId = computed(() => storedEventId || fetchedEvent.value.id)
 const tickets = computed(() => store.state.ticket.tickets)
+
+// Get currency from event
+const eventCurrency = computed(() => {
+  // Check if event has currency field, otherwise default to USD
+  const currency = fetchedEvent.value?.currency
+  if (currency && typeof currency === 'string' && currency.length === 3) {
+    return currency.toUpperCase()
+  }
+  return 'USD'
+})
 
 const fetchTickets = async () => {
   try {
@@ -51,10 +39,8 @@ const fetchTickets = async () => {
 
     const slug = route.params.slug
 
-    let event = null
-
-    // Try to fetch by slug first if available
-    if (!storedEventId && slug) {
+    // Try to fetch by slug first if available and event is not in store
+    if (!storedEventId && slug && (!fetchedEvent.value || !fetchedEvent.value.id)) {
       try {
         await store.dispatch('event/setEventBySlug', { slug })
       } catch (slugError) {
@@ -104,6 +90,7 @@ const selectTicket = (ticket, quantity = 1) => {
         ticketId: ticket.id,
         title: ticket.title,
         unitPrice: ticket.price,
+        currency: eventCurrency.value,
         quantity: quantity,
       })
     } else {
@@ -303,7 +290,7 @@ onMounted(async () => {
                   {{ ticket.title }}
                 </h3>
                 <div class="text-h6 font-weight-bold mt-2 opacity-90">
-                  {{ formatPrice(ticket.price, ticket.currency) }}
+                  {{ formatPrice(ticket.price, eventCurrency) }}
                 </div>
               </div>
             </v-card-title>
@@ -368,7 +355,7 @@ onMounted(async () => {
                 {{ selectedTickets.length }} paquete{{ selectedTickets.length !== 1 ? 's' : '' }} seleccionado{{ selectedTickets.length !== 1 ? 's' : '' }}
               </div>
               <div class="text-caption text-white">
-                Total: {{ formatPrice(getTotalAmount(), 'USD') }}
+                Total: {{ formatPrice(getTotalAmount(), eventCurrency) }}
               </div>
             </div>
           </div>
@@ -468,7 +455,7 @@ onMounted(async () => {
                   <h6 class="item-title">
                     {{ item.title }}
                   </h6>
-                  <div class="item-price">{{ formatPrice(item.unitPrice, 'USD') }} cada uno</div>
+                  <div class="item-price">{{ formatPrice(item.unitPrice, eventCurrency) }} cada uno</div>
                 </div>
 
                 <div class="item-controls">
@@ -498,7 +485,7 @@ onMounted(async () => {
                   </div>
 
                   <div class="item-total">
-                    {{ formatPrice(item.unitPrice * item.quantity, 'USD') }}
+                    {{ formatPrice(item.unitPrice * item.quantity, eventCurrency) }}
                   </div>
 
                   <v-btn
@@ -523,7 +510,7 @@ onMounted(async () => {
           <div class="cart-summary">
             <div class="summary-line">
               <span class="summary-label">Total</span>
-              <span class="summary-amount">{{ formatPrice(getTotalAmount(), 'USD') }}</span>
+              <span class="summary-amount">{{ formatPrice(getTotalAmount(), eventCurrency) }}</span>
             </div>
 
             <v-btn

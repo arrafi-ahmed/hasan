@@ -5,6 +5,7 @@ import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import PageTitle from '@/components/PageTitle.vue'
+import { formatPrice } from '@/others/util'
 
 const store = useStore()
 const route = useRoute()
@@ -160,12 +161,7 @@ const toggleFeature = (index) => {
   packageForm.value.features[index].included = !packageForm.value.features[index].included
 }
 
-const formatPrice = (price, currency) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-  }).format(price)
-}
+
 
 const getAvailableText = (count) => {
   return count === -1 ? 'Unlimited' : `${count} available`

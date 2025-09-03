@@ -7,6 +7,7 @@ const ticketService = require("./ticket");
 const registrationService = require("./registration");
 const attendeesService = require("./attendees");
 const emailService = require("./email");
+const eventService = require("./event");
 
 exports.save = async ({ payload }) => {
   if (!payload) {
@@ -239,11 +240,17 @@ exports.createOrderWithPayment = async ({
     throw new CustomError("Invalid total amount", 400);
   }
 
+  // Get event currency
+  const event = await eventService.getEventById({
+    eventId: registration.eventId,
+  });
+  const eventCurrency = event?.currency || 'USD';
+
   // Create order with items
   const orderData = {
     orderNumber: exports.generateOrderNumber(),
     totalAmount: finalTotalAmount,
-    currency: defaultCurrency.code,
+    currency: eventCurrency,
     paymentStatus: "pending",
     items,
     registrationId,

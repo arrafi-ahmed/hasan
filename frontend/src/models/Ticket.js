@@ -7,26 +7,13 @@ export class Ticket {
     this.title = data.title || ''
     this.description = data.description || ''
     this.price = data.price || 0
-    this.currency = data.currency || 'USD'
     this.currentStock = data.currentStock || 0
     this.maxStock = data.maxStock || null
     this.eventId = data.eventId || null
     this.createdAt = data.createdAt || null
   }
 
-  /**
-   * Common currencies
-   */
-  static get CURRENCIES() {
-    return {
-      USD: 'USD',
-      EUR: 'EUR',
-      GBP: 'GBP',
-      JPY: 'JPY',
-      CAD: 'CAD',
-      AUD: 'AUD',
-    }
-  }
+
 
   /**
    * Check if ticket is free
@@ -95,9 +82,9 @@ export class Ticket {
   }
 
   /**
-   * Format price for display
+   * Format price for display (requires currency parameter)
    */
-  formatPrice(quantity = 1) {
+  formatPrice(quantity = 1, currency = 'USD') {
     const total = this.price * quantity
 
     if (this.isFree()) {
@@ -105,7 +92,7 @@ export class Ticket {
     }
 
     // Basic formatting
-    switch (this.currency) {
+    switch (currency) {
       case 'USD':
         return `$${(total / 100).toFixed(2)}`
       case 'EUR':
@@ -113,7 +100,7 @@ export class Ticket {
       case 'GBP':
         return `£${(total / 100).toFixed(2)}`
       default:
-        return `${(total / 100).toFixed(2)} ${this.currency}`
+        return `${(total / 100).toFixed(2)} ${currency}`
     }
   }
 
@@ -140,10 +127,6 @@ export class Ticket {
 
     if (this.price < 0) {
       errors.push('Price cannot be negative')
-    }
-
-    if (!this.currency || this.currency.length !== 3) {
-      errors.push('Currency must be a 3-character code')
     }
 
     if (this.currentStock < 0) {

@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import NoItemsFound from '@/components/NoItemsFound.vue'
 import PageTitle from '@/components/PageTitle.vue'
+import { formatPrice } from '@/others/util'
 
 const { xs } = useDisplay()
 const store = useStore()
@@ -15,6 +16,15 @@ const event = computed(() => store.getters['event/getEventById'](route.params.ev
 
 const sponsorships = computed(() => store.state.sponsorship.sponsorships)
 const isLoading = ref(false)
+
+// Get currency from event
+const eventCurrency = computed(() => {
+  const currency = event.value?.currency
+  if (currency && typeof currency === 'string' && currency.length === 3) {
+    return currency.toUpperCase()
+  }
+  return 'USD'
+})
 
 // Format sponsor names for display
 const formatSponsorName = (sponsorData) => {
@@ -47,12 +57,7 @@ const fetchSponsorships = async () => {
   }
 }
 
-const formatPrice = (price, currency) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-  }).format(price)
-}
+
 
 const formatDateTime = (dateString) => {
   if (!dateString) return 'N/A'
@@ -107,7 +112,7 @@ const viewSponsorshipDetails = (sponsorship) => {
           <v-card-title>Total Amount (Paid)</v-card-title>
           <v-card-text>
             <div class="text-h4">
-              {{ formatPrice(getTotalAmount(), 'USD') }}
+              {{ formatPrice(getTotalAmount(), eventCurrency) }}
             </div>
           </v-card-text>
         </v-card>
@@ -117,7 +122,7 @@ const viewSponsorshipDetails = (sponsorship) => {
           <v-card-title>Pending Amount</v-card-title>
           <v-card-text>
             <div class="text-h4">
-              {{ formatPrice(getPendingAmount(), 'USD') }}
+              {{ formatPrice(getPendingAmount(), eventCurrency) }}
             </div>
           </v-card-text>
         </v-card>

@@ -33,13 +33,12 @@ exports.save = async ({ payload, currentUser }) => {
   // If updating existing ticket (id exists), use upsert
   if (id) {
     const sql = `
-            INSERT INTO ticket (id, title, description, price, currency, current_stock, max_stock, event_id, created_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) ON CONFLICT (id) DO
+            INSERT INTO ticket (id, title, description, price, current_stock, max_stock, event_id, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) ON CONFLICT (id) DO
             UPDATE SET
                 title = EXCLUDED.title,
                 description = EXCLUDED.description,
                 price = EXCLUDED.price,
-                currency = EXCLUDED.currency,
                 current_stock = EXCLUDED.current_stock,
                 max_stock = EXCLUDED.max_stock,
                 event_id = EXCLUDED.event_id
@@ -48,7 +47,6 @@ exports.save = async ({ payload, currentUser }) => {
                 title,
                 description,
                 price,
-                currency,
                 current_stock as "currentStock",
                 max_stock as "maxStock",
                 event_id as "eventId",
@@ -59,7 +57,6 @@ exports.save = async ({ payload, currentUser }) => {
       newTicket.title,
       newTicket.description,
       newTicket.price,
-      newTicket.currency || "USD",
       newTicket.current_stock,
       newTicket.max_stock,
       newTicket.eventId,
@@ -74,13 +71,12 @@ exports.save = async ({ payload, currentUser }) => {
   } else {
     // If creating new ticket, don't include id
     const sql = `
-            INSERT INTO ticket (title, description, price, currency, current_stock, max_stock, event_id, created_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING 
+            INSERT INTO ticket (title, description, price, current_stock, max_stock, event_id, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING 
                 id,
                 title,
                 description,
                 price,
-                currency,
                 current_stock as "currentStock",
                 max_stock as "maxStock",
                 event_id as "eventId",
@@ -90,7 +86,6 @@ exports.save = async ({ payload, currentUser }) => {
       newTicket.title,
       newTicket.description,
       newTicket.price,
-      newTicket.currency || "USD",
       newTicket.current_stock,
       newTicket.max_stock,
       newTicket.eventId,
@@ -115,7 +110,6 @@ exports.getTicketsByEventId = async ({ eventId }) => {
                title,
                description,
                price,
-               currency,
                current_stock as "currentStock",
                max_stock     as "maxStock",
                event_id      as "eventId",
@@ -138,7 +132,6 @@ exports.getTicketById = async ({ ticketId }) => {
                title,
                description,
                price,
-               currency,
                current_stock as "currentStock",
                max_stock     as "maxStock",
                event_id      as "eventId",

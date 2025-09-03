@@ -328,10 +328,12 @@ const fetchData = async () => {
 
 const formatPrice = (price, currency) => {
   if (!price) return ''
+  // Convert cents to currency units (prices are always stored in cents)
+  const amount = price / 100
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency || 'USD',
-  }).format(price) // Assuming price is in cents
+  }).format(amount)
 }
 
 const selectPackage = (pkg) => {

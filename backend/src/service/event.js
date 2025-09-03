@@ -118,9 +118,9 @@ exports.save = async ({ payload, files, currentUser }) => {
 
   if (shouldCreate) {
     const sql = `
-            INSERT INTO event (name, description, start_date, end_date, location, banner, landing_config, slug, club_id,
+            INSERT INTO event (name, description, start_date, end_date, location, banner, landing_config, slug, currency, club_id,
                                created_by, registration_count)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
         `;
     const values = [
       newEvent.name,
@@ -131,6 +131,7 @@ exports.save = async ({ payload, files, currentUser }) => {
       newEvent.banner,
       JSON.stringify(newEvent.landingConfig || {}),
       newEvent.slug,
+      newEvent.currency || 'USD',
       newEvent.clubId,
       newEvent.createdBy,
       newEvent.registrationCount,
@@ -147,8 +148,9 @@ exports.save = async ({ payload, files, currentUser }) => {
                 location       = $5,
                 banner         = $6,
                 landing_config = $7,
-                slug           = $8
-            WHERE id = $9 RETURNING *
+                slug           = $8,
+                currency       = $9
+            WHERE id = $10 RETURNING *
         `;
     const values = [
       newEvent.name,
@@ -159,6 +161,7 @@ exports.save = async ({ payload, files, currentUser }) => {
       newEvent.banner,
       JSON.stringify(newEvent.landingConfig || {}),
       newEvent.slug,
+      newEvent.currency || 'USD',
       newEvent.id,
     ];
     const result = await query(sql, values);

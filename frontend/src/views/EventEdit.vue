@@ -25,6 +25,7 @@ const newEventInit = {
   dateRange: [new Date(), new Date()],
   banner: null,
   slug: null,
+  currency: 'USD',
   landingConfig: {
     heroTitle: '',
     heroSubtitle: '',
@@ -84,6 +85,7 @@ const handleSubmitEditEvent = async () => {
     toLocalISOString(newEvent.dateRange[newEvent.dateRange.length - 1]).slice(0, 10),
   )
   formData.append('slug', newEvent.slug)
+  formData.append('currency', newEvent.currency)
   formData.append('landingConfig', JSON.stringify(newEvent.landingConfig))
 
   if (newEvent.banner) formData.append('files', newEvent.banner)
@@ -218,6 +220,23 @@ onMounted(async () => {
                 hide-details="auto"
                 label="Location (optional)"
                 prepend-inner-icon="mdi-map-marker"
+                variant="solo"
+              />
+
+              <v-select
+                v-model="newEvent.currency"
+                :items="[
+                  { value: 'USD', text: 'USD ($)' },
+                  { value: 'EUR', text: 'EUR (€)' },
+                  { value: 'GBP', text: 'GBP (£)' },
+                ]"
+                class="mb-4"
+                density="comfortable"
+                hide-details="auto"
+                item-title="text"
+                item-value="value"
+                label="Currency"
+                prepend-inner-icon="mdi-cash-multiple"
                 variant="solo"
               />
 

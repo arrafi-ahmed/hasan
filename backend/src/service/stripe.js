@@ -62,6 +62,12 @@ exports.createPaymentIntent = async ({
   const lineItems = [];
   let totalAmount = 0;
 
+  // Get event to get currency
+  const event = await eventService.getEventById({
+    eventId: savedRegistration.eventId,
+  });
+  const eventCurrency = event?.currency || 'USD';
+
   // Get event tickets price
   const tickets = await ticketService.getTicketsByEventId({
     eventId: savedRegistration.eventId,
@@ -88,7 +94,7 @@ exports.createPaymentIntent = async ({
   // Create payment intent
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalAmount), // Convert to cents
-    currency: defaultCurrency.code,
+    currency: eventCurrency,
     metadata: {
       registrationId: savedRegistration.id,
       registrationUuid: savedRegistration.qrUuid,
@@ -114,10 +120,19 @@ exports.createOrderPaymentIntent = async ({
     return { clientSecret: "no-stripe" };
   }
 
+  // Get event currency from registration
+  const registration = await registrationService.getRegistrationById({
+    registrationId: registrationId,
+  });
+  const event = await eventService.getEventById({
+    eventId: registration.eventId,
+  });
+  const eventCurrency = event?.currency || 'USD';
+
   // Create payment intent
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalAmount * 100), // Convert to cents
-    currency: defaultCurrency.code,
+    currency: eventCurrency,
     receipt_email: customerEmail,
     metadata: {
       orderId: orderId,
@@ -131,6 +146,12 @@ exports.createOrderPaymentIntent = async ({
 exports.createExtrasPaymentIntent = async ({
   payload: { extrasIds, registrationId, customerEmail, eventId },
 }) => {
+  // Get event currency
+  const event = await eventService.getEventById({
+    eventId: eventId,
+  });
+  const eventCurrency = event?.currency || 'USD';
+
   // Get extras prices
   const extras = await eventService.getExtrasByIds({ extrasIds });
   let totalAmount = 0;
@@ -148,7 +169,7 @@ exports.createExtrasPaymentIntent = async ({
   // Create payment intent
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalAmount * 100), // Convert to cents
-    currency: defaultCurrency.code,
+    currency: eventCurrency,
     receipt_email: customerEmail,
     metadata: {
       registrationId: registrationId,

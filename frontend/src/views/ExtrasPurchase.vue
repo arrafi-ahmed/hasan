@@ -126,10 +126,18 @@ const processPayment = async () => {
 }
 
 const formatPrice = (price) => {
+  // Convert cents to currency units (prices are always stored in cents)
+  const amount = price / 100
+  // Get currency from event with validation
+  const currency = event.value?.currency
+  const validCurrency = (currency && typeof currency === 'string' && currency.length === 3) 
+    ? currency.toUpperCase() 
+    : 'USD'
+  
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
-  }).format(price)
+    currency: validCurrency,
+  }).format(amount)
 }
 
 onMounted(async () => {

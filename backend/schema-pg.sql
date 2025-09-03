@@ -29,6 +29,7 @@ CREATE TABLE event
     banner             VARCHAR(255),
     landing_config     JSONB,               -- Landing page configuration
     slug               VARCHAR(255) UNIQUE, -- Custom URL slug for the event
+    currency           VARCHAR(3)   NOT NULL DEFAULT 'USD', -- Event currency
     club_id            INT          NOT NULL REFERENCES club (id) ON DELETE CASCADE,
     created_by         INT          NOT NULL REFERENCES app_user (id)
 );
@@ -51,7 +52,6 @@ CREATE TABLE ticket
     title         VARCHAR(100) NOT NULL,
     description   TEXT,
     price         INT          NOT NULL DEFAULT 0,
-    currency      VARCHAR(3)   NOT NULL DEFAULT 'USD',
     current_stock INT          NOT NULL DEFAULT 0,
     max_stock     INT,
     event_id      INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE,

@@ -20,12 +20,13 @@ const suppressToastMiddleware = require("./src/middleware/suppressToast");
 const { appInfo } = require("./src/others/util");
 const port = process.env.PORT || 3001;
 
-// Uncomment if Stripe webhook is needed
+// Stripe webhook route - must be BEFORE express.json() to avoid body parsing conflicts
 app.post(
   "/stripe/webhook",
   express.raw({ type: "application/json" }),
   require("./src/controller/stripe").webhook,
 );
+
 //middlewares
 app.use(customHelmet);
 app.use(customCors);

@@ -33,6 +33,23 @@ router.get("/check-payment-status", async (req, res, next) => {
   }
 });
 
+// Test webhook secret endpoint (remove in production)
+router.get("/test-webhook-secret", async (req, res, next) => {
+  try {
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const isDev = process.env.NODE_ENV !== "production";
+    
+    res.status(200).json(new ApiResponse({
+      hasWebhookSecret: !!webhookSecret,
+      isDev: isDev,
+      secretPrefix: webhookSecret ? webhookSecret.substring(0, 10) + "..." : "Not set",
+      nodeEnv: process.env.NODE_ENV
+    }, null));
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Webhook for handling payment intent events
 const webhook = async (req, res, next) => {
   stripeService

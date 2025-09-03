@@ -277,6 +277,53 @@ export const getCurrencySymbol = ({ code, type }) => {
 
 export const defaultCurrency = getCurrencySymbol({ code: 'usd' })
 
+/**
+ * Format price for display - converts cents to currency units
+ * @param {number} price - Price in cents
+ * @param {string} currency - Currency code (USD, EUR, GBP, etc.)
+ * @param {object} options - Formatting options
+ * @returns {string} Formatted price string
+ */
+export const formatPrice = (price, currency = 'USD', options = {}) => {
+  if (!price && price !== 0) return ''
+  
+  // Convert cents to currency units (prices are always stored in cents)
+  const amount = price / 100
+  
+  const defaultOptions = {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }
+  
+  const formatOptions = { ...defaultOptions, ...options }
+  
+  return new Intl.NumberFormat('en-US', formatOptions).format(amount)
+}
+
+/**
+ * Format price in compact form (e.g., $1.2k, $100, $1.50)
+ * @param {number} price - Price in cents
+ * @param {string} currency - Currency code
+ * @returns {string} Compact formatted price string
+ */
+export const formatPriceCompact = (price, currency = 'USD') => {
+  if (!price && price !== 0) return ''
+  
+  // Convert cents to currency units (prices are always stored in cents)
+  const amount = price / 100
+  const symbol = getCurrencySymbol({ code: currency, type: 'symbol' }) || '$'
+  
+  if (amount >= 1000) {
+    return `${symbol}${(amount / 1000).toFixed(1)}k`
+  } else if (amount >= 100) {
+    return `${symbol}${Math.round(amount)}`
+  } else {
+    return `${symbol}${amount.toFixed(2)}`
+  }
+}
+
 export const handleRedirect = ({ param, hardRedirect = true }) => {
   const paramValue = getQueryParam({ param })
   if (paramValue) {

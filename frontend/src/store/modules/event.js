@@ -3,17 +3,19 @@ import $axios from '@/plugins/axios'
 export const namespaced = true
 
 export const state = {
-  events: [],
-  event: {},
+  events: JSON.parse(localStorage.getItem('events')) || [],
+  event: JSON.parse(localStorage.getItem('currentEvent')) || {},
   extras: [],
 }
 
 export const mutations = {
   setEvents(state, payload) {
     state.events = payload
+    localStorage.setItem('events', JSON.stringify(payload))
   },
   setEvent(state, payload) {
     state.event = payload
+    localStorage.setItem('currentEvent', JSON.stringify(payload))
   },
   saveEvent(state, payload) {
     const foundIndex = state.events.findIndex((item) => item.id == payload.id)
@@ -45,6 +47,14 @@ export const mutations = {
   },
   setExtras(state, payload) {
     state.extras = payload
+  },
+  clearEvent(state) {
+    state.event = {}
+    localStorage.removeItem('currentEvent')
+  },
+  clearEvents(state) {
+    state.events = []
+    localStorage.removeItem('events')
   },
 }
 

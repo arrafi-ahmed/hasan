@@ -27,7 +27,6 @@ const ticketInit = {
   title: '',
   description: '',
   price: 0,
-  currency: 'USD',
   currentStock: 100,
   maxStock: 100,
   eventId: route.params.eventId,
@@ -35,11 +34,7 @@ const ticketInit = {
 
 const ticket = reactive({ ...ticketInit })
 
-const currencies = [
-  { value: 'USD', text: 'USD ($)' },
-  { value: 'EUR', text: 'EUR (€)' },
-  { value: 'GBP', text: 'GBP (£)' },
-]
+
 
 const openAddDialog = () => {
   isEditing.value = false
@@ -114,10 +109,16 @@ const fetchTickets = async () => {
   }
 }
 
-const formatPrice = (price, currency) => {
+const formatPrice = (price) => {
+  // Get currency from event with validation
+  const currency = event.value?.currency
+  const validCurrency = (currency && typeof currency === 'string' && currency.length === 3) 
+    ? currency.toUpperCase() 
+    : 'USD'
+  
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: currency,
+    currency: validCurrency,
   }).format(price / 100) // Convert cents to dollars
 }
 
@@ -199,7 +200,7 @@ onMounted(() => {
               <div class="d-flex justify-space-between align-center mb-3">
                 <div>
                   <div class="text-h4 font-weight-bold text-primary">
-                    {{ formatPrice(ticket.price, ticket.currency) }}
+                    {{ formatPrice(ticket.price) }}
                   </div>
                   <div class="text-caption text-medium-emphasis">
                     Stock: {{ ticket.currentStock || 0 }}/{{ ticket.maxStock || 0 }}
@@ -304,22 +305,10 @@ onMounted(() => {
             />
 
             <div class="d-flex gap-4 mb-4">
-              <v-select
-                v-model="ticket.currency"
-                :items="currencies"
-                class="flex-1"
-                density="comfortable"
-                hide-details="auto"
-                item-title="text"
-                item-value="value"
-                label="Currency"
-                prepend-inner-icon="mdi-cash-multiple"
-                variant="solo"
-              />
               <v-text-field
                 v-model.number="ticket.price"
                 :rules="[(v) => v >= 0 || 'Price must be non-negative']"
-                class="flex-2"
+                class="flex-1"
                 density="comfortable"
                 hide-details="auto"
                 label="Price"

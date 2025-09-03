@@ -13,6 +13,7 @@ export class Event {
     this.banner = data.banner || null
     this.landingConfig = data.landingConfig || null
     this.slug = data.slug || null
+    this.currency = data.currency || 'USD'
     this.clubId = data.clubId || null
     this.createdBy = data.createdBy || null
   }
@@ -106,6 +107,10 @@ export class Event {
       errors.push('Created by user ID is required')
     }
 
+    if (!this.currency || this.currency.length !== 3) {
+      errors.push('Currency must be a valid 3-letter code (e.g., USD, EUR, GBP)')
+    }
+
     return {
       isValid: errors.length === 0,
       errors,
@@ -127,6 +132,7 @@ export class Event {
       banner: this.banner,
       landingConfig: this.landingConfig,
       slug: this.slug,
+      currency: this.currency,
       clubId: this.clubId,
       createdBy: this.createdBy,
     }
