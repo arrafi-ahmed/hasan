@@ -119,9 +119,7 @@ const initializeCheckout = async () => {
       registration: registration.value,
     }
 
-    const response = await $axios.post('/stripe/create-secure-payment-intent', requestData, {
-      headers: { 'X-Suppress-Toast': 'true' },
-    })
+    const response = await $axios.post('/stripe/create-secure-payment-intent', requestData)
 
     clientSecret.value = response.data.payload.clientSecret
     totalAmount.value = response.data.payload.totalAmount
@@ -149,8 +147,7 @@ const initializeCheckout = async () => {
     paymentElement.value = elements.value.create('payment')
     paymentElement.value.mount('#payment-element')
   } catch (error) {
-    console.error('Failed to initialize checkout:', error)
-    toast.error('Error al inicializar el checkout. Por favor intenta de nuevo.')
+    console.error('Failed to initialize checkout:', error)  
   } finally {
     isProcessingPayment.value = false
   }

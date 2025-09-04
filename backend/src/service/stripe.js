@@ -705,6 +705,7 @@ exports.webhook = async (req) => {
     // payment intent succeeded
     case "payment_intent.succeeded":
       const paymentIntentSucceeded = data.object;
+      console.log(71, paymentIntentSucceeded);
 
       // Validate metadata types - ensure all values are strings
       const metadata = paymentIntentSucceeded.metadata;

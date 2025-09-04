@@ -146,6 +146,8 @@ exports.getTempRegistrationWAttendees = async (sessionId) => {
     }
 
     const row = result.rows[0];
+    console.log(3, row);
+    
 
     return row;
   } catch (error) {
@@ -276,8 +278,7 @@ exports.getTempRegistrationBySessionId = async (sessionId) => {
                    a.created_at as attendee_created_at,
                    a.updated_at as attendee_updated_at,
                    t.title      as ticket_title,
-                   t.price      as ticket_price,
-                   t.currency   as ticket_currency
+                   t.price      as ticket_price
             FROM registration r
                      INNER JOIN attendees a ON r.id = a.registration_id
                      LEFT JOIN ticket t ON a.ticket_id = t.id
@@ -316,7 +317,6 @@ exports.getTempRegistrationBySessionId = async (sessionId) => {
         ticketId: row.ticket_id,
         ticketTitle: row.ticket_title,
         ticketPrice: row.ticket_price,
-        ticketCurrency: row.ticket_currency,
         qrUuid: row.qr_uuid,
         isPrimary: row.is_primary,
         createdAt: row.attendee_created_at,

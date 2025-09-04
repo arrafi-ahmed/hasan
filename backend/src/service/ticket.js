@@ -166,7 +166,6 @@ exports.updateStock = async ({ ticketId, quantity }) => {
             title,
             description,
             price,
-            currency,
             current_stock as "currentStock",
             max_stock as "maxStock",
             event_id as "eventId",

@@ -6,6 +6,7 @@ import { useTheme } from 'vuetify'
 import QRCodeVue3 from 'qrcode-vue3'
 import { toast } from 'vue-sonner'
 import { generateQrData } from '@/others/util.js'
+import { formatPrice } from '@/others/util'
 
 const route = useRoute()
 const router = useRouter()
@@ -221,7 +222,7 @@ onMounted(() => {
                   </p>
                   <p>
                     <strong>Monto Total:</strong>
-                    ${{ (tempRegistration.orders.totalAmount / 100).toFixed(2) }}
+                    {{ formatPrice(tempRegistration.orders.totalAmount, tempRegistration.orders.currency) }}
                   </p>
                   <p>
                     <strong>Estado:</strong>
@@ -270,7 +271,7 @@ onMounted(() => {
                         </div>
                         <div class="ticket-details">
                           <span class="ticket-price">
-                            ${{ (getAttendeeTicket(attendee).unitPrice / 100).toFixed(2) }}
+                            {{ formatPrice(getAttendeeTicket(attendee).unitPrice, tempRegistration.orders.currency) }}
                           </span>
                           <!--                          <span class="ticket-type">{{ getAttendeeTicket(attendee).type || 'Standard' }}</span>-->
                         </div>
