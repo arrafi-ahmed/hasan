@@ -2,7 +2,6 @@ const CustomError = require("../model/CustomError");
 const { query } = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const stripeService = require("../service/stripe");
-const { defaultCurrency } = require("../others/util");
 const ticketService = require("./ticket");
 const registrationService = require("./registration");
 const attendeesService = require("./attendees");

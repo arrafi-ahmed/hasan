@@ -2,7 +2,7 @@ const CustomError = require("../model/CustomError");
 const { query } = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const exceljs = require("exceljs");
-const { formatTime, defaultCurrency } = require("../others/util");
+const { formatTime } = require("../others/util");
 const formService = require("../service/form");
 const eventService = require("./event");
 const ticketService = require("./ticket");
@@ -819,11 +819,17 @@ exports.completeFreeRegistration = async ({ payload }) => {
       0,
     );
 
+    // Get event data to access currency
+    const event = await eventService.getEventById({ eventId });
+    if (!event) {
+      throw new CustomError("Event not found", 404);
+    }
+
     const savedOrder = await orderService.save({
       payload: {
         orderNumber: orderService.generateOrderNumber(),
         totalAmount: totalAmount,
-        currency: defaultCurrency.code,
+        currency: event.currency,
         paymentStatus: "free", // Free orders are immediately paid
         items: selectedTickets,
         registrationId: savedRegistration.id,

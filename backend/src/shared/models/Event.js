@@ -17,6 +17,7 @@ class Event {
     this.banner = data.banner || null;
     this.landingConfig = data.landingConfig || data.landing_config || null;
     this.slug = data.slug || null;
+    this.currency = data.currency || "USD";
     this.clubId = data.clubId || data.club_id || null;
     this.createdBy = data.createdBy || data.created_by || null;
   }
@@ -115,6 +116,7 @@ class Event {
       banner: this.banner,
       landingConfig: this.landingConfig,
       slug: this.slug,
+      currency: this.currency,
       clubId: this.clubId,
       createdBy: this.createdBy,
     };

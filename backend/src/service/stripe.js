@@ -214,10 +214,24 @@ exports.createExtrasPaymentIntentWithValidation = async (payload) => {
 };
 
 // Create simple payment intent with metadata for simplified flow
-exports.createSimplePaymentIntent = async ({ amount, metadata }) => {
+exports.createSimplePaymentIntent = async ({ amount, metadata, eventId }) => {
+  let currency = defaultCurrency.code;
+  
+  // If eventId is provided, get the event's currency
+  if (eventId) {
+    try {
+      const event = await eventService.getEventById({ eventId });
+      if (event && event.currency) {
+        currency = event.currency.toLowerCase();
+      }
+    } catch (error) {
+      console.warn(`Failed to get event currency for eventId ${eventId}, using default:`, error.message);
+    }
+  }
+
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(amount * 100), // Convert to cents
-    currency: defaultCurrency.code,
+    currency: currency,
     metadata: metadata,
     automatic_payment_methods: {
       enabled: true,
@@ -248,6 +262,12 @@ exports.getRegistrationFromPaymentIntentMetadata = async (paymentIntentId) => {
           "No registration data found in payment intent",
           400,
         );
+      }
+
+      // Get event data to access currency
+      const event = await eventService.getEventById({ eventId: sessionData.eventId });
+      if (!event) {
+        throw new CustomError("Event not found", 404);
       }
 
       if (
@@ -285,7 +305,7 @@ exports.getRegistrationFromPaymentIntentMetadata = async (paymentIntentId) => {
         payload: {
           orderNumber,
           totalAmount,
-          currency: defaultCurrency.code,
+          currency: event.currency,
           paymentStatus: "paid",
           stripePaymentIntentId: paymentIntentId,
           items: sessionData.selectedTickets,
@@ -486,6 +506,12 @@ exports.createSecurePaymentIntent = async ({
     // Generate unique session ID
     const sessionId = uuidv4();
 
+    // Get event data to access currency
+    const event = await eventService.getEventById({ eventId: registration.eventId });
+    if (!event) {
+      throw new CustomError("Event not found", 404);
+    }
+
     // Calculate total amount from backend prices
     let totalAmount = 0;
     const validatedItems = [];
@@ -536,7 +562,7 @@ exports.createSecurePaymentIntent = async ({
     // Create payment intent with session ID only
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalAmount), // Convert to cents
-      currency: defaultCurrency.code,
+      currency: event.currency.toLowerCase(),
       automatic_payment_methods: {
         enabled: true,
       },
@@ -552,7 +578,7 @@ exports.createSecurePaymentIntent = async ({
     const orders = {
       orderNumber: orderService.generateOrderNumber(),
       totalAmount: totalAmount,
-      currency: defaultCurrency.code,
+      currency: event.currency,
       paymentStatus: "pending",
       stripePaymentIntentId: paymentIntent.id, // Updated with actual payment intent ID
       items: validatedItems,
@@ -727,6 +753,12 @@ exports.webhook = async (req) => {
           const { attendees, registration, selectedTickets, orders, eventId } =
             sessionData;
 
+          // Get event data to access currency
+          const event = await eventService.getEventById({ eventId });
+          if (!event) {
+            throw new CustomError("Event not found", 404);
+          }
+
           // Validate attendees data
           if (
             !attendees ||
@@ -776,7 +808,7 @@ exports.webhook = async (req) => {
                 (sum, item) => sum + item.unitPrice * item.quantity,
                 0,
               ),
-              currency: defaultCurrency.code,
+              currency: event.currency,
               paymentStatus: "paid",
               stripePaymentIntentId: paymentIntentSucceeded.id,
               items: selectedTickets,
